@@ -1,4 +1,5 @@
 using System.ClientModel;
+using Azure;
 
 using Azure.AI.OpenAI;
 
@@ -26,16 +27,19 @@ builder.AddServiceDefaults();
 builder.Services.AddRazorComponents()
                 .AddInteractiveServerComponents();
 
-var credential = new ApiKeyCredential(apiKey);
-var openAIOptions = new OpenAIClientOptions()
-{
-    Endpoint = new Uri(endpoint),
-};
+var credential = new AzureKeyCredential(apiKey);
 
-var openAIClient = endpoint.TrimEnd('/').Equals("https://models.inference.ai.azure.com")
-                   ? new OpenAIClient(credential, openAIOptions)
-                   : new AzureOpenAIClient(new Uri(endpoint), credential);
-var chatClient = openAIClient.GetChatClient(config["OpenAI:DeploymentName"]).AsIChatClient();
+IChatClient chatClient;
+if (endpoint.TrimEnd('/').Equals("https://models.inference.ai.azure.com"))
+{
+    var openAIClient = new OpenAI.OpenAIClient(apiKey);
+    chatClient = openAIClient.GetChatClient(config["OpenAI:DeploymentName"]).AsIChatClient();
+}
+else
+{
+    var openAIClient = new Azure.AI.OpenAI.OpenAIClient(new Uri(endpoint), credential);
+    chatClient = openAIClient.GetChatClient(config["OpenAI:DeploymentName"]).AsIChatClient();
+}
 
 builder.Services.AddChatClient(chatClient)
                 .UseFunctionInvocation()
