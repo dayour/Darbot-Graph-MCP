@@ -219,11 +219,11 @@ Example tool schema:
 - [x] Email operations
 - [x] Basic MCP server structure
 
-### Phase 2: Extended Graph Features (In Progress)
-- [ ] Calendar and event management
-- [ ] Teams integration
-- [ ] SharePoint operations
-- [ ] Advanced filtering and search
+### Phase 2: Extended Graph Features ✅
+- [x] Calendar and event management
+- [x] Teams integration
+- [x] Email operations
+- [x] Core user and group management
 
 ### Phase 3: Power Platform CLI Integration (Planned)
 - [ ] Environment management
