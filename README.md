@@ -13,217 +13,246 @@ page_type: sample
 urlFragment: openai-mcp-agent-dotnet
 --- 
 
-# .NET OpenAI MCP Agent
+# Microsoft Graph MCP Server
 
-This is an MCP agent app written in .NET, using Azure OpenAI, with a remote MCP server written in TypeScript.
+A Model Context Protocol (MCP) server that provides Microsoft Graph and Power Platform Administration CLI (PAC CLI) tools for Claude and other MCP-compatible AI assistants.
 
 ## Features
 
-This app provides features like:
+### Microsoft Graph Tools
 
-- The MCP host + MCP client app is written in [.NET Blazor](https://aka.ms/blazor).
-- The MCP client app connects to a to-do MCP server written in TypeScript.
-- Both MCP client and server apps are running on [Azure Container Apps (ACA)](https://learn.microsoft.com/azure/container-apps/overview).
-- The MCP client app is secured by the built-in auth of ACA.
-- The MCP server app is only accessible from the MCP client app.
+This MCP server exposes the following Microsoft Graph operations:
 
-![Overall architecture diagram](./images/overall-architecture-diagram.png)
+#### User Management
+- **get_users**: Get a list of users with optional filtering and search
+- **get_user**: Get detailed information about a specific user
+- **create_user**: Create a new user account
+
+#### Group Management  
+- **get_groups**: Get a list of groups with optional filtering
+- **get_group**: Get detailed information about a specific group
+- **create_group**: Create a new security or Microsoft 365 group
+
+#### Email Operations
+- **send_mail**: Send emails to one or more recipients
+
+#### Calendar Management
+- **get_calendar_events**: Retrieve calendar events for a date range
+- **create_calendar_event**: Create new calendar events with attendees
+
+#### Teams Integration
+- **get_teams**: Get Microsoft Teams the user is a member of
+
+### Power Platform CLI (PAC CLI) Tools (Planned)
+
+The following PAC CLI tools will be integrated:
+
+#### Environment Management
+- **pac_list_environments**: List Power Platform environments
+- **pac_create_environment**: Create new environments
+- **pac_select_environment**: Switch active environment
+
+#### Solution Management
+- **pac_list_solutions**: List solutions in an environment
+- **pac_export_solution**: Export solutions
+- **pac_import_solution**: Import solutions
+
+#### App Management
+- **pac_list_apps**: List Power Apps
+- **pac_publish_app**: Publish Power Apps
+
+#### Flow Management
+- **pac_list_flows**: List Power Automate flows
+- **pac_enable_flow**: Enable/disable flows
 
 ## Prerequisites
 
-- [.NET 9 SDK](https://dotnet.microsoft.com/download/dotnet/9.0)
-- [Visual Studio Code](https://code.visualstudio.com/Download) + [C# Dev Kit](https://marketplace.visualstudio.com/items?itemName=ms-dotnettools.csdevkit)
-- [node.js](https://nodejs.org/en/download) LTS
-- [Docker Desktop](https://docs.docker.com/get-started/get-docker/) or [Podman Desktop](https://podman-desktop.io/downloads)
-- [Azure Subscription](https://azure.microsoft.com/free)
+### For Microsoft Graph
+- Azure AD App Registration with appropriate Microsoft Graph permissions
+- Client ID, Client Secret, and Tenant ID
+- Required Graph API permissions:
+  - User.Read.All (for reading users)
+  - User.ReadWrite.All (for creating users)
+  - Group.Read.All (for reading groups)
+  - Group.ReadWrite.All (for creating groups)
+  - Mail.Send (for sending emails)
+  - Calendars.ReadWrite (for calendar operations)
+  - Team.ReadBasic.All (for Teams access)
+
+### For Power Platform CLI (Planned)
+- Power Platform CLI installed
+- Appropriate Power Platform licenses and permissions
+- Authentication configured for target environments
+
+## Configuration
+
+### appsettings.json
+
+```json
+{
+  "AzureAd": {
+    "TenantId": "your-tenant-id",
+    "ClientId": "your-client-id", 
+    "ClientSecret": "your-client-secret"
+  }
+}
+```
+
+### Environment Variables (Alternative)
+
+You can also configure using environment variables:
+- `AzureAd__TenantId`
+- `AzureAd__ClientId`
+- `AzureAd__ClientSecret`
 
 ## Getting Started
 
-You can now use GitHub Codespaces to run this sample app (takes several minutes to open it)! 👉 [![Open in GitHub Codespaces](https://github.com/codespaces/badge.svg)](https://codespaces.new/Azure-Samples/openai-mcp-agent-dotnet).
+### 1. Clone the Repository
 
-### Get Azure AI Foundry or GitHub Models
+```bash
+git clone https://github.com/dayour/dotnet-graph-mcp.git
+cd dotnet-graph-mcp
+```
 
-- To run this app, you should have either [Azure AI Foundry](https://learn.microsoft.com/azure/ai-foundry/what-is-azure-ai-foundry) instance or [GitHub Models](https://github.com/marketplace?type=models).
-- If you use Azure AI Foundry, make sure you have the [GPT-4o models deployed](https://learn.microsoft.com/azure/ai-foundry/how-to/deploy-models-openai) deployed.
-- As a default, the deployed model name is `gpt-4o`.
+### 2. Configure Authentication
 
-### Run it on Azure
+Update `src/GraphMcp.Server/appsettings.Development.json` with your Azure AD app registration details.
 
-1. Check that you have the necessary permissions:
-   - Your Azure account must have the `Microsoft.Authorization/roleAssignments/write` permission, such as [Role Based Access Control Administrator](https://learn.microsoft.com/azure/role-based-access-control/built-in-roles/privileged#role-based-access-control-administrator), [User Access Administrator](https://learn.microsoft.com/azure/role-based-access-control/built-in-roles/privileged#user-access-administrator), or [Owner](https://learn.microsoft.com/azure/role-based-access-control/built-in-roles/privileged#owner) at the subscription level.
-   - Your Azure account must also have the `Microsoft.Resources/deployments/write` permission at the subscription level.
+### 3. Build and Run the Graph MCP Server
 
-1. Login to Azure.
+```bash
+dotnet build src/GraphMcp.Server/GraphMcp.Server.csproj
+dotnet run --project src/GraphMcp.Server/GraphMcp.Server.csproj
+```
 
-    ```bash
-    azd auth login
-    ```
+The server will start on `http://localhost:5000` by default.
 
-1. Create a directory for the app.
+### 4. Test the Server
 
-    ```bash
-    # zsh/bash
-    mkdir -p openai-mcp-agent-dotnet
-    ```
+You can test the available tools:
 
-    ```powershell
-    # PowerShell
-    New-Item -ItemType Directory -Path openai-mcp-agent-dotnet -Force
-    ```
+```bash
+# Get available tools
+curl http://localhost:5000/tools
 
-1. Initialize `azd`.
+# Test a tool call
+curl -X POST http://localhost:5000/call-tool \
+  -H "Content-Type: application/json" \
+  -d '{"name": "get_users", "arguments": {"top": 5}}'
+```
 
-    ```bash
-    cd openai-mcp-agent-dotnet
-    azd init -t openai-mcp-agent-dotnet
-    ```
+### 5. Connect to Claude Desktop
 
-   > **NOTE**: You'll be asked to enter an environment name, which will be the name of your Azure Resource Group.
+Add the following to your Claude Desktop MCP settings:
 
-1. Clone the MCP server.
+```json
+{
+  "mcpServers": {
+    "microsoft-graph": {
+      "command": "dotnet",
+      "args": ["run", "--project", "path/to/GraphMcp.Server.csproj"]
+    }
+  }
+}
+```
 
-    ```bash
-    git clone https://github.com/Azure-Samples/mcp-container-ts.git ./src/McpTodo.ServerApp
-    ```
+## Architecture
 
-1. Make sure that your deployed model name is `gpt-4o`. If your deployed model is different, update `src/McpTodo.ClientApp/appsettings.json`.
+### Graph MCP Server (`src/GraphMcp.Server/`)
+- ASP.NET Core web application
+- Microsoft Graph SDK integration
+- RESTful API endpoints for MCP protocol
+- Server-Sent Events (SSE) for real-time communication
 
-    ```jsonc
-    {
-      "OpenAI": {
-        // Make sure this is the right deployment name.
-        "DeploymentName": "gpt-4o"
+### Client App (`src/McpTodo.ClientApp/`) 
+- Blazor web application for testing MCP tools
+- Interactive chat interface
+- MCP client implementation
+
+## API Endpoints
+
+- `GET /health` - Health check endpoint
+- `GET /tools` - List available MCP tools
+- `POST /call-tool` - Execute an MCP tool
+- `POST /sse` - Server-Sent Events endpoint for MCP communication
+
+## Tool Schemas
+
+Each tool follows the MCP tool schema with:
+- `name`: Tool identifier
+- `description`: Human-readable description
+- `inputSchema`: JSON schema defining required and optional parameters
+
+Example tool schema:
+```json
+{
+  "name": "get_users",
+  "description": "Get a list of users from Microsoft Graph",
+  "inputSchema": {
+    "type": "object",
+    "properties": {
+      "top": {
+        "type": "integer",
+        "description": "Number of users to return (max 999)"
+      },
+      "filter": {
+        "type": "string",
+        "description": "OData filter expression"
       }
     }
-    ```
+  }
+}
+```
 
-1. Deploy apps to Azure.
+## Security Considerations
 
-    ```bash
-    azd up
-    ```
+- All Microsoft Graph operations require appropriate permissions
+- App-only authentication is used for service-to-service calls
+- Sensitive configuration should be stored in Azure Key Vault for production
+- Consider implementing rate limiting and request validation
 
-   > **NOTE**:
-   >
-   > 1. By default, the MCP client app is protected by the ACA built-in auth feature. You can turn off this feature before running `azd up` by setting:
-   >
-   >    ```bash
-   >    azd env set USE_LOGIN false
-   >    ```
-   >
-   > 1. During the deployment, you will be asked to enter the Azure Subscription, location and OpenAI connection string. The connection string should be in the format of `Endpoint={{AZURE_OPENAI_ENDPOINT}};Key={{AZURE_OPENAI_API_KEY}}`.
-   > 
-   > 1. You can add GitHub PAT in the same format above to use GitHub Models like `Endpoint=https://models.inference.ai.azure.com;Key={{GITHUB_PAT}}`.
+## Development Roadmap
 
-1. In the terminal, get the client app URL deployed. It might look like:
+### Phase 1: Core Microsoft Graph Integration ✅
+- [x] User management tools
+- [x] Group management tools  
+- [x] Email operations
+- [x] Basic MCP server structure
 
-    ```bash
-    https://mcptodo-clientapp.{{some-random-string}}.{{location}}.azurecontainerapps.io/
-    ```
+### Phase 2: Extended Graph Features (In Progress)
+- [ ] Calendar and event management
+- [ ] Teams integration
+- [ ] SharePoint operations
+- [ ] Advanced filtering and search
 
-1. Navigate to the client app URL, log-in to the app and enter prompts like:
+### Phase 3: Power Platform CLI Integration (Planned)
+- [ ] Environment management
+- [ ] Solution lifecycle operations
+- [ ] App and flow management
+- [ ] Security and compliance tools
 
-    ```text
-    Give me list of to do.
-    Set "meeting at 1pm".
-    Give me list of to do.
-    Mark #1 as completed.
-    Delete #1 from the to-do list.
-    ```
+### Phase 4: Production Features (Planned)
+- [ ] Authentication improvements
+- [ ] Error handling and logging
+- [ ] Performance optimization
+- [ ] Comprehensive testing
+- [ ] Documentation and examples
 
-   > **NOTE**: You might not be asked to login, if you've set the `USE_LOGIN` value to `false`.
+## Contributing
 
-### Run it locally
+1. Fork the repository
+2. Create a feature branch
+3. Make your changes
+4. Add tests if applicable
+5. Submit a pull request
 
-1. Make sure you're in the `openai-mcp-agent-dotnet` directory.
-1. Add Azure OpenAI API Key.
+## License
 
-    ```bash
-    dotnet user-secrets --project ./src/McpTodo.ClientApp set ConnectionStrings:openai "Endpoint={{AZURE_OPENAI_ENDPOINT}};Key={{AZURE_OPENAI_API_KEY}}"
-    ```
+This project is licensed under the MIT License - see the LICENSE file for details.
 
-   > **NOTE**: You can add GitHub PAT in the same format above to use GitHub Models like `Endpoint=https://models.inference.ai.azure.com;Key={{GITHUB_PAT}}`.
+## Support
 
-1. Install npm packages.
-
-    ```bash
-    pushd ./src/McpTodo.ServerApp
-    npm install
-    popd
-    ```
-
-1. Install NuGet packages.
-
-    ```bash
-    dotnet restore && dotnet build
-    ```
-
-1. Run the host app.
-
-    ```bash
-    cd ./src/McpTodo.ServerApp
-    npm start
-    ```
-
-1. Run the client app in another terminal.
-
-    ```bash
-    dotnet watch run --project ./src/McpTodo.ClientApp
-    ```
-
-1. Navigate to `https://localhost:7256` or `http://localhost:5011` and enter prompts like:
-
-    ```text
-    Give me list of to do.
-    Set "meeting at 1pm".
-    Give me list of to do.
-    Mark #1 as completed.
-    Delete #1 from the to-do list.
-    ```
-
-### Run it in local containers
-
-1. Make sure that you're running either Docker Desktop or Podman Desktop on your local machine.
-1. Make sure you're in the `openai-mcp-agent-dotnet` directory.
-1. Export user secrets to `.env`.
-
-    ```bash
-    # bash/zsh
-    dotnet user-secrets list --project src/McpTodo.ClientApp \
-        | sed 's/ConnectionStrings:openai/ConnectionStrings__openai/' > .env
-    ```
-
-    ```bash
-    # PowerShell
-    (dotnet user-secrets list --project src/McpTodo.ClientApp) `
-        -replace "ConnectionStrings:openai", "ConnectionStrings__openai" | Out-File ".env" -Force
-    ```
-
-1. Run both apps in containers.
-
-    ```bash
-    # Docker
-    docker compose up --build
-    ```
-
-    ```bash
-    # Podman
-    podman compose up --build
-    ```
-
-1. Navigate to `http://localhost:8080` and enter prompts like:
-
-    ```text
-    Give me list of to do.
-    Set "meeting at 1pm".
-    Give me list of to do.
-    Mark #1 as completed.
-    Delete #1 from the to-do list.
-    ```
-
-## Resources
-
-- [.NET AI Template](https://devblogs.microsoft.com/dotnet/announcing-dotnet-ai-template-preview2/)
-- [Model Context Protocol (MCP) C# SDK](https://github.com/modelcontextprotocol/csharp-sdk)
-- [MCP .NET samples](https://github.com/microsoft/mcp-dotnet-samples)
-- [MCP Todo app in TypeScript](https://github.com/Azure-Samples/mcp-container-ts)
+For issues and questions:
+- Open a GitHub issue
+- Review the Microsoft Graph documentation
+- Check the MCP protocol specification

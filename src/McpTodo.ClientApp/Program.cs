@@ -29,50 +29,48 @@ builder.Services.AddRazorComponents()
 
 var credential = new AzureKeyCredential(apiKey);
 
-IChatClient chatClient;
-if (endpoint.TrimEnd('/').Equals("https://models.inference.ai.azure.com"))
-{
-    var openAIClient = new OpenAI.OpenAIClient(apiKey);
-    chatClient = openAIClient.GetChatClient(config["OpenAI:DeploymentName"]).AsIChatClient();
-}
-else
-{
-    var openAIClient = new Azure.AI.OpenAI.OpenAIClient(new Uri(endpoint), credential);
-    chatClient = openAIClient.GetChatClient(config["OpenAI:DeploymentName"]).AsIChatClient();
-}
+// TODO: Fix OpenAI client configuration for .NET 8 compatibility
+// IChatClient chatClient;
+// if (endpoint.TrimEnd('/').Equals("https://models.inference.ai.azure.com"))
+// {
+//     var openAIClient = new OpenAI.OpenAIClient(apiKey);
+//     chatClient = openAIClient.GetChatClient(config["OpenAI:DeploymentName"]).AsIChatClient();
+// }
+// else
+// {
+//     var openAIClient = new Azure.AI.OpenAI.OpenAIClient(new Uri(endpoint), credential);
+//     chatClient = openAIClient.GetChatClient(config["OpenAI:DeploymentName"]).AsIChatClient();
+// }
 
-builder.Services.AddChatClient(chatClient)
-                .UseFunctionInvocation()
-                .UseLogging();
+// builder.Services.AddChatClient(chatClient)
+//                 .UseFunctionInvocation()
+//                 .UseLogging();
 
-builder.Services.AddSingleton<IMcpClient>(sp =>
-{
-    var config = sp.GetRequiredService<IConfiguration>();
-    var loggerFactory = sp.GetRequiredService<ILoggerFactory>();
-
-    // With .NET Aspire
-    // var uri = new Uri("https+http://mcpserver").Resolve(config);
-
-    // Without .NET Aspire
-    var uri = new Uri(config["McpServers:TodoList"]!);
-
-    var clientTransportOptions = new SseClientTransportOptions()
-    {
-        Endpoint = new Uri($"{uri.AbsoluteUri.TrimEnd('/')}/sse")
-    };
-    var clientTransport = new SseClientTransport(clientTransportOptions, loggerFactory);
-
-    var clientOptions = new McpClientOptions()
-    {
-        ClientInfo = new Implementation()
-        {
-            Name = "MCP Todo Client",
-            Version = "1.0.0",
-        }
-    };
-
-    return McpClientFactory.CreateAsync(clientTransport, clientOptions, loggerFactory).GetAwaiter().GetResult();
-});
+// TODO: Configure MCP client for Graph server
+// builder.Services.AddSingleton<IMcpClient>(sp =>
+// {
+//     var config = sp.GetRequiredService<IConfiguration>();
+//     var loggerFactory = sp.GetRequiredService<ILoggerFactory>();
+// 
+//     var uri = new Uri(config["McpServers:GraphServer"]!);
+// 
+//     var clientTransportOptions = new SseClientTransportOptions()
+//     {
+//         Endpoint = new Uri($"{uri.AbsoluteUri.TrimEnd('/')}/sse")
+//     };
+//     var clientTransport = new SseClientTransport(clientTransportOptions, loggerFactory);
+// 
+//     var clientOptions = new McpClientOptions()
+//     {
+//         ClientInfo = new Implementation()
+//         {
+//             Name = "Microsoft Graph MCP Client",
+//             Version = "1.0.0",
+//         }
+//     };
+// 
+//     return McpClientFactory.CreateAsync(clientTransport, clientOptions, loggerFactory).GetAwaiter().GetResult();
+// });
 
 var app = builder.Build();
 
