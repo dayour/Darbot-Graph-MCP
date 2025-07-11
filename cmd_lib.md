@@ -1,21 +1,30 @@
 # Darbot Graph MCP Command Library
 
-This document provides a comprehensive reference for all Microsoft Graph MCP tools available in the Darbot Graph MCP Server. The tools are organized hierarchically to work within Visual Studio Code's 128 tool limit.
+This document provides a comprehensive reference for all Microsoft Graph MCP tools available in the Darbot Graph MCP Server. The tools are organized hierarchically to work within Visual Studio Code's 128 tool limit and provide complete coverage of Microsoft Graph API operations.
 
 ## Overview
 
-The Darbot Graph MCP Server provides **64 comprehensive Microsoft Graph tools** organized into 10 categories:
+The Darbot Graph MCP Server provides **64+ comprehensive Microsoft Graph tools** organized into 10 categories, built on the official Microsoft Graph SDKs:
 
-- **User Management**: 8 tools
-- **Group Management**: 8 tools  
-- **Email Management**: 8 tools
-- **Calendar Management**: 8 tools
-- **Teams Management**: 8 tools
-- **Files Management**: 4 tools
-- **SharePoint**: 3 tools
-- **Security**: 5 tools
-- **Reports**: 4 tools
-- **Applications**: 8 tools
+- **Foundation**: [Microsoft Graph .NET SDK](https://github.com/microsoftgraph/msgraph-sdk-dotnet) v5.58.0+
+- **Preview APIs**: [Microsoft Graph .NET Beta SDK](https://github.com/microsoftgraph/msgraph-beta-sdk-dotnet) v5.59.0+
+- **Authentication**: [Azure.Identity](https://docs.microsoft.com/en-us/dotnet/api/azure.identity) for secure credential management
+- **Reference**: [Microsoft Graph PowerShell](https://learn.microsoft.com/en-us/powershell/microsoftgraph/get-started) for comprehensive API coverage patterns
+
+### Tool Distribution by Category
+
+- **User Management**: 8 tools - Complete user lifecycle management
+- **Group Management**: 8 tools - Security and distribution group operations  
+- **Email Management**: 8 tools - Exchange Online mail operations
+- **Calendar Management**: 8 tools - Outlook calendar and scheduling
+- **Teams Management**: 8 tools - Microsoft Teams collaboration
+- **Files Management**: 4 tools - OneDrive and SharePoint file operations
+- **SharePoint**: 3 tools - Sites and content management
+- **Security**: 5 tools - Identity protection and audit logging
+- **Reports**: 4 tools - Usage analytics and activity monitoring
+- **Applications**: 8 tools - Azure AD application management
+
+**Total: 64 tools** providing comprehensive Microsoft Graph API coverage
 
 ## Naming Convention
 
@@ -630,4 +639,241 @@ Required permissions vary by tool category but generally include:
 - SharePoint tools: `Sites.ReadWrite.All`
 - Security tools: `AuditLog.Read.All`, `SecurityEvents.Read.All`
 - Reports tools: `Reports.Read.All`
+
+## Microsoft Graph API Coverage
+
+This MCP server is designed to be the **ultimate extensible MCP server for any and all Microsoft Graph API needs**, based on comprehensive analysis of Microsoft Graph SDK capabilities.
+
+### Current Implementation Status ✅
+
+**Core Microsoft 365 Services (64 Tools)**
+- **Identity & Access Management**: Complete user and group lifecycle operations
+- **Exchange Online**: Full email management, folders, and messaging
+- **Outlook Calendar**: Event creation, management, and scheduling
+- **Microsoft Teams**: Team collaboration, channels, and messaging
+- **OneDrive & SharePoint**: File operations and content management
+- **Azure AD Applications**: App registration and permission management
+- **Security & Compliance**: Audit logs, risk detection, and monitoring
+- **Usage Analytics**: Comprehensive reporting across all services
+
+### Microsoft Graph SDK Foundation
+
+Built on official Microsoft SDKs following best practices:
+
+#### Primary Dependencies
+```xml
+<PackageReference Include="Microsoft.Graph" Version="5.58.0" />
+<PackageReference Include="Microsoft.Graph.Beta" Version="5.59.0-preview" />
+<PackageReference Include="Azure.Identity" Version="1.12.0" />
+```
+
+#### SDK Compatibility
+- **[Microsoft.Graph SDK](https://github.com/microsoftgraph/msgraph-sdk-dotnet)**: Production v1.0 APIs
+- **[Microsoft.Graph.Beta SDK](https://github.com/microsoftgraph/msgraph-beta-sdk-dotnet)**: Preview APIs
+- **[Microsoft Graph PowerShell](https://learn.microsoft.com/en-us/powershell/microsoftgraph/get-started)**: Reference for comprehensive coverage
+
+### Extensible Architecture for Future Growth 🚀
+
+The server architecture supports expansion to cover **all Microsoft Graph APIs**:
+
+#### Ready for Implementation Categories
+
+**Device & Endpoint Management**
+```
+darbot-graph-devices-list          # List managed devices
+darbot-graph-devices-compliance    # Check compliance status
+darbot-graph-intune-policies-list  # List Intune policies
+darbot-graph-devices-wipe          # Remote device wipe
+```
+
+**Identity Protection & Conditional Access**
+```
+darbot-graph-identity-policies-list    # List conditional access policies
+darbot-graph-identity-risks-assess     # Assess identity risks
+darbot-graph-identity-locations-list   # List named locations
+darbot-graph-identity-mfa-enforce      # Enforce MFA policies
+```
+
+**Directory Management**
+```
+darbot-graph-directory-units-list      # List administrative units
+darbot-graph-directory-contacts-list   # List organizational contacts
+darbot-graph-directory-domains-list    # List verified domains
+darbot-graph-directory-roles-list      # List directory roles
+```
+
+**Personal Information Management**
+```
+darbot-graph-contacts-list             # List personal contacts
+darbot-graph-contacts-create          # Create contacts
+darbot-graph-tasks-list               # List Outlook tasks
+darbot-graph-notes-list               # List personal notes
+```
+
+**Microsoft Planner & Project**
+```
+darbot-graph-planner-plans-list       # List Planner plans
+darbot-graph-planner-tasks-create     # Create Planner tasks
+darbot-graph-planner-buckets-list     # List plan buckets
+darbot-graph-project-tasks-list       # List Project tasks
+```
+
+**OneNote Integration**
+```
+darbot-graph-onenote-notebooks-list   # List OneNote notebooks
+darbot-graph-onenote-sections-create  # Create notebook sections
+darbot-graph-onenote-pages-create     # Create OneNote pages
+darbot-graph-onenote-search           # Search OneNote content
+```
+
+**Advanced SharePoint & Content**
+```
+darbot-graph-sharepoint-permissions-list  # List site permissions
+darbot-graph-sharepoint-columns-create    # Create site columns
+darbot-graph-sharepoint-workflows-list    # List site workflows
+darbot-graph-sharepoint-search            # Search SharePoint content
+```
+
+**License & Subscription Management**
+```
+darbot-graph-licenses-list            # List available licenses
+darbot-graph-licenses-assign          # Assign user licenses
+darbot-graph-subscriptions-list       # List organization subscriptions
+darbot-graph-usage-quotas-check       # Check service quotas
+```
+
+**External Identities & B2B**
+```
+darbot-graph-b2b-invitations-send     # Send B2B invitations
+darbot-graph-b2b-users-list           # List external users
+darbot-graph-b2c-policies-list        # List B2C policies
+darbot-graph-partners-list            # List partner organizations
+```
+
+**Microsoft Bookings**
+```
+darbot-graph-bookings-businesses-list # List booking businesses
+darbot-graph-bookings-appointments-create # Create appointments
+darbot-graph-bookings-services-list   # List booking services
+darbot-graph-bookings-staff-list      # List booking staff
+```
+
+**Education APIs**
+```
+darbot-graph-education-classes-list   # List education classes
+darbot-graph-education-assignments-create # Create assignments
+darbot-graph-education-users-list     # List education users
+darbot-graph-education-schools-list   # List schools
+```
+
+**Compliance & eDiscovery**
+```
+darbot-graph-compliance-policies-list # List DLP policies
+darbot-graph-retention-policies-list  # List retention policies
+darbot-graph-ediscovery-cases-list    # List eDiscovery cases
+darbot-graph-labels-list              # List sensitivity labels
+```
+
+**Microsoft Search**
+```
+darbot-graph-search-query             # Perform Microsoft Search
+darbot-graph-search-bookmarks-list    # List search bookmarks
+darbot-graph-search-acronyms-list     # List search acronyms
+darbot-graph-search-qnas-list         # List Q&A results
+```
+
+**Cloud Communications**
+```
+darbot-graph-calls-list               # List active calls
+darbot-graph-meetings-create          # Create online meetings
+darbot-graph-presence-get             # Get user presence
+darbot-graph-voicemail-list           # List voicemail messages
+```
+
+**Universal Print**
+```
+darbot-graph-print-printers-list      # List universal printers
+darbot-graph-print-jobs-list          # List print jobs
+darbot-graph-print-shares-list        # List printer shares
+darbot-graph-print-connectors-list    # List print connectors
+```
+
+### Implementation Guidelines
+
+#### Adding New Categories
+1. **Define Tool Schema** in `ToolCategories.cs`:
+```csharp
+public static List<object> GetNewCategoryTools()
+{
+    return new List<object>
+    {
+        new
+        {
+            name = "darbot-graph-category-action",
+            description = "Tool description",
+            inputSchema = new { /* JSON schema */ }
+        }
+    };
+}
+```
+
+2. **Implement Service Methods** in `GraphServiceEnhanced.cs`:
+```csharp
+private async Task<object> NewCategoryActionAsync(JsonElement? arguments)
+{
+    try
+    {
+        // Use _graphClient for v1.0 APIs
+        // Use _betaGraphClient for Beta APIs
+        return new { success = true, data = result };
+    }
+    catch (Exception ex)
+    {
+        return new { success = false, error = ex.Message };
+    }
+}
+```
+
+3. **Add Tool Routing**:
+```csharp
+"darbot-graph-category-action" => await NewCategoryActionAsync(arguments),
+```
+
+4. **Register Tool Category**:
+```csharp
+tools.AddRange(ToolCategories.GetNewCategoryTools());
+```
+
+### Microsoft Graph API Reference
+
+#### Official Documentation
+- **[Graph API Reference](https://docs.microsoft.com/en-us/graph/api/overview)**: Complete API documentation
+- **[Graph Explorer](https://developer.microsoft.com/graph/graph-explorer)**: Interactive API testing
+- **[Graph Permissions](https://docs.microsoft.com/en-us/graph/permissions-reference)**: Permission requirements
+- **[Graph SDKs](https://docs.microsoft.com/en-us/graph/sdks/sdks-overview)**: Official SDK documentation
+
+#### PowerShell Graph Module Reference
+The [Microsoft Graph PowerShell module](https://learn.microsoft.com/en-us/powershell/microsoftgraph/get-started) provides comprehensive coverage patterns that can be implemented in this MCP server:
+
+```powershell
+# Examples of Graph PowerShell coverage this server can implement
+Get-MgUser                    # darbot-graph-users-list
+Get-MgGroup                   # darbot-graph-groups-list  
+Get-MgDevice                  # darbot-graph-devices-list (future)
+Get-MgApplication             # darbot-graph-apps-list
+Get-MgDirectoryRole           # darbot-graph-directory-roles-list (future)
+Get-MgPlannerPlan            # darbot-graph-planner-plans-list (future)
+```
+
+### Contribution & Extension
+
+This server is designed as the **definitive Microsoft Graph MCP integration**. To contribute:
+
+1. **Research**: Use [Graph Explorer](https://developer.microsoft.com/graph/graph-explorer) to test APIs
+2. **Design**: Follow the hierarchical naming convention
+3. **Implement**: Use the established patterns in existing tools
+4. **Test**: Validate against both v1.0 and Beta APIs where applicable
+5. **Document**: Update this reference with new tool descriptions
+
+The goal is comprehensive coverage of all Microsoft Graph capabilities, making this the ultimate extensible MCP server for any and all Graph API needs.
 - Applications tools: `Application.ReadWrite.All`

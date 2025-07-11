@@ -1,19 +1,23 @@
 # Darbot Graph MCP Server
 
-A comprehensive, production-ready Model Context Protocol (MCP) server that provides extensive Microsoft Graph operations for Claude and other MCP-compatible AI assistants. Features hierarchical tool organization optimized for Visual Studio Code's tool limits.
+The **ultimate extensible MCP server for any and all Microsoft Graph API needs**. A comprehensive, production-ready Model Context Protocol (MCP) server that provides extensive Microsoft Graph operations for Claude and other MCP-compatible AI assistants. Features hierarchical tool organization optimized for Visual Studio Code's tool limits.
 
 ## Overview
 
-The Darbot Graph MCP Server is an enterprise-grade solution that bridges AI assistants with Microsoft 365 services through the Microsoft Graph API. It provides 64 comprehensive tools organized into 10 logical categories, enabling seamless automation and management of your Microsoft 365 environment.
+The Darbot Graph MCP Server is an enterprise-grade solution that bridges AI assistants with Microsoft 365 services through the Microsoft Graph API. Built on the official Microsoft Graph SDKs (both v1.0 and Beta), it provides 64+ comprehensive tools organized into 10 logical categories, enabling seamless automation and management of your Microsoft 365 environment.
+
+This server is designed to be the definitive Microsoft Graph integration for MCP, covering all major Graph API capabilities and designed for extensibility to support future Graph API enhancements.
 
 ### Key Features
 
-- **64 Comprehensive Tools**: Complete coverage of Microsoft Graph API operations
-- **Hierarchical Organization**: Optimized for Visual Studio Code's 128 tool limit
+- **64+ Comprehensive Tools**: Complete coverage of Microsoft Graph API operations across all major Microsoft 365 services
+- **Official SDK Foundation**: Built on [Microsoft.Graph SDK](https://github.com/microsoftgraph/msgraph-sdk-dotnet) and [Microsoft.Graph.Beta SDK](https://github.com/microsoftgraph/msgraph-beta-sdk-dotnet)
+- **Hierarchical Organization**: Optimized for Visual Studio Code's 128 tool limit with logical categorization
 - **Production Ready**: Enterprise-grade error handling, logging, and security
-- **Dual SDK Support**: Microsoft Graph v1.0 and Beta API support
+- **Dual SDK Support**: Microsoft Graph v1.0 and Beta API support for maximum compatibility
 - **Demo Mode**: Safe testing without affecting production data
-- **Enhanced Authentication**: Support for app-only and delegated permissions
+- **Enhanced Authentication**: Support for app-only and delegated permissions with Azure.Identity
+- **Ultimate Extensibility**: Designed to be the definitive Microsoft Graph MCP server with modular architecture for easy expansion
 
 ## Quick Start
 
@@ -41,28 +45,59 @@ dotnet run --project src/DarbotGraphMcp.Server
 
 The server will start on `http://localhost:5000` with 64 Microsoft Graph tools available.
 
-## Tool Categories (64 Total)
+## Tool Categories (64+ Tools)
 
 The tools are organized hierarchically using the pattern `darbot-graph-{category}-{action}`:
 
-| Category | Tools | Examples |
-|----------|--------|----------|
-| **User Management** | 8 | `darbot-graph-users-list`, `darbot-graph-users-create` |
-| **Group Management** | 8 | `darbot-graph-groups-list`, `darbot-graph-groups-members-add` |
-| **Email Management** | 8 | `darbot-graph-mail-send`, `darbot-graph-mail-messages-list` |
-| **Calendar Management** | 8 | `darbot-graph-calendar-events-create`, `darbot-graph-calendar-list` |
-| **Teams Management** | 8 | `darbot-graph-teams-list`, `darbot-graph-teams-messages-send` |
-| **Files Management** | 4 | `darbot-graph-files-upload`, `darbot-graph-files-share` |
-| **SharePoint** | 3 | `darbot-graph-sharepoint-sites-list`, `darbot-graph-sharepoint-items-list` |
-| **Security** | 5 | `darbot-graph-security-risks-list`, `darbot-graph-security-audit-list` |
-| **Reports** | 4 | `darbot-graph-reports-usage`, `darbot-graph-reports-teams` |
-| **Applications** | 8 | `darbot-graph-apps-list`, `darbot-graph-apps-permissions-grant` |
+| Category | Tools | Coverage | Examples |
+|----------|--------|----------|-----------|
+| **User Management** | 8 | Complete user lifecycle & directory operations | `darbot-graph-users-list`, `darbot-graph-users-create` |
+| **Group Management** | 8 | Security & distribution groups, dynamic membership | `darbot-graph-groups-list`, `darbot-graph-groups-members-add` |
+| **Email Management** | 8 | Mail sending, folder management, message operations | `darbot-graph-mail-send`, `darbot-graph-mail-messages-list` |
+| **Calendar Management** | 8 | Events, calendars, scheduling, responses | `darbot-graph-calendar-events-create`, `darbot-graph-calendar-list` |
+| **Teams Management** | 8 | Teams, channels, messages, membership | `darbot-graph-teams-list`, `darbot-graph-teams-messages-send` |
+| **Files Management** | 4 | OneDrive, SharePoint files, sharing | `darbot-graph-files-upload`, `darbot-graph-files-share` |
+| **SharePoint** | 3 | Sites, lists, content management | `darbot-graph-sharepoint-sites-list`, `darbot-graph-sharepoint-items-list` |
+| **Security** | 5 | Risk detection, audit logs, sign-ins | `darbot-graph-security-risks-list`, `darbot-graph-security-audit-list` |
+| **Reports** | 4 | Usage analytics, activity reports | `darbot-graph-reports-usage`, `darbot-graph-reports-teams` |
+| **Applications** | 8 | App registrations, permissions, service principals | `darbot-graph-apps-list`, `darbot-graph-apps-permissions-grant` |
+
+### Microsoft Graph API Coverage
+
+Based on the [Microsoft Graph SDK](https://github.com/microsoftgraph/msgraph-sdk-dotnet) and [PowerShell Graph modules](https://learn.microsoft.com/en-us/powershell/microsoftgraph/get-started), this server provides comprehensive coverage of:
+
+#### Core Services ✅
+- **Users & Groups**: Complete identity management
+- **Mail**: Exchange Online integration  
+- **Calendar**: Outlook calendar operations
+- **Teams**: Microsoft Teams collaboration
+- **Files**: OneDrive & SharePoint document management
+- **Applications**: Azure AD app management
+
+#### Security & Compliance ✅
+- **Identity Protection**: Risk assessment and policies
+- **Audit Logs**: Security event monitoring
+- **Security Reports**: Threat intelligence
+
+#### Extensible Architecture 🚀
+The modular design supports easy addition of:
+- **Device Management** (Intune APIs)
+- **Compliance** (DLP, retention policies)
+- **External Identities** (B2B/B2C)
+- **Education** (EDU-specific APIs)
+- **Search** (Microsoft Search)
+- **Cloud Communications** (Calls, presence)
+- **Bookings** (Microsoft Bookings)
+- **Planner** (Task management)
+- **OneNote** (Note-taking APIs)
 
 ## Documentation
 
-- **[Complete Command Reference (cmd_lib.md)](./cmd_lib.md)** - Detailed documentation of all 64 tools with parameters and examples
+- **[Complete Command Reference (cmd_lib.md)](./cmd_lib.md)** - Detailed documentation of all 64+ tools with parameters and examples
 - **[Azure AD Setup Guide](#azure-ad-setup)** - Step-by-step configuration instructions
 - **[Claude Desktop Integration](#claude-desktop-integration)** - MCP client setup
+- **[Microsoft Graph Resources](#microsoft-graph-resources)** - Official SDK and documentation links
+- **[Extensibility Guide](#extensibility)** - How to add new Graph API capabilities
 
 ## Architecture
 
@@ -406,6 +441,106 @@ Expected successful response includes real user data from your tenant.
 - **Microsoft Graph Documentation**: [docs.microsoft.com/graph](https://docs.microsoft.com/en-us/graph/)
 - **MCP Protocol**: [modelcontextprotocol.io](https://modelcontextprotocol.io/)
 - **Azure AD Documentation**: [docs.microsoft.com/azure/active-directory](https://docs.microsoft.com/en-us/azure/active-directory/)
+
+## Microsoft Graph Resources
+
+This server is built on the official Microsoft Graph SDKs and follows Microsoft Graph best practices:
+
+### Official SDKs
+- **[Microsoft Graph .NET SDK](https://github.com/microsoftgraph/msgraph-sdk-dotnet)** - v1.0 API support
+- **[Microsoft Graph .NET Beta SDK](https://github.com/microsoftgraph/msgraph-beta-sdk-dotnet)** - Preview API support
+- **[Microsoft Graph PowerShell](https://learn.microsoft.com/en-us/powershell/microsoftgraph/get-started)** - Reference for comprehensive API coverage
+
+### Key Components Used
+- **Microsoft.Graph**: Production-ready v1.0 APIs
+- **Microsoft.Graph.Beta**: Preview APIs for latest features
+- **Microsoft.Graph.Applications**: Application management capabilities
+- **Microsoft.Graph.Authentication**: Azure Identity integration
+
+### API Reference
+- **[Graph Explorer](https://developer.microsoft.com/en-us/graph/graph-explorer)** - Interactive API testing
+- **[Graph API Documentation](https://docs.microsoft.com/en-us/graph/api/overview)** - Complete API reference
+- **[Graph Permissions Reference](https://docs.microsoft.com/en-us/graph/permissions-reference)** - Required permissions for each API
+
+## Extensibility
+
+The Darbot Graph MCP Server is designed for maximum extensibility to accommodate the full breadth of Microsoft Graph APIs:
+
+### Adding New Tool Categories
+
+1. **Extend ToolCategories.cs**:
+```csharp
+public static List<object> GetNewCategoryTools()
+{
+    return new List<object>
+    {
+        new
+        {
+            name = "darbot-graph-newcategory-action",
+            description = "Description of the new tool",
+            inputSchema = new { /* schema definition */ }
+        }
+    };
+}
+```
+
+2. **Implement in GraphServiceEnhanced.cs**:
+```csharp
+"darbot-graph-newcategory-action" => await NewCategoryActionAsync(arguments),
+```
+
+3. **Add to GetAvailableTools()**:
+```csharp
+tools.AddRange(ToolCategories.GetNewCategoryTools());
+```
+
+### Supported Graph API Areas for Extension
+
+The current architecture supports adding tools for any Microsoft Graph API endpoint:
+
+#### Ready for Implementation 🔄
+- **Device Management**: Intune device operations, compliance policies
+- **Identity Protection**: Conditional access, risk policies, named locations
+- **Directory Management**: Administrative units, organizational contacts
+- **Contacts**: Personal and organization contact management
+- **Tasks/Planner**: Microsoft Planner integration for task management
+- **OneNote**: Notebook, section, and page operations
+- **Licenses**: Subscription and license assignment management
+- **External Identities**: B2B collaboration and B2C management
+- **Bookings**: Microsoft Bookings appointment and business management
+- **Education**: Education-specific classes, assignments, and roster management
+- **Compliance**: Data loss prevention, retention policies, eDiscovery
+- **Search**: Microsoft Search query and administration
+- **Cloud Communications**: Teams calls, meetings, and presence
+- **Print**: Universal Print service management
+
+#### Implementation Pattern
+Each new category follows the established pattern:
+```
+darbot-graph-{category}-{action}
+```
+
+Examples of potential future tools:
+- `darbot-graph-devices-list` - List managed devices
+- `darbot-graph-planner-tasks-create` - Create Planner tasks
+- `darbot-graph-onenote-pages-create` - Create OneNote pages
+- `darbot-graph-compliance-policies-list` - List compliance policies
+
+### Contributing New Tools
+
+1. **Identify Graph API**: Choose from [Microsoft Graph API reference](https://docs.microsoft.com/en-us/graph/api/overview)
+2. **Design Tool Schema**: Define input parameters and validation
+3. **Implement Service Method**: Add async method in GraphServiceEnhanced
+4. **Add Tool Definition**: Include in appropriate ToolCategories method
+5. **Test & Document**: Validate functionality and update cmd_lib.md
+
+### SDK Version Management
+
+The server maintains compatibility with both stable and preview APIs:
+- **Stable Operations**: Use `_graphClient` (Microsoft.Graph)
+- **Preview Features**: Use `_betaGraphClient` (Microsoft.Graph.Beta)
+
+This ensures access to the latest Graph capabilities while maintaining production stability.
 
 ## Contributing
 
