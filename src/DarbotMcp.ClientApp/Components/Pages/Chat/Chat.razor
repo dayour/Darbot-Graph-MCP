@@ -8,13 +8,13 @@
 
 @implements IDisposable
 
-<PageTitle>MCP To-do List</PageTitle>
+<PageTitle>Microsoft Graph MCP</PageTitle>
 
 <ChatHeader OnNewChat="@ResetConversationAsync" />
 
 <ChatMessageList Messages="@messages" InProgressMessage="@currentResponseMessage">
     <NoMessagesContent>
-        <div>To get started, try setting a to-do list item or getting the list of to-to list items.</div>
+        <div>To get started, try asking about users, groups, sending emails, or managing calendar events using Microsoft Graph.</div>
     </NoMessagesContent>
 </ChatMessageList>
 
@@ -25,9 +25,15 @@
 
 @code {
     private const string SystemPrompt = @"
-        You are an assistant who manages to-do list items.
+        You are an assistant who helps manage Microsoft Graph operations including users, groups, email, and calendar.
+        You have access to Microsoft Graph tools to:
+        - Manage users (get, create, update user information)
+        - Manage groups (get, create groups and group memberships)
+        - Send emails and manage calendar events
+        - Access Microsoft Teams information
+        
         If the question is not clear, ask for clarification.
-        If the question is irrelevant to the to-do list one, respond like 'I only answer the to-do list related questions'.
+        If the question is irrelevant to Microsoft Graph operations, respond like 'I only answer Microsoft Graph related questions'.
         Use only simple markdown to format your responses.
         Answer in English.
         ";

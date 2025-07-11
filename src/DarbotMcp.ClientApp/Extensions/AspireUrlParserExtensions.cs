@@ -1,4 +1,4 @@
-namespace McpTodo.ClientApp.Extensions;
+namespace DarbotMcp.ClientApp.Extensions;
 
 public static class AspireUrlParserExtensions
 {
