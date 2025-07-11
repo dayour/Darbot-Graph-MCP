@@ -1,141 +1,16 @@
-using Microsoft.Graph;
-using Microsoft.Graph.Beta;
-using Azure.Identity;
 using System.Text.Json;
-using DarbotGraphMcp.Server.Services;
 
-var builder = WebApplication.CreateBuilder(args);
+namespace DarbotGraphMcp.Server.Services;
 
-// Add services to the container
-builder.Services.AddLogging();
-builder.Services.AddControllers();
-
-// Configure Microsoft Graph client
-builder.Services.AddScoped<GraphServiceClient>(provider =>
+public static class ToolCategories
 {
-    var configuration = provider.GetRequiredService<IConfiguration>();
-    
-    // Use ClientSecretCredential for app-only authentication
-    var clientId = configuration["AzureAd:ClientId"];
-    var clientSecret = configuration["AzureAd:ClientSecret"];
-    var tenantId = configuration["AzureAd:TenantId"];
-    
-    // For demo/testing purposes, use placeholder values if not configured
-    if (string.IsNullOrEmpty(clientId) || string.IsNullOrEmpty(clientSecret) || string.IsNullOrEmpty(tenantId))
-    {
-        clientId = "00000000-0000-0000-0000-000000000000";
-        clientSecret = "placeholder-secret";
-        tenantId = "00000000-0000-0000-0000-000000000000";
-    }
-    
-    var credential = new ClientSecretCredential(tenantId, clientId, clientSecret);
-    
-    return new GraphServiceClient(credential);
-});
-
-// Configure Microsoft Graph Beta client
-builder.Services.AddScoped<GraphBetaServiceClient>(provider =>
-{
-    var configuration = provider.GetRequiredService<IConfiguration>();
-    
-    var clientId = configuration["AzureAd:ClientId"];
-    var clientSecret = configuration["AzureAd:ClientSecret"];
-    var tenantId = configuration["AzureAd:TenantId"];
-    
-    // For demo/testing purposes, use placeholder values if not configured
-    if (string.IsNullOrEmpty(clientId) || string.IsNullOrEmpty(clientSecret) || string.IsNullOrEmpty(tenantId))
-    {
-        clientId = "00000000-0000-0000-0000-000000000000";
-        clientSecret = "placeholder-secret";
-        tenantId = "00000000-0000-0000-0000-000000000000";
-    }
-    
-    var credential = new ClientSecretCredential(tenantId, clientId, clientSecret);
-    
-    return new GraphBetaServiceClient(credential);
-});
-
-// Add Enhanced Graph service
-builder.Services.AddScoped<IGraphServiceEnhanced, GraphServiceEnhanced>();
-
-var app = builder.Build();
-
-// Configure the HTTP request pipeline
-if (app.Environment.IsDevelopment())
-{
-    app.UseDeveloperExceptionPage();
-}
-
-app.UseRouting();
-app.MapControllers();
-
-// MCP Server endpoints
-app.MapGet("/health", () => "Darbot Graph MCP Server - Enhanced");
-
-// MCP protocol endpoints
-app.MapPost("/sse", async (HttpContext context, IGraphServiceEnhanced graphService) =>
-{
-    context.Response.Headers["Content-Type"] = "text/event-stream";
-    context.Response.Headers["Cache-Control"] = "no-cache";
-    context.Response.Headers["Connection"] = "keep-alive";
-    context.Response.Headers["Access-Control-Allow-Origin"] = "*";
-
-    await context.Response.WriteAsync("data: Connected to Darbot Graph MCP Server - Enhanced\n\n");
-    await context.Response.Body.FlushAsync();
-
-    // Keep connection alive
-    while (!context.RequestAborted.IsCancellationRequested)
-    {
-        await Task.Delay(30000, context.RequestAborted);
-        await context.Response.WriteAsync("data: ping\n\n");
-        await context.Response.Body.FlushAsync();
-    }
-});
-
-// MCP Tools endpoint
-app.MapGet("/tools", (IGraphServiceEnhanced graphService) =>
-{
-    return graphService.GetAvailableTools();
-});
-
-// MCP Call tool endpoint
-app.MapPost("/call-tool", async (ToolCallRequest request, IGraphServiceEnhanced graphService) =>
-{
-    return await graphService.CallToolAsync(request.Name, request.Arguments);
-});
-
-app.Run();
-
-// Tool call request model
-public record ToolCallRequest(string Name, JsonElement? Arguments);
-
-// Graph Service Interface
-public interface IGraphService
-{
-    List<object> GetAvailableTools();
-    Task<object> CallToolAsync(string toolName, JsonElement? arguments);
-}
-
-// Graph Service Implementation
-public class GraphService : IGraphService
-{
-    private readonly GraphServiceClient _graphClient;
-    private readonly ILogger<GraphService> _logger;
-
-    public GraphService(GraphServiceClient graphClient, ILogger<GraphService> logger)
-    {
-        _graphClient = graphClient;
-        _logger = logger;
-    }
-
-    public List<object> GetAvailableTools()
+    public static List<object> GetUserManagementTools()
     {
         return new List<object>
         {
-            // User Management (8 tools)
             new
             {
-                name = "darbot-graph-get-users",
+                name = "darbot-graph-users-list",
                 description = "Get a list of users from Microsoft Graph with advanced filtering",
                 inputSchema = new
                 {
@@ -150,7 +25,7 @@ public class GraphService : IGraphService
             },
             new
             {
-                name = "darbot-graph-get-user",
+                name = "darbot-graph-users-get",
                 description = "Get detailed information about a specific user by ID or UPN",
                 inputSchema = new
                 {
@@ -164,7 +39,7 @@ public class GraphService : IGraphService
             },
             new
             {
-                name = "darbot-graph-create-user",
+                name = "darbot-graph-users-create",
                 description = "Create a new user account with comprehensive settings",
                 inputSchema = new
                 {
@@ -183,7 +58,7 @@ public class GraphService : IGraphService
             },
             new
             {
-                name = "darbot-graph-update-user",
+                name = "darbot-graph-users-update",
                 description = "Update user properties and settings",
                 inputSchema = new
                 {
@@ -201,7 +76,7 @@ public class GraphService : IGraphService
             },
             new
             {
-                name = "darbot-graph-delete-user",
+                name = "darbot-graph-users-delete",
                 description = "Remove a user from the directory",
                 inputSchema = new
                 {
@@ -215,7 +90,7 @@ public class GraphService : IGraphService
             },
             new
             {
-                name = "darbot-graph-reset-user-password",
+                name = "darbot-graph-users-password-reset",
                 description = "Reset user password and force change on next sign-in",
                 inputSchema = new
                 {
@@ -231,7 +106,7 @@ public class GraphService : IGraphService
             },
             new
             {
-                name = "darbot-graph-get-user-manager",
+                name = "darbot-graph-users-manager-get",
                 description = "Get user's manager information",
                 inputSchema = new
                 {
@@ -245,7 +120,7 @@ public class GraphService : IGraphService
             },
             new
             {
-                name = "darbot-graph-set-user-manager",
+                name = "darbot-graph-users-manager-set",
                 description = "Assign a manager to a user",
                 inputSchema = new
                 {
@@ -257,12 +132,17 @@ public class GraphService : IGraphService
                     },
                     required = new[] { "userId", "managerId" }
                 }
-            },
+            }
+        };
+    }
 
-            // Group Management (8 tools)
+    public static List<object> GetGroupManagementTools()
+    {
+        return new List<object>
+        {
             new
             {
-                name = "darbot-graph-get-groups",
+                name = "darbot-graph-groups-list",
                 description = "Get a list of groups with advanced filtering",
                 inputSchema = new
                 {
@@ -276,7 +156,7 @@ public class GraphService : IGraphService
             },
             new
             {
-                name = "darbot-graph-get-group",
+                name = "darbot-graph-groups-get",
                 description = "Get detailed information about a specific group",
                 inputSchema = new
                 {
@@ -290,7 +170,7 @@ public class GraphService : IGraphService
             },
             new
             {
-                name = "darbot-graph-create-group",
+                name = "darbot-graph-groups-create",
                 description = "Create security or Microsoft 365 groups",
                 inputSchema = new
                 {
@@ -307,7 +187,7 @@ public class GraphService : IGraphService
             },
             new
             {
-                name = "darbot-graph-update-group",
+                name = "darbot-graph-groups-update",
                 description = "Update group properties and settings",
                 inputSchema = new
                 {
@@ -323,7 +203,7 @@ public class GraphService : IGraphService
             },
             new
             {
-                name = "darbot-graph-delete-group",
+                name = "darbot-graph-groups-delete",
                 description = "Remove a group from the directory",
                 inputSchema = new
                 {
@@ -337,7 +217,7 @@ public class GraphService : IGraphService
             },
             new
             {
-                name = "darbot-graph-add-group-member",
+                name = "darbot-graph-groups-members-add",
                 description = "Add members to a group",
                 inputSchema = new
                 {
@@ -352,7 +232,7 @@ public class GraphService : IGraphService
             },
             new
             {
-                name = "darbot-graph-remove-group-member",
+                name = "darbot-graph-groups-members-remove",
                 description = "Remove members from a group",
                 inputSchema = new
                 {
@@ -367,7 +247,7 @@ public class GraphService : IGraphService
             },
             new
             {
-                name = "darbot-graph-get-group-members",
+                name = "darbot-graph-groups-members-list",
                 description = "List all group members",
                 inputSchema = new
                 {
@@ -378,12 +258,17 @@ public class GraphService : IGraphService
                     },
                     required = new[] { "groupId" }
                 }
-            },
+            }
+        };
+    }
 
-            // Email Management (8 tools)
+    public static List<object> GetEmailManagementTools()
+    {
+        return new List<object>
+        {
             new
             {
-                name = "darbot-graph-send-mail",
+                name = "darbot-graph-mail-send",
                 description = "Send emails with advanced formatting and attachments",
                 inputSchema = new
                 {
@@ -403,7 +288,7 @@ public class GraphService : IGraphService
             },
             new
             {
-                name = "darbot-graph-get-mailbox-settings",
+                name = "darbot-graph-mail-settings-get",
                 description = "Retrieve user mailbox settings",
                 inputSchema = new
                 {
@@ -417,7 +302,7 @@ public class GraphService : IGraphService
             },
             new
             {
-                name = "darbot-graph-get-mail-folders",
+                name = "darbot-graph-mail-folders-list",
                 description = "List mail folders and subfolders",
                 inputSchema = new
                 {
@@ -431,7 +316,7 @@ public class GraphService : IGraphService
             },
             new
             {
-                name = "darbot-graph-create-mail-folder",
+                name = "darbot-graph-mail-folders-create",
                 description = "Create new mail folders",
                 inputSchema = new
                 {
@@ -447,7 +332,7 @@ public class GraphService : IGraphService
             },
             new
             {
-                name = "darbot-graph-get-messages",
+                name = "darbot-graph-mail-messages-list",
                 description = "Retrieve messages with filtering",
                 inputSchema = new
                 {
@@ -464,7 +349,7 @@ public class GraphService : IGraphService
             },
             new
             {
-                name = "darbot-graph-reply-to-message",
+                name = "darbot-graph-mail-messages-reply",
                 description = "Reply to email messages",
                 inputSchema = new
                 {
@@ -480,7 +365,7 @@ public class GraphService : IGraphService
             },
             new
             {
-                name = "darbot-graph-forward-message",
+                name = "darbot-graph-mail-messages-forward",
                 description = "Forward email messages",
                 inputSchema = new
                 {
@@ -497,7 +382,7 @@ public class GraphService : IGraphService
             },
             new
             {
-                name = "darbot-graph-move-message",
+                name = "darbot-graph-mail-messages-move",
                 description = "Move messages between folders",
                 inputSchema = new
                 {
@@ -510,12 +395,17 @@ public class GraphService : IGraphService
                     },
                     required = new[] { "userId", "messageId", "destinationFolderId" }
                 }
-            },
+            }
+        };
+    }
 
-            // Calendar Management (8 tools)
+    public static List<object> GetCalendarManagementTools()
+    {
+        return new List<object>
+        {
             new
             {
-                name = "darbot-graph-get-calendar-events",
+                name = "darbot-graph-calendar-events-list",
                 description = "Retrieve calendar events with advanced filtering",
                 inputSchema = new
                 {
@@ -532,7 +422,7 @@ public class GraphService : IGraphService
             },
             new
             {
-                name = "darbot-graph-create-calendar-event",
+                name = "darbot-graph-calendar-events-create",
                 description = "Create events with attendees and recurrence",
                 inputSchema = new
                 {
@@ -552,7 +442,7 @@ public class GraphService : IGraphService
             },
             new
             {
-                name = "darbot-graph-update-calendar-event",
+                name = "darbot-graph-calendar-events-update",
                 description = "Update existing calendar events",
                 inputSchema = new
                 {
@@ -571,7 +461,7 @@ public class GraphService : IGraphService
             },
             new
             {
-                name = "darbot-graph-delete-calendar-event",
+                name = "darbot-graph-calendar-events-delete",
                 description = "Remove calendar events",
                 inputSchema = new
                 {
@@ -586,7 +476,7 @@ public class GraphService : IGraphService
             },
             new
             {
-                name = "darbot-graph-get-calendars",
+                name = "darbot-graph-calendar-list",
                 description = "List user calendars",
                 inputSchema = new
                 {
@@ -600,7 +490,7 @@ public class GraphService : IGraphService
             },
             new
             {
-                name = "darbot-graph-create-calendar",
+                name = "darbot-graph-calendar-create",
                 description = "Create new calendars",
                 inputSchema = new
                 {
@@ -616,7 +506,7 @@ public class GraphService : IGraphService
             },
             new
             {
-                name = "darbot-graph-accept-event",
+                name = "darbot-graph-calendar-events-accept",
                 description = "Accept meeting invitations",
                 inputSchema = new
                 {
@@ -632,7 +522,7 @@ public class GraphService : IGraphService
             },
             new
             {
-                name = "darbot-graph-decline-event",
+                name = "darbot-graph-calendar-events-decline",
                 description = "Decline meeting invitations",
                 inputSchema = new
                 {
@@ -645,12 +535,17 @@ public class GraphService : IGraphService
                     },
                     required = new[] { "userId", "eventId" }
                 }
-            },
+            }
+        };
+    }
 
-            // Teams and Communication (8 tools)
+    public static List<object> GetTeamsManagementTools()
+    {
+        return new List<object>
+        {
             new
             {
-                name = "darbot-graph-get-teams",
+                name = "darbot-graph-teams-list",
                 description = "Get Microsoft Teams user is member of",
                 inputSchema = new
                 {
@@ -664,7 +559,7 @@ public class GraphService : IGraphService
             },
             new
             {
-                name = "darbot-graph-get-team-channels",
+                name = "darbot-graph-teams-channels-list",
                 description = "List channels in a team",
                 inputSchema = new
                 {
@@ -678,7 +573,7 @@ public class GraphService : IGraphService
             },
             new
             {
-                name = "darbot-graph-create-team-channel",
+                name = "darbot-graph-teams-channels-create",
                 description = "Create new team channels",
                 inputSchema = new
                 {
@@ -695,7 +590,7 @@ public class GraphService : IGraphService
             },
             new
             {
-                name = "darbot-graph-get-channel-messages",
+                name = "darbot-graph-teams-messages-list",
                 description = "Retrieve channel messages",
                 inputSchema = new
                 {
@@ -711,7 +606,7 @@ public class GraphService : IGraphService
             },
             new
             {
-                name = "darbot-graph-send-channel-message",
+                name = "darbot-graph-teams-messages-send",
                 description = "Send messages to team channels",
                 inputSchema = new
                 {
@@ -728,7 +623,7 @@ public class GraphService : IGraphService
             },
             new
             {
-                name = "darbot-graph-reply-to-channel-message",
+                name = "darbot-graph-teams-messages-reply",
                 description = "Reply to channel messages",
                 inputSchema = new
                 {
@@ -745,7 +640,7 @@ public class GraphService : IGraphService
             },
             new
             {
-                name = "darbot-graph-get-team-members",
+                name = "darbot-graph-teams-members-list",
                 description = "List team members",
                 inputSchema = new
                 {
@@ -759,7 +654,7 @@ public class GraphService : IGraphService
             },
             new
             {
-                name = "darbot-graph-add-team-member",
+                name = "darbot-graph-teams-members-add",
                 description = "Add members to teams",
                 inputSchema = new
                 {
@@ -772,12 +667,17 @@ public class GraphService : IGraphService
                     },
                     required = new[] { "teamId", "userId" }
                 }
-            },
+            }
+        };
+    }
 
-            // OneDrive and SharePoint (7 tools)
+    public static List<object> GetFilesManagementTools()
+    {
+        return new List<object>
+        {
             new
             {
-                name = "darbot-graph-get-drive-items",
+                name = "darbot-graph-files-list",
                 description = "List OneDrive files and folders",
                 inputSchema = new
                 {
@@ -793,7 +693,7 @@ public class GraphService : IGraphService
             },
             new
             {
-                name = "darbot-graph-upload-file",
+                name = "darbot-graph-files-upload",
                 description = "Upload files to OneDrive",
                 inputSchema = new
                 {
@@ -810,7 +710,7 @@ public class GraphService : IGraphService
             },
             new
             {
-                name = "darbot-graph-download-file",
+                name = "darbot-graph-files-download",
                 description = "Download files from OneDrive",
                 inputSchema = new
                 {
@@ -825,7 +725,7 @@ public class GraphService : IGraphService
             },
             new
             {
-                name = "darbot-graph-share-file",
+                name = "darbot-graph-files-share",
                 description = "Create sharing links for files",
                 inputSchema = new
                 {
@@ -839,10 +739,17 @@ public class GraphService : IGraphService
                     },
                     required = new[] { "userId", "fileId", "type" }
                 }
-            },
+            }
+        };
+    }
+
+    public static List<object> GetSharePointTools()
+    {
+        return new List<object>
+        {
             new
             {
-                name = "darbot-graph-get-sharepoint-sites",
+                name = "darbot-graph-sharepoint-sites-list",
                 description = "List SharePoint sites",
                 inputSchema = new
                 {
@@ -856,7 +763,7 @@ public class GraphService : IGraphService
             },
             new
             {
-                name = "darbot-graph-get-site-lists",
+                name = "darbot-graph-sharepoint-lists-list",
                 description = "Get lists from SharePoint sites",
                 inputSchema = new
                 {
@@ -870,7 +777,7 @@ public class GraphService : IGraphService
             },
             new
             {
-                name = "darbot-graph-get-list-items",
+                name = "darbot-graph-sharepoint-items-list",
                 description = "Retrieve items from SharePoint lists",
                 inputSchema = new
                 {
@@ -883,12 +790,17 @@ public class GraphService : IGraphService
                     },
                     required = new[] { "siteId", "listId" }
                 }
-            },
+            }
+        };
+    }
 
-            // Security and Compliance (5 tools)
+    public static List<object> GetSecurityTools()
+    {
+        return new List<object>
+        {
             new
             {
-                name = "darbot-graph-get-sign-in-logs",
+                name = "darbot-graph-security-signins-list",
                 description = "Retrieve user sign-in logs",
                 inputSchema = new
                 {
@@ -903,7 +815,7 @@ public class GraphService : IGraphService
             },
             new
             {
-                name = "darbot-graph-get-audit-logs",
+                name = "darbot-graph-security-audit-list",
                 description = "Get directory audit logs",
                 inputSchema = new
                 {
@@ -917,7 +829,7 @@ public class GraphService : IGraphService
             },
             new
             {
-                name = "darbot-graph-get-risky-users",
+                name = "darbot-graph-security-risks-list",
                 description = "List users flagged for risk",
                 inputSchema = new
                 {
@@ -931,7 +843,7 @@ public class GraphService : IGraphService
             },
             new
             {
-                name = "darbot-graph-confirm-risky-user",
+                name = "darbot-graph-security-risks-confirm",
                 description = "Confirm or dismiss risky users",
                 inputSchema = new
                 {
@@ -946,7 +858,7 @@ public class GraphService : IGraphService
             },
             new
             {
-                name = "darbot-graph-get-conditional-access-policies",
+                name = "darbot-graph-security-policies-list",
                 description = "List conditional access policies",
                 inputSchema = new
                 {
@@ -956,12 +868,17 @@ public class GraphService : IGraphService
                         top = new { type = "integer", description = "Number of policies to return" }
                     }
                 }
-            },
+            }
+        };
+    }
 
-            // Reports and Analytics (4 tools)
+    public static List<object> GetReportsTools()
+    {
+        return new List<object>
+        {
             new
             {
-                name = "darbot-graph-get-usage-reports",
+                name = "darbot-graph-reports-usage",
                 description = "Get Microsoft 365 usage reports",
                 inputSchema = new
                 {
@@ -976,7 +893,7 @@ public class GraphService : IGraphService
             },
             new
             {
-                name = "darbot-graph-get-teams-activity",
+                name = "darbot-graph-reports-teams",
                 description = "Get Teams activity reports",
                 inputSchema = new
                 {
@@ -990,7 +907,7 @@ public class GraphService : IGraphService
             },
             new
             {
-                name = "darbot-graph-get-email-activity",
+                name = "darbot-graph-reports-email",
                 description = "Get email activity reports",
                 inputSchema = new
                 {
@@ -1004,7 +921,7 @@ public class GraphService : IGraphService
             },
             new
             {
-                name = "darbot-graph-get-sharepoint-activity",
+                name = "darbot-graph-reports-sharepoint",
                 description = "Get SharePoint activity reports",
                 inputSchema = new
                 {
@@ -1019,608 +936,128 @@ public class GraphService : IGraphService
         };
     }
 
-    public async Task<object> CallToolAsync(string toolName, JsonElement? arguments)
+    public static List<object> GetApplicationsTools()
     {
-        try
+        return new List<object>
         {
-            return toolName switch
+            new
             {
-                // User Management
-                "darbot-graph-get-users" => await GetUsersAsync(arguments),
-                "darbot-graph-get-user" => await GetUserAsync(arguments),
-                "darbot-graph-create-user" => await CreateUserAsync(arguments),
-                "darbot-graph-update-user" => await UpdateUserAsync(arguments),
-                "darbot-graph-delete-user" => await DeleteUserAsync(arguments),
-                "darbot-graph-reset-user-password" => await ResetUserPasswordAsync(arguments),
-                "darbot-graph-get-user-manager" => await GetUserManagerAsync(arguments),
-                "darbot-graph-set-user-manager" => await SetUserManagerAsync(arguments),
-                
-                // Group Management
-                "darbot-graph-get-groups" => await GetGroupsAsync(arguments),
-                "darbot-graph-get-group" => await GetGroupAsync(arguments),
-                "darbot-graph-create-group" => await CreateGroupAsync(arguments),
-                "darbot-graph-update-group" => await UpdateGroupAsync(arguments),
-                "darbot-graph-delete-group" => await DeleteGroupAsync(arguments),
-                "darbot-graph-add-group-member" => await AddGroupMemberAsync(arguments),
-                "darbot-graph-remove-group-member" => await RemoveGroupMemberAsync(arguments),
-                "darbot-graph-get-group-members" => await GetGroupMembersAsync(arguments),
-                
-                // Email Management
-                "darbot-graph-send-mail" => await SendMailAsync(arguments),
-                "darbot-graph-get-mailbox-settings" => await GetMailboxSettingsAsync(arguments),
-                "darbot-graph-get-mail-folders" => await GetMailFoldersAsync(arguments),
-                "darbot-graph-create-mail-folder" => await CreateMailFolderAsync(arguments),
-                "darbot-graph-get-messages" => await GetMessagesAsync(arguments),
-                "darbot-graph-reply-to-message" => await ReplyToMessageAsync(arguments),
-                "darbot-graph-forward-message" => await ForwardMessageAsync(arguments),
-                "darbot-graph-move-message" => await MoveMessageAsync(arguments),
-                
-                // Calendar Management
-                "darbot-graph-get-calendar-events" => await GetCalendarEventsAsync(arguments),
-                "darbot-graph-create-calendar-event" => await CreateCalendarEventAsync(arguments),
-                "darbot-graph-update-calendar-event" => await UpdateCalendarEventAsync(arguments),
-                "darbot-graph-delete-calendar-event" => await DeleteCalendarEventAsync(arguments),
-                "darbot-graph-get-calendars" => await GetCalendarsAsync(arguments),
-                "darbot-graph-create-calendar" => await CreateCalendarAsync(arguments),
-                "darbot-graph-accept-event" => await AcceptEventAsync(arguments),
-                "darbot-graph-decline-event" => await DeclineEventAsync(arguments),
-                
-                // Teams and Communication
-                "darbot-graph-get-teams" => await GetTeamsAsync(arguments),
-                "darbot-graph-get-team-channels" => await GetTeamChannelsAsync(arguments),
-                "darbot-graph-create-team-channel" => await CreateTeamChannelAsync(arguments),
-                "darbot-graph-get-channel-messages" => await GetChannelMessagesAsync(arguments),
-                "darbot-graph-send-channel-message" => await SendChannelMessageAsync(arguments),
-                "darbot-graph-reply-to-channel-message" => await ReplyToChannelMessageAsync(arguments),
-                "darbot-graph-get-team-members" => await GetTeamMembersAsync(arguments),
-                "darbot-graph-add-team-member" => await AddTeamMemberAsync(arguments),
-                
-                // OneDrive and SharePoint
-                "darbot-graph-get-drive-items" => await GetDriveItemsAsync(arguments),
-                "darbot-graph-upload-file" => await UploadFileAsync(arguments),
-                "darbot-graph-download-file" => await DownloadFileAsync(arguments),
-                "darbot-graph-share-file" => await ShareFileAsync(arguments),
-                "darbot-graph-get-sharepoint-sites" => await GetSharePointSitesAsync(arguments),
-                "darbot-graph-get-site-lists" => await GetSiteListsAsync(arguments),
-                "darbot-graph-get-list-items" => await GetListItemsAsync(arguments),
-                
-                // Security and Compliance
-                "darbot-graph-get-sign-in-logs" => await GetSignInLogsAsync(arguments),
-                "darbot-graph-get-audit-logs" => await GetAuditLogsAsync(arguments),
-                "darbot-graph-get-risky-users" => await GetRiskyUsersAsync(arguments),
-                "darbot-graph-confirm-risky-user" => await ConfirmRiskyUserAsync(arguments),
-                "darbot-graph-get-conditional-access-policies" => await GetConditionalAccessPoliciesAsync(arguments),
-                
-                // Reports and Analytics
-                "darbot-graph-get-usage-reports" => await GetUsageReportsAsync(arguments),
-                "darbot-graph-get-teams-activity" => await GetTeamsActivityAsync(arguments),
-                "darbot-graph-get-email-activity" => await GetEmailActivityAsync(arguments),
-                "darbot-graph-get-sharepoint-activity" => await GetSharePointActivityAsync(arguments),
-                
-                _ => new { error = $"Unknown tool: {toolName}" }
-            };
-        }
-        catch (Exception ex)
-        {
-            _logger.LogError(ex, "Error calling tool {ToolName}", toolName);
-            return new { error = ex.Message };
-        }
-    }
-
-    private async Task<object> GetUsersAsync(JsonElement? arguments)
-    {
-        try
-        {
-            var args = arguments?.Deserialize<GetUsersArgs>();
-            
-            var request = _graphClient.Users.GetAsync(requestConfig =>
-            {
-                if (args?.Top.HasValue == true)
-                    requestConfig.QueryParameters.Top = args.Top.Value;
-                if (!string.IsNullOrEmpty(args?.Filter))
-                    requestConfig.QueryParameters.Filter = args.Filter;
-                if (!string.IsNullOrEmpty(args?.Search))
-                    requestConfig.QueryParameters.Search = args.Search;
-            });
-
-            var users = await request;
-            var userList = users?.Value?.Select(u => new
-            {
-                u.Id,
-                u.DisplayName,
-                u.UserPrincipalName,
-                u.Mail,
-                u.JobTitle,
-                u.Department
-            }).ToList();
-
-            return new { users = userList };
-        }
-        catch (Exception)
-        {
-            // If Graph client is not properly configured, return demo data
-            return new { 
-                message = "Demo mode - Azure AD not configured", 
-                users = new[] {
-                    new { Id = "demo-1", DisplayName = "Demo User 1", UserPrincipalName = "demo1@example.com", Mail = "demo1@example.com", JobTitle = "Developer", Department = "IT" },
-                    new { Id = "demo-2", DisplayName = "Demo User 2", UserPrincipalName = "demo2@example.com", Mail = "demo2@example.com", JobTitle = "Manager", Department = "IT" }
+                name = "darbot-graph-apps-list",
+                description = "List applications in the directory",
+                inputSchema = new
+                {
+                    type = "object",
+                    properties = new
+                    {
+                        top = new { type = "integer", description = "Number of applications to return" },
+                        filter = new { type = "string", description = "OData filter expression" }
+                    }
                 }
-            };
-        }
-    }
-
-    private async Task<object> GetUserAsync(JsonElement? arguments)
-    {
-        var args = arguments?.Deserialize<GetUserArgs>();
-        
-        if (string.IsNullOrEmpty(args?.UserId))
-        {
-            return new { error = "UserId is required" };
-        }
-
-        var user = await _graphClient.Users[args.UserId].GetAsync();
-        
-        var userInfo = new
-        {
-            user?.Id,
-            user?.DisplayName,
-            user?.UserPrincipalName,
-            user?.Mail,
-            user?.JobTitle,
-            user?.Department,
-            user?.OfficeLocation,
-            user?.MobilePhone,
-            user?.BusinessPhones
-        };
-
-        return new { user = userInfo };
-    }
-
-    private async Task<object> CreateUserAsync(JsonElement? arguments)
-    {
-        var args = arguments?.Deserialize<CreateUserArgs>();
-        
-        if (string.IsNullOrEmpty(args?.DisplayName) || string.IsNullOrEmpty(args?.UserPrincipalName))
-        {
-            return new { error = "DisplayName and UserPrincipalName are required" };
-        }
-
-        var newUser = new Microsoft.Graph.Models.User
-        {
-            DisplayName = args.DisplayName,
-            UserPrincipalName = args.UserPrincipalName,
-            MailNickname = args.MailNickname ?? args.UserPrincipalName.Split('@')[0],
-            AccountEnabled = true,
-            PasswordProfile = new Microsoft.Graph.Models.PasswordProfile
+            },
+            new
             {
-                Password = args.Password,
-                ForceChangePasswordNextSignIn = true
+                name = "darbot-graph-apps-get",
+                description = "Get details of a specific application",
+                inputSchema = new
+                {
+                    type = "object",
+                    properties = new
+                    {
+                        appId = new { type = "string", description = "Application ID" }
+                    },
+                    required = new[] { "appId" }
+                }
+            },
+            new
+            {
+                name = "darbot-graph-apps-create",
+                description = "Create a new application registration",
+                inputSchema = new
+                {
+                    type = "object",
+                    properties = new
+                    {
+                        displayName = new { type = "string", description = "Application display name" },
+                        signInAudience = new { type = "string", description = "Sign-in audience", @enum = new[] { "AzureADMyOrg", "AzureADMultipleOrgs", "AzureADandPersonalMicrosoftAccount" } }
+                    },
+                    required = new[] { "displayName" }
+                }
+            },
+            new
+            {
+                name = "darbot-graph-apps-update",
+                description = "Update application properties",
+                inputSchema = new
+                {
+                    type = "object",
+                    properties = new
+                    {
+                        appId = new { type = "string", description = "Application ID" },
+                        displayName = new { type = "string", description = "Application display name" },
+                        description = new { type = "string", description = "Application description" }
+                    },
+                    required = new[] { "appId" }
+                }
+            },
+            new
+            {
+                name = "darbot-graph-apps-delete",
+                description = "Delete an application",
+                inputSchema = new
+                {
+                    type = "object",
+                    properties = new
+                    {
+                        appId = new { type = "string", description = "Application ID" }
+                    },
+                    required = new[] { "appId" }
+                }
+            },
+            new
+            {
+                name = "darbot-graph-apps-permissions-list",
+                description = "List application permissions",
+                inputSchema = new
+                {
+                    type = "object",
+                    properties = new
+                    {
+                        appId = new { type = "string", description = "Application ID" }
+                    },
+                    required = new[] { "appId" }
+                }
+            },
+            new
+            {
+                name = "darbot-graph-apps-permissions-grant",
+                description = "Grant permissions to an application",
+                inputSchema = new
+                {
+                    type = "object",
+                    properties = new
+                    {
+                        appId = new { type = "string", description = "Application ID" },
+                        permissions = new { type = "array", items = new { type = "string" }, description = "Permission scopes to grant" }
+                    },
+                    required = new[] { "appId", "permissions" }
+                }
+            },
+            new
+            {
+                name = "darbot-graph-apps-secrets-create",
+                description = "Create application client secret",
+                inputSchema = new
+                {
+                    type = "object",
+                    properties = new
+                    {
+                        appId = new { type = "string", description = "Application ID" },
+                        displayName = new { type = "string", description = "Secret display name" },
+                        endDateTime = new { type = "string", description = "Expiration date (ISO 8601)" }
+                    },
+                    required = new[] { "appId", "displayName" }
+                }
             }
         };
-
-        var createdUser = await _graphClient.Users.PostAsync(newUser);
-
-        return new { message = $"User created successfully", userId = createdUser?.Id };
-    }
-
-    private async Task<object> GetGroupsAsync(JsonElement? arguments)
-    {
-        var args = arguments?.Deserialize<GetGroupsArgs>();
-        
-        var request = _graphClient.Groups.GetAsync(requestConfig =>
-        {
-            if (args?.Top.HasValue == true)
-                requestConfig.QueryParameters.Top = args.Top.Value;
-            if (!string.IsNullOrEmpty(args?.Filter))
-                requestConfig.QueryParameters.Filter = args.Filter;
-        });
-
-        var groups = await request;
-        var groupList = groups?.Value?.Select(g => new
-        {
-            g.Id,
-            g.DisplayName,
-            g.Description,
-            g.Mail,
-            g.GroupTypes
-        }).ToList();
-
-        return new { groups = groupList };
-    }
-
-    private async Task<object> GetGroupAsync(JsonElement? arguments)
-    {
-        var args = arguments?.Deserialize<GetGroupArgs>();
-        
-        if (string.IsNullOrEmpty(args?.GroupId))
-        {
-            return new { error = "GroupId is required" };
-        }
-
-        var group = await _graphClient.Groups[args.GroupId].GetAsync();
-        
-        var groupInfo = new
-        {
-            group?.Id,
-            group?.DisplayName,
-            group?.Description,
-            group?.Mail,
-            group?.GroupTypes,
-            group?.CreatedDateTime
-        };
-
-        return new { group = groupInfo };
-    }
-
-    private async Task<object> CreateGroupAsync(JsonElement? arguments)
-    {
-        var args = arguments?.Deserialize<CreateGroupArgs>();
-        
-        if (string.IsNullOrEmpty(args?.DisplayName) || string.IsNullOrEmpty(args?.MailNickname))
-        {
-            return new { error = "DisplayName and MailNickname are required" };
-        }
-
-        var newGroup = new Microsoft.Graph.Models.Group
-        {
-            DisplayName = args.DisplayName,
-            MailNickname = args.MailNickname,
-            Description = args.Description,
-            GroupTypes = args.GroupType?.ToLower() == "microsoft365" ? new List<string> { "Unified" } : new List<string>(),
-            SecurityEnabled = true,
-            MailEnabled = args.GroupType?.ToLower() == "microsoft365"
-        };
-
-        var createdGroup = await _graphClient.Groups.PostAsync(newGroup);
-
-        return new { message = "Group created successfully", groupId = createdGroup?.Id };
-    }
-
-    private async Task<object> SendMailAsync(JsonElement? arguments)
-    {
-        var args = arguments?.Deserialize<SendMailArgs>();
-        
-        if (args?.To == null || !args.To.Any() || string.IsNullOrEmpty(args.Subject) || string.IsNullOrEmpty(args.Body))
-        {
-            return new { error = "To, Subject, and Body are required" };
-        }
-
-        var message = new Microsoft.Graph.Models.Message
-        {
-            Subject = args.Subject,
-            Body = new Microsoft.Graph.Models.ItemBody
-            {
-                ContentType = args.BodyType?.ToLower() == "html" ? Microsoft.Graph.Models.BodyType.Html : Microsoft.Graph.Models.BodyType.Text,
-                Content = args.Body
-            },
-            ToRecipients = args.To.Select(email => new Microsoft.Graph.Models.Recipient
-            {
-                EmailAddress = new Microsoft.Graph.Models.EmailAddress
-                {
-                    Address = email
-                }
-            }).ToList()
-        };
-
-        var sendMailRequest = new Microsoft.Graph.Me.SendMail.SendMailPostRequestBody
-        {
-            Message = message
-        };
-
-        await _graphClient.Me.SendMail.PostAsync(sendMailRequest);
-
-        return new { message = "Email sent successfully" };
-    }
-
-    // Additional User Management Methods
-    private async Task<object> UpdateUserAsync(JsonElement? arguments)
-    {
-        await Task.Delay(1); // Placeholder for async
-        return new { message = "User update functionality will be implemented", status = "placeholder" };
-    }
-
-    private async Task<object> DeleteUserAsync(JsonElement? arguments)
-    {
-        await Task.Delay(1); // Placeholder for async
-        return new { message = "User deletion functionality will be implemented", status = "placeholder" };
-    }
-
-    private async Task<object> ResetUserPasswordAsync(JsonElement? arguments)
-    {
-        await Task.Delay(1); // Placeholder for async
-        return new { message = "Password reset functionality will be implemented", status = "placeholder" };
-    }
-
-    private async Task<object> GetUserManagerAsync(JsonElement? arguments)
-    {
-        await Task.Delay(1); // Placeholder for async
-        return new { message = "Get user manager functionality will be implemented", status = "placeholder" };
-    }
-
-    private async Task<object> SetUserManagerAsync(JsonElement? arguments)
-    {
-        await Task.Delay(1); // Placeholder for async
-        return new { message = "Set user manager functionality will be implemented", status = "placeholder" };
-    }
-
-    // Additional Group Management Methods
-    private async Task<object> UpdateGroupAsync(JsonElement? arguments)
-    {
-        await Task.Delay(1); // Placeholder for async
-        return new { message = "Group update functionality will be implemented", status = "placeholder" };
-    }
-
-    private async Task<object> DeleteGroupAsync(JsonElement? arguments)
-    {
-        await Task.Delay(1); // Placeholder for async
-        return new { message = "Group deletion functionality will be implemented", status = "placeholder" };
-    }
-
-    private async Task<object> AddGroupMemberAsync(JsonElement? arguments)
-    {
-        await Task.Delay(1); // Placeholder for async
-        return new { message = "Add group member functionality will be implemented", status = "placeholder" };
-    }
-
-    private async Task<object> RemoveGroupMemberAsync(JsonElement? arguments)
-    {
-        await Task.Delay(1); // Placeholder for async
-        return new { message = "Remove group member functionality will be implemented", status = "placeholder" };
-    }
-
-    private async Task<object> GetGroupMembersAsync(JsonElement? arguments)
-    {
-        await Task.Delay(1); // Placeholder for async
-        return new { message = "Get group members functionality will be implemented", status = "placeholder" };
-    }
-
-    // Additional Email Management Methods
-    private async Task<object> GetMailboxSettingsAsync(JsonElement? arguments)
-    {
-        await Task.Delay(1); // Placeholder for async
-        return new { message = "Get mailbox settings functionality will be implemented", status = "placeholder" };
-    }
-
-    private async Task<object> GetMailFoldersAsync(JsonElement? arguments)
-    {
-        await Task.Delay(1); // Placeholder for async
-        return new { message = "Get mail folders functionality will be implemented", status = "placeholder" };
-    }
-
-    private async Task<object> CreateMailFolderAsync(JsonElement? arguments)
-    {
-        await Task.Delay(1); // Placeholder for async
-        return new { message = "Create mail folder functionality will be implemented", status = "placeholder" };
-    }
-
-    private async Task<object> GetMessagesAsync(JsonElement? arguments)
-    {
-        await Task.Delay(1); // Placeholder for async
-        return new { message = "Get messages functionality will be implemented", status = "placeholder" };
-    }
-
-    private async Task<object> ReplyToMessageAsync(JsonElement? arguments)
-    {
-        await Task.Delay(1); // Placeholder for async
-        return new { message = "Reply to message functionality will be implemented", status = "placeholder" };
-    }
-
-    private async Task<object> ForwardMessageAsync(JsonElement? arguments)
-    {
-        await Task.Delay(1); // Placeholder for async
-        return new { message = "Forward message functionality will be implemented", status = "placeholder" };
-    }
-
-    private async Task<object> MoveMessageAsync(JsonElement? arguments)
-    {
-        await Task.Delay(1); // Placeholder for async
-        return new { message = "Move message functionality will be implemented", status = "placeholder" };
-    }
-
-    // Calendar Management Methods
-    private async Task<object> GetCalendarEventsAsync(JsonElement? arguments)
-    {
-        await Task.Delay(1); // Placeholder for async
-        return new { message = "Get calendar events functionality will be implemented", status = "placeholder" };
-    }
-
-    private async Task<object> CreateCalendarEventAsync(JsonElement? arguments)
-    {
-        await Task.Delay(1); // Placeholder for async
-        return new { message = "Create calendar event functionality will be implemented", status = "placeholder" };
-    }
-
-    private async Task<object> UpdateCalendarEventAsync(JsonElement? arguments)
-    {
-        await Task.Delay(1); // Placeholder for async
-        return new { message = "Update calendar event functionality will be implemented", status = "placeholder" };
-    }
-
-    private async Task<object> DeleteCalendarEventAsync(JsonElement? arguments)
-    {
-        await Task.Delay(1); // Placeholder for async
-        return new { message = "Delete calendar event functionality will be implemented", status = "placeholder" };
-    }
-
-    private async Task<object> GetCalendarsAsync(JsonElement? arguments)
-    {
-        await Task.Delay(1); // Placeholder for async
-        return new { message = "Get calendars functionality will be implemented", status = "placeholder" };
-    }
-
-    private async Task<object> CreateCalendarAsync(JsonElement? arguments)
-    {
-        await Task.Delay(1); // Placeholder for async
-        return new { message = "Create calendar functionality will be implemented", status = "placeholder" };
-    }
-
-    private async Task<object> AcceptEventAsync(JsonElement? arguments)
-    {
-        await Task.Delay(1); // Placeholder for async
-        return new { message = "Accept event functionality will be implemented", status = "placeholder" };
-    }
-
-    private async Task<object> DeclineEventAsync(JsonElement? arguments)
-    {
-        await Task.Delay(1); // Placeholder for async
-        return new { message = "Decline event functionality will be implemented", status = "placeholder" };
-    }
-
-    // Teams and Communication Methods
-    private async Task<object> GetTeamsAsync(JsonElement? arguments)
-    {
-        await Task.Delay(1); // Placeholder for async
-        return new { message = "Get teams functionality will be implemented", status = "placeholder" };
-    }
-
-    private async Task<object> GetTeamChannelsAsync(JsonElement? arguments)
-    {
-        await Task.Delay(1); // Placeholder for async
-        return new { message = "Get team channels functionality will be implemented", status = "placeholder" };
-    }
-
-    private async Task<object> CreateTeamChannelAsync(JsonElement? arguments)
-    {
-        await Task.Delay(1); // Placeholder for async
-        return new { message = "Create team channel functionality will be implemented", status = "placeholder" };
-    }
-
-    private async Task<object> GetChannelMessagesAsync(JsonElement? arguments)
-    {
-        await Task.Delay(1); // Placeholder for async
-        return new { message = "Get channel messages functionality will be implemented", status = "placeholder" };
-    }
-
-    private async Task<object> SendChannelMessageAsync(JsonElement? arguments)
-    {
-        await Task.Delay(1); // Placeholder for async
-        return new { message = "Send channel message functionality will be implemented", status = "placeholder" };
-    }
-
-    private async Task<object> ReplyToChannelMessageAsync(JsonElement? arguments)
-    {
-        await Task.Delay(1); // Placeholder for async
-        return new { message = "Reply to channel message functionality will be implemented", status = "placeholder" };
-    }
-
-    private async Task<object> GetTeamMembersAsync(JsonElement? arguments)
-    {
-        await Task.Delay(1); // Placeholder for async
-        return new { message = "Get team members functionality will be implemented", status = "placeholder" };
-    }
-
-    private async Task<object> AddTeamMemberAsync(JsonElement? arguments)
-    {
-        await Task.Delay(1); // Placeholder for async
-        return new { message = "Add team member functionality will be implemented", status = "placeholder" };
-    }
-
-    // OneDrive and SharePoint Methods
-    private async Task<object> GetDriveItemsAsync(JsonElement? arguments)
-    {
-        await Task.Delay(1); // Placeholder for async
-        return new { message = "Get drive items functionality will be implemented", status = "placeholder" };
-    }
-
-    private async Task<object> UploadFileAsync(JsonElement? arguments)
-    {
-        await Task.Delay(1); // Placeholder for async
-        return new { message = "Upload file functionality will be implemented", status = "placeholder" };
-    }
-
-    private async Task<object> DownloadFileAsync(JsonElement? arguments)
-    {
-        await Task.Delay(1); // Placeholder for async
-        return new { message = "Download file functionality will be implemented", status = "placeholder" };
-    }
-
-    private async Task<object> ShareFileAsync(JsonElement? arguments)
-    {
-        await Task.Delay(1); // Placeholder for async
-        return new { message = "Share file functionality will be implemented", status = "placeholder" };
-    }
-
-    private async Task<object> GetSharePointSitesAsync(JsonElement? arguments)
-    {
-        await Task.Delay(1); // Placeholder for async
-        return new { message = "Get SharePoint sites functionality will be implemented", status = "placeholder" };
-    }
-
-    private async Task<object> GetSiteListsAsync(JsonElement? arguments)
-    {
-        await Task.Delay(1); // Placeholder for async
-        return new { message = "Get site lists functionality will be implemented", status = "placeholder" };
-    }
-
-    private async Task<object> GetListItemsAsync(JsonElement? arguments)
-    {
-        await Task.Delay(1); // Placeholder for async
-        return new { message = "Get list items functionality will be implemented", status = "placeholder" };
-    }
-
-    // Security and Compliance Methods
-    private async Task<object> GetSignInLogsAsync(JsonElement? arguments)
-    {
-        await Task.Delay(1); // Placeholder for async
-        return new { message = "Get sign-in logs functionality will be implemented", status = "placeholder" };
-    }
-
-    private async Task<object> GetAuditLogsAsync(JsonElement? arguments)
-    {
-        await Task.Delay(1); // Placeholder for async
-        return new { message = "Get audit logs functionality will be implemented", status = "placeholder" };
-    }
-
-    private async Task<object> GetRiskyUsersAsync(JsonElement? arguments)
-    {
-        await Task.Delay(1); // Placeholder for async
-        return new { message = "Get risky users functionality will be implemented", status = "placeholder" };
-    }
-
-    private async Task<object> ConfirmRiskyUserAsync(JsonElement? arguments)
-    {
-        await Task.Delay(1); // Placeholder for async
-        return new { message = "Confirm risky user functionality will be implemented", status = "placeholder" };
-    }
-
-    private async Task<object> GetConditionalAccessPoliciesAsync(JsonElement? arguments)
-    {
-        await Task.Delay(1); // Placeholder for async
-        return new { message = "Get conditional access policies functionality will be implemented", status = "placeholder" };
-    }
-
-    // Reports and Analytics Methods
-    private async Task<object> GetUsageReportsAsync(JsonElement? arguments)
-    {
-        await Task.Delay(1); // Placeholder for async
-        return new { message = "Get usage reports functionality will be implemented", status = "placeholder" };
-    }
-
-    private async Task<object> GetTeamsActivityAsync(JsonElement? arguments)
-    {
-        await Task.Delay(1); // Placeholder for async
-        return new { message = "Get Teams activity functionality will be implemented", status = "placeholder" };
-    }
-
-    private async Task<object> GetEmailActivityAsync(JsonElement? arguments)
-    {
-        await Task.Delay(1); // Placeholder for async
-        return new { message = "Get email activity functionality will be implemented", status = "placeholder" };
-    }
-
-    private async Task<object> GetSharePointActivityAsync(JsonElement? arguments)
-    {
-        await Task.Delay(1); // Placeholder for async
-        return new { message = "Get SharePoint activity functionality will be implemented", status = "placeholder" };
     }
 }
-
-// Request/Response models
-public record GetUsersArgs(int? Top, string? Filter, string? Search);
-public record GetUserArgs(string? UserId);
-public record CreateUserArgs(string? DisplayName, string? UserPrincipalName, string? MailNickname, string? Password);
-public record GetGroupsArgs(int? Top, string? Filter);
-public record GetGroupArgs(string? GroupId);
-public record CreateGroupArgs(string? DisplayName, string? MailNickname, string? Description, string? GroupType);
-public record SendMailArgs(List<string>? To, string? Subject, string? Body, string? BodyType);
-public record ToolCallRequest(string Name, JsonElement? Arguments);
