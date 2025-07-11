@@ -13,11 +13,11 @@ public interface IGraphServiceEnhanced
 
 public class GraphServiceEnhanced : IGraphServiceEnhanced
 {
-    private readonly GraphServiceClient _graphClient;
-    private readonly GraphBetaServiceClient _betaGraphClient;
+    private readonly Microsoft.Graph.GraphServiceClient _graphClient;
+    private readonly Microsoft.Graph.Beta.GraphServiceClient _betaGraphClient;
     private readonly ILogger<GraphServiceEnhanced> _logger;
 
-    public GraphServiceEnhanced(GraphServiceClient graphClient, GraphBetaServiceClient betaGraphClient, ILogger<GraphServiceEnhanced> logger)
+    public GraphServiceEnhanced(Microsoft.Graph.GraphServiceClient graphClient, Microsoft.Graph.Beta.GraphServiceClient betaGraphClient, ILogger<GraphServiceEnhanced> logger)
     {
         _graphClient = graphClient;
         _betaGraphClient = betaGraphClient;
@@ -407,9 +407,9 @@ public class GraphServiceEnhanced : IGraphServiceEnhanced
                 manager = new
                 {
                     manager.Id,
-                    DisplayName = manager.AdditionalData?.GetValueOrDefault("displayName"),
-                    UserPrincipalName = manager.AdditionalData?.GetValueOrDefault("userPrincipalName"),
-                    Mail = manager.AdditionalData?.GetValueOrDefault("mail")
+                    DisplayName = manager.AdditionalData?.TryGetValue("displayName", out var displayName) == true ? displayName?.ToString() : null,
+                    UserPrincipalName = manager.AdditionalData?.TryGetValue("userPrincipalName", out var upn) == true ? upn?.ToString() : null,
+                    Mail = manager.AdditionalData?.TryGetValue("mail", out var mail) == true ? mail?.ToString() : null
                 }
             };
         }
@@ -431,7 +431,7 @@ public class GraphServiceEnhanced : IGraphServiceEnhanced
                 return new { error = "UserId and ManagerId are required" };
             }
 
-            var requestBody = new ReferenceUpdate
+            var requestBody = new Microsoft.Graph.Models.ReferenceUpdate
             {
                 OdataId = $"https://graph.microsoft.com/v1.0/users/{args.ManagerId}"
             };
@@ -478,7 +478,7 @@ public class GraphServiceEnhanced : IGraphServiceEnhanced
                 g.SecurityEnabled,
                 g.MailEnabled,
                 g.CreatedDateTime,
-                MemberCount = g.AdditionalData?.GetValueOrDefault("memberCount")
+                MemberCount = g.AdditionalData?.TryGetValue("memberCount", out var count) == true ? count : null
             }).ToList();
 
             return new { 
@@ -636,7 +636,7 @@ public class GraphServiceEnhanced : IGraphServiceEnhanced
                 return new { error = "GroupId and UserId are required" };
             }
 
-            var requestBody = new ReferenceCreate
+            var requestBody = new Microsoft.Graph.Models.ReferenceCreate
             {
                 OdataId = $"https://graph.microsoft.com/v1.0/users/{args.UserId}"
             };
@@ -700,9 +700,9 @@ public class GraphServiceEnhanced : IGraphServiceEnhanced
             var memberList = members?.Value?.Select(m => new
             {
                 m.Id,
-                DisplayName = m.AdditionalData?.GetValueOrDefault("displayName"),
-                UserPrincipalName = m.AdditionalData?.GetValueOrDefault("userPrincipalName"),
-                Mail = m.AdditionalData?.GetValueOrDefault("mail"),
+                DisplayName = m.AdditionalData?.TryGetValue("displayName", out var displayName) == true ? displayName?.ToString() : null,
+                UserPrincipalName = m.AdditionalData?.TryGetValue("userPrincipalName", out var upn) == true ? upn?.ToString() : null,
+                Mail = m.AdditionalData?.TryGetValue("mail", out var mail) == true ? mail?.ToString() : null,
                 Type = m.OdataType
             }).ToList();
 
@@ -1130,13 +1130,4 @@ public record GroupMemberArgs(string? GroupId, string? UserId);
 public record SendMailArgs(List<string>? To, List<string>? Cc, List<string>? Bcc, string? Subject, string? Body, string? BodyType, string? Importance);
 public record GetApplicationsArgs(int? Top, string? Filter);
 
-// Reference update classes
-public class ReferenceUpdate
-{
-    public string? OdataId { get; set; }
-}
-
-public class ReferenceCreate
-{
-    public string? OdataId { get; set; }
-}
+// Reference update classes - removed as using Microsoft.Graph.Models versions
