@@ -17,7 +17,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\McpTodo.ServiceDefaults\McpTodo.ServiceDefaults.csproj" />
+    <ProjectReference Include="..\DarbotMcp.ServiceDefaults\DarbotMcp.ServiceDefaults.csproj" />
   </ItemGroup>
 
 </Project>

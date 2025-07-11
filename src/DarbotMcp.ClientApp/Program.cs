@@ -3,8 +3,8 @@ using Azure;
 
 using Azure.AI.OpenAI;
 
-using McpTodo.ClientApp.Components;
-using McpTodo.ClientApp.Extensions;
+using DarbotMcp.ClientApp.Components;
+using DarbotMcp.ClientApp.Extensions;
 
 using Microsoft.Extensions.AI;
 
