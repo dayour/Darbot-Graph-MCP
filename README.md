@@ -1,110 +1,247 @@
----
-name: Darbot Graph MCP Server
-description: A comprehensive Microsoft Graph MCP server that provides extensive Microsoft Graph operations for Claude and other MCP-compatible AI assistants.
-languages:
-- csharp
-products:
-- azure
-page_type: sample
-urlFragment: darbot-graph-mcp
---- 
-
 # Darbot Graph MCP Server
 
-A comprehensive Model Context Protocol (MCP) server that provides extensive Microsoft Graph operations for Claude and other MCP-compatible AI assistants.
+The **ultimate extensible MCP server for any and all Microsoft Graph API needs**. A comprehensive, production-ready Model Context Protocol (MCP) server that provides extensive Microsoft Graph operations for Claude and other MCP-compatible AI assistants. Features hierarchical tool organization optimized for Visual Studio Code's tool limits.
 
-## Features
+## Overview
 
-### Comprehensive Microsoft Graph Tools (50+ Tools)
+The Darbot Graph MCP Server is an enterprise-grade solution that bridges AI assistants with Microsoft 365 services through the Microsoft Graph API. Built on the official Microsoft Graph SDKs (both v1.0 and Beta), it provides 64+ comprehensive tools organized into 10 logical categories, enabling seamless automation and management of your Microsoft 365 environment.
 
-This MCP server exposes 50+ comprehensive Microsoft Graph operations with all tool names prefixed with `darbot-graph-`:
+This server is designed to be the definitive Microsoft Graph integration for MCP, covering all major Graph API capabilities and designed for extensibility to support future Graph API enhancements.
 
-#### User Management
-- **darbot-graph-get-users**: Get a list of users with advanced filtering and search
-- **darbot-graph-get-user**: Get detailed information about a specific user
-- **darbot-graph-create-user**: Create a new user account with comprehensive settings
-- **darbot-graph-update-user**: Update user properties and settings
-- **darbot-graph-delete-user**: Remove a user from the directory
-- **darbot-graph-reset-user-password**: Reset user password and force change
-- **darbot-graph-get-user-manager**: Get user's manager information
-- **darbot-graph-set-user-manager**: Assign a manager to a user
+### Key Features
 
-#### Group Management  
-- **darbot-graph-get-groups**: Get a list of groups with advanced filtering
-- **darbot-graph-get-group**: Get detailed information about a specific group
-- **darbot-graph-create-group**: Create security or Microsoft 365 groups
-- **darbot-graph-update-group**: Update group properties and settings
-- **darbot-graph-delete-group**: Remove a group from the directory
-- **darbot-graph-add-group-member**: Add members to a group
-- **darbot-graph-remove-group-member**: Remove members from a group
-- **darbot-graph-get-group-members**: List all group members
+- **64+ Comprehensive Tools**: Complete coverage of Microsoft Graph API operations across all major Microsoft 365 services
+- **Official SDK Foundation**: Built on [Microsoft.Graph SDK](https://github.com/microsoftgraph/msgraph-sdk-dotnet) and [Microsoft.Graph.Beta SDK](https://github.com/microsoftgraph/msgraph-beta-sdk-dotnet)
+- **Hierarchical Organization**: Optimized for Visual Studio Code's 128 tool limit with logical categorization
+- **Production Ready**: Enterprise-grade error handling, logging, and security
+- **Dual SDK Support**: Microsoft Graph v1.0 and Beta API support for maximum compatibility
+- **Demo Mode**: Safe testing without affecting production data
+- **Enhanced Authentication**: Support for app-only and delegated permissions with Azure.Identity
+- **Ultimate Extensibility**: Designed to be the definitive Microsoft Graph MCP server with modular architecture for easy expansion
 
-#### Email Management
-- **darbot-graph-send-mail**: Send emails with advanced formatting and attachments
-- **darbot-graph-get-mailbox-settings**: Retrieve user mailbox settings
-- **darbot-graph-get-mail-folders**: List mail folders and subfolders
-- **darbot-graph-create-mail-folder**: Create new mail folders
-- **darbot-graph-get-messages**: Retrieve messages with filtering
-- **darbot-graph-reply-to-message**: Reply to email messages
-- **darbot-graph-forward-message**: Forward email messages
-- **darbot-graph-move-message**: Move messages between folders
-- **darbot-graph-delete-message**: Delete email messages
+## Quick Start
 
-#### Calendar Management
-- **darbot-graph-get-calendar-events**: Retrieve calendar events with advanced filtering
-- **darbot-graph-create-calendar-event**: Create events with attendees and recurrence
-- **darbot-graph-update-calendar-event**: Update existing calendar events
-- **darbot-graph-delete-calendar-event**: Remove calendar events
-- **darbot-graph-get-calendars**: List user calendars
-- **darbot-graph-create-calendar**: Create new calendars
-- **darbot-graph-get-event-instances**: Get recurring event instances
-- **darbot-graph-accept-event**: Accept meeting invitations
-- **darbot-graph-decline-event**: Decline meeting invitations
+### Prerequisites
 
-#### Teams and Communication
-- **darbot-graph-get-teams**: Get Microsoft Teams user is member of
-- **darbot-graph-get-team-channels**: List channels in a team
-- **darbot-graph-create-team-channel**: Create new team channels
-- **darbot-graph-get-channel-messages**: Retrieve channel messages
-- **darbot-graph-send-channel-message**: Send messages to team channels
-- **darbot-graph-reply-to-channel-message**: Reply to channel messages
-- **darbot-graph-get-team-members**: List team members
-- **darbot-graph-add-team-member**: Add members to teams
-
-#### OneDrive and SharePoint
-- **darbot-graph-get-drive-items**: List OneDrive files and folders
-- **darbot-graph-upload-file**: Upload files to OneDrive
-- **darbot-graph-download-file**: Download files from OneDrive
-- **darbot-graph-share-file**: Create sharing links for files
-- **darbot-graph-get-sharepoint-sites**: List SharePoint sites
-- **darbot-graph-get-site-lists**: Get lists from SharePoint sites
-- **darbot-graph-get-list-items**: Retrieve items from SharePoint lists
-
-#### Security and Compliance
-- **darbot-graph-get-sign-in-logs**: Retrieve user sign-in logs
-- **darbot-graph-get-audit-logs**: Get directory audit logs
-- **darbot-graph-get-risky-users**: List users flagged for risk
-- **darbot-graph-confirm-risky-user**: Confirm or dismiss risky users
-- **darbot-graph-get-conditional-access-policies**: List conditional access policies
-
-#### Reports and Analytics
-- **darbot-graph-get-usage-reports**: Get Microsoft 365 usage reports
-- **darbot-graph-get-teams-activity**: Get Teams activity reports
-- **darbot-graph-get-email-activity**: Get email activity reports
-- **darbot-graph-get-sharepoint-activity**: Get SharePoint activity reports
-
-## Prerequisites
-
-### System Requirements
 - .NET 8.0 SDK or later
 - Azure subscription with Azure Active Directory tenant
 - Global Administrator permissions (for initial app registration)
 - Claude Desktop or compatible MCP client
 
-### For Microsoft Graph Integration
-- Azure AD App Registration with appropriate Microsoft Graph permissions
-- Client ID, Client Secret, and Tenant ID
-- Required Graph API permissions (detailed below)
+### Installation
+
+```bash
+# Clone the repository
+git clone https://github.com/dayour/darbot-graph-mcp.git
+cd darbot-graph-mcp
+
+# Restore dependencies and build
+dotnet restore
+dotnet build
+
+# Run the server
+dotnet run --project src/DarbotGraphMcp.Server
+```
+
+The server will start on `http://localhost:5000` with 64 Microsoft Graph tools available.
+
+## Tool Categories (64+ Tools)
+
+The tools are organized hierarchically using the pattern `darbot-graph-{category}-{action}`:
+
+| Category | Tools | Coverage | Examples |
+|----------|--------|----------|-----------|
+| **User Management** | 8 | Complete user lifecycle & directory operations | `darbot-graph-users-list`, `darbot-graph-users-create` |
+| **Group Management** | 8 | Security & distribution groups, dynamic membership | `darbot-graph-groups-list`, `darbot-graph-groups-members-add` |
+| **Email Management** | 8 | Mail sending, folder management, message operations | `darbot-graph-mail-send`, `darbot-graph-mail-messages-list` |
+| **Calendar Management** | 8 | Events, calendars, scheduling, responses | `darbot-graph-calendar-events-create`, `darbot-graph-calendar-list` |
+| **Teams Management** | 8 | Teams, channels, messages, membership | `darbot-graph-teams-list`, `darbot-graph-teams-messages-send` |
+| **Files Management** | 4 | OneDrive, SharePoint files, sharing | `darbot-graph-files-upload`, `darbot-graph-files-share` |
+| **SharePoint** | 3 | Sites, lists, content management | `darbot-graph-sharepoint-sites-list`, `darbot-graph-sharepoint-items-list` |
+| **Security** | 5 | Risk detection, audit logs, sign-ins | `darbot-graph-security-risks-list`, `darbot-graph-security-audit-list` |
+| **Reports** | 4 | Usage analytics, activity reports | `darbot-graph-reports-usage`, `darbot-graph-reports-teams` |
+| **Applications** | 8 | App registrations, permissions, service principals | `darbot-graph-apps-list`, `darbot-graph-apps-permissions-grant` |
+
+### Microsoft Graph API Coverage
+
+Based on the [Microsoft Graph SDK](https://github.com/microsoftgraph/msgraph-sdk-dotnet) and [PowerShell Graph modules](https://learn.microsoft.com/en-us/powershell/microsoftgraph/get-started), this server provides comprehensive coverage of:
+
+#### Core Services ✅
+- **Users & Groups**: Complete identity management
+- **Mail**: Exchange Online integration  
+- **Calendar**: Outlook calendar operations
+- **Teams**: Microsoft Teams collaboration
+- **Files**: OneDrive & SharePoint document management
+- **Applications**: Azure AD app management
+
+#### Security & Compliance ✅
+- **Identity Protection**: Risk assessment and policies
+- **Audit Logs**: Security event monitoring
+- **Security Reports**: Threat intelligence
+
+#### Extensible Architecture 🚀
+The modular design supports easy addition of:
+- **Device Management** (Intune APIs)
+- **Compliance** (DLP, retention policies)
+- **External Identities** (B2B/B2C)
+- **Education** (EDU-specific APIs)
+- **Search** (Microsoft Search)
+- **Cloud Communications** (Calls, presence)
+- **Bookings** (Microsoft Bookings)
+- **Planner** (Task management)
+- **OneNote** (Note-taking APIs)
+
+## Documentation
+
+- **[Complete Command Reference (cmd_lib.md)](./cmd_lib.md)** - Detailed documentation of all 64+ tools with parameters and examples
+- **[Azure AD Setup Guide](#azure-ad-setup)** - Step-by-step configuration instructions
+- **[Claude Desktop Integration](#claude-desktop-integration)** - MCP client setup
+- **[Microsoft Graph Resources](#microsoft-graph-resources)** - Official SDK and documentation links
+- **[Extensibility Guide](#extensibility)** - How to add new Graph API capabilities
+
+## Architecture
+
+### Enhanced Service Layer
+
+```
+Claude Desktop / MCP Client
+         ↓
+    Darbot Graph MCP Server
+         ↓
+┌─────────────────────────┐
+│   GraphServiceEnhanced  │ ← Enhanced implementation
+├─────────────────────────┤
+│     ToolCategories      │ ← Hierarchical organization  
+├─────────────────────────┤
+│  Microsoft.Graph SDK    │ ← v1.0 API support
+│  Microsoft.Graph.Beta   │ ← Beta API support
+└─────────────────────────┘
+         ↓
+    Microsoft Graph API
+         ↓
+   Microsoft 365 Services
+```
+
+### Key Components
+
+- **GraphServiceEnhanced**: Production-ready service with comprehensive error handling
+- **ToolCategories**: Hierarchical tool organization for VS Code compatibility
+- **Dual SDK Support**: Access to both stable and preview Graph APIs
+- **Enhanced Authentication**: Robust credential management and demo mode
+
+## Azure AD Setup
+
+### Quick Setup
+
+1. **Register Application** in Azure Portal
+2. **Configure Permissions**: Grant required Microsoft Graph permissions
+3. **Create Client Secret**: Generate and secure application credentials
+4. **Update Configuration**: Add credentials to `appsettings.json`
+
+**Required Permissions:**
+```
+User.ReadWrite.All, Group.ReadWrite.All, Mail.ReadWrite, Mail.Send,
+Calendars.ReadWrite, Team.ReadBasic.All, Files.ReadWrite.All,
+Sites.ReadWrite.All, Reports.Read.All, Application.ReadWrite.All
+```
+
+**Configuration:**
+```json
+{
+  "AzureAd": {
+    "TenantId": "your-tenant-id",
+    "ClientId": "your-client-id",
+    "ClientSecret": "your-client-secret"
+  }
+}
+```
+
+For detailed setup instructions, see the [Azure AD Setup Guide](#detailed-azure-ad-setup-guide) section below.
+
+## Claude Desktop Integration
+
+Add to your Claude Desktop configuration:
+
+```json
+{
+  "mcpServers": {
+    "darbot-graph": {
+      "command": "dotnet",
+      "args": [
+        "run", 
+        "--project", 
+        "/path/to/darbot-graph-mcp/src/DarbotGraphMcp.Server"
+      ],
+      "env": {
+        "AzureAd__TenantId": "your-tenant-id",
+        "AzureAd__ClientId": "your-client-id",
+        "AzureAd__ClientSecret": "your-client-secret"
+      }
+    }
+  }
+}
+```
+
+## Usage Examples
+
+### List Users
+```json
+{
+  "name": "darbot-graph-users-list",
+  "arguments": {"top": 10, "filter": "department eq 'IT'"}
+}
+```
+
+### Send Email
+```json
+{
+  "name": "darbot-graph-mail-send",
+  "arguments": {
+    "to": ["user@company.com"],
+    "subject": "Automated Report",
+    "body": "Your report is ready.",
+    "bodyType": "Text"
+  }
+}
+```
+
+### Create Calendar Event
+```json
+{
+  "name": "darbot-graph-calendar-events-create",
+  "arguments": {
+    "userId": "manager@company.com",
+    "subject": "Weekly Standup",
+    "startTime": "2024-01-15T09:00:00",
+    "endTime": "2024-01-15T10:00:00"
+  }
+}
+```
+
+## Operating Modes
+
+### Production Mode
+With Azure AD credentials configured:
+- Real-time data from your Microsoft 365 tenant
+- Complete CRUD operations for users, groups, and content
+- Advanced security and compliance monitoring
+- Full workflow automation capabilities
+
+### Demo Mode
+Without Azure AD credentials (safe testing):
+- Sample data responses for all tools
+- Schema validation and tool discovery
+- Safe development environment
+- No production data access
+
+## API Endpoints
+
+- `GET /health` - Server health check
+- `GET /tools` - List all 64 available MCP tools
+- `POST /call-tool` - Execute a specific tool
+- `POST /sse` - Server-Sent Events for MCP communication
+
+---
 
 ## Detailed Azure AD Setup Guide
 
@@ -135,52 +272,31 @@ After registration, record these values from the **Overview** page:
    - **Expires**: Choose appropriate expiration (recommended: 24 months)
 4. Click **Add**
 5. **IMPORTANT**: Copy the secret **Value** immediately (it won't be shown again)
-   - Record this as your **Client Secret**: `your-secret-value-here`
 
 ### Step 3: Configure API Permissions
 
 #### 3.1 Add Microsoft Graph Permissions
 1. Go to **API permissions** in your app registration
 2. Click **Add a permission** > **Microsoft Graph** > **Application permissions**
-3. Add the following permissions (search and select each one):
+3. Add these permissions:
 
-##### User and Group Management
+**Core Permissions:**
 - `User.ReadWrite.All` - Read and write all users' full profiles
 - `Group.ReadWrite.All` - Read and write all groups
 - `Directory.ReadWrite.All` - Read and write directory data
-- `RoleManagement.ReadWrite.Directory` - Read and write role management data
-
-##### Email and Communication
 - `Mail.ReadWrite` - Read and write access to user mail
 - `Mail.Send` - Send mail as any user
-- `MailboxSettings.ReadWrite` - Read and write user mailbox settings
-
-##### Calendar Management
 - `Calendars.ReadWrite` - Read and write calendars
-- `Calendars.ReadWrite.Shared` - Read and write shared calendars
 
-##### Teams Integration
+**Extended Permissions:**
 - `Team.ReadBasic.All` - Read the basic properties of teams
 - `TeamSettings.ReadWrite.All` - Read and write teams' settings
-- `Channel.ReadBasic.All` - Read the basic properties of channels
-- `ChannelMessage.Read.All` - Read channel messages
-- `ChannelMessage.Send` - Send channel messages
-- `TeamMember.ReadWrite.All` - Add and remove members from teams
-
-##### Files and SharePoint
 - `Files.ReadWrite.All` - Read and write files in all site collections
 - `Sites.ReadWrite.All` - Read and write items in all site collections
-- `Sites.Manage.All` - Create, edit, and delete SharePoint sites
-
-##### Security and Compliance
+- `Reports.Read.All` - Read usage reports
+- `Application.ReadWrite.All` - Read and write applications
 - `AuditLog.Read.All` - Read audit log data
 - `SecurityEvents.Read.All` - Read security events
-- `IdentityRiskyUser.ReadWrite.All` - Read and write risky user information
-- `Policy.Read.All` - Read policies
-
-##### Reports and Analytics
-- `Reports.Read.All` - Read usage reports
-- `Directory.Read.All` - Read directory data
 
 #### 3.2 Grant Admin Consent
 1. After adding all permissions, click **Grant admin consent for [Your Organization]**
@@ -210,7 +326,7 @@ Create or update `src/DarbotGraphMcp.Server/appsettings.json`:
 ```
 
 #### 4.2 Environment Variables (Production Alternative)
-For production environments, use environment variables instead:
+For production environments, use environment variables:
 
 ```bash
 # Linux/macOS
@@ -222,107 +338,39 @@ export AzureAd__ClientSecret="your-client-secret"
 $env:AzureAd__TenantId="your-tenant-id"
 $env:AzureAd__ClientId="your-client-id"
 $env:AzureAd__ClientSecret="your-client-secret"
-
-# Windows Command Prompt
-set AzureAd__TenantId=your-tenant-id
-set AzureAd__ClientId=your-client-id
-set AzureAd__ClientSecret=your-client-secret
 ```
 
-#### 4.3 Azure Key Vault (Enterprise Production)
-For enterprise deployments, store secrets in Azure Key Vault:
+### Step 5: Validation
 
-```json
-{
-  "AzureKeyVault": {
-    "VaultUri": "https://your-keyvault.vault.azure.net/",
-    "ClientId": "your-keyvault-client-id",
-    "ClientSecret": "your-keyvault-client-secret",
-    "TenantId": "your-tenant-id"
-  }
-}
-```
-
-## Complete Setup and Testing Guide
-
-### Step 1: Clone and Build
-
-```bash
-# Clone the repository
-git clone https://github.com/dayour/darbot-graph-mcp.git
-cd darbot-graph-mcp
-
-# Restore dependencies
-dotnet restore
-
-# Build the solution
-dotnet build src/DarbotGraphMcp.Server/DarbotGraphMcp.Server.csproj
-```
-
-### Step 2: Configure Authentication
-1. Update `src/DarbotGraphMcp.Server/appsettings.Development.json` with your Azure AD details
-2. Ensure all three values are correctly set:
-   - `TenantId`: Your Azure AD tenant ID
-   - `ClientId`: Your app registration client ID  
-   - `ClientSecret`: Your app registration client secret
-
-### Step 3: Run the Server
-
-```bash
-# Run the MCP server
-dotnet run --project src/DarbotGraphMcp.Server/DarbotGraphMcp.Server.csproj
-
-# Server will start on http://localhost:5000
-# Look for "Now listening on: http://localhost:5000" in the output
-```
-
-### Step 4: Validate Configuration
-
-#### 4.1 Test Health Endpoint
+#### 5.1 Test Health Endpoint
 ```bash
 curl http://localhost:5000/health
-# Expected response: "Darbot Graph MCP Server - Healthy"
+# Expected: "Darbot Graph MCP Server - Enhanced"
 ```
 
-#### 4.2 Test Available Tools
+#### 5.2 Test Tool Count
 ```bash
-curl http://localhost:5000/tools | jq
-# Should return JSON array of 56 available tools
+curl http://localhost:5000/tools | jq length
+# Expected: 64
 ```
 
-#### 4.3 Test Authentication with Simple Tool Call
+#### 5.3 Test Tool Execution
 ```bash
 curl -X POST http://localhost:5000/call-tool \
   -H "Content-Type: application/json" \
-  -d '{"name": "darbot-graph-get-users", "arguments": {"top": 2}}' | jq
+  -d '{"name": "darbot-graph-users-list", "arguments": {"top": 2}}' | jq
 ```
 
-Expected successful response:
-```json
-{
-  "users": [
-    {
-      "Id": "user-id-1",
-      "DisplayName": "John Doe",
-      "UserPrincipalName": "john.doe@yourdomain.com",
-      "Mail": "john.doe@yourdomain.com",
-      "JobTitle": "Developer",
-      "Department": "IT"
-    }
-  ]
-}
-```
+Expected successful response includes real user data from your tenant.
 
-If you see demo data instead, check your Azure AD configuration.
+## Claude Desktop Integration
 
-### Step 5: Claude Desktop Integration
-
-#### 5.1 Locate Claude Desktop Settings
+### Configuration File Locations
 - **Windows**: `%APPDATA%\Claude\claude_desktop_config.json`
 - **macOS**: `~/Library/Application Support/Claude/claude_desktop_config.json`
 - **Linux**: `~/.config/Claude/claude_desktop_config.json`
 
-#### 5.2 Add MCP Server Configuration
+### MCP Server Configuration
 ```json
 {
   "mcpServers": {
@@ -331,7 +379,7 @@ If you see demo data instead, check your Azure AD configuration.
       "args": [
         "run", 
         "--project", 
-        "/absolute/path/to/darbot-graph-mcp/src/DarbotGraphMcp.Server/DarbotGraphMcp.Server.csproj"
+        "/absolute/path/to/darbot-graph-mcp/src/DarbotGraphMcp.Server"
       ],
       "env": {
         "AzureAd__TenantId": "your-tenant-id",
@@ -343,589 +391,164 @@ If you see demo data instead, check your Azure AD configuration.
 }
 ```
 
-#### 5.3 Restart Claude Desktop
+### Restart Process
 1. Completely close Claude Desktop
 2. Restart the application
-3. You should see the Darbot Graph tools available in the Claude interface
+3. Verify the Darbot Graph tools appear in Claude's tool list
 
-## Microsoft Facilitator Agent Integration
-
-### Overview
-The Darbot Graph MCP Server is designed to work seamlessly with Microsoft Facilitator Agent, providing a comprehensive Microsoft 365 automation platform.
-
-### Integration Architecture
-
-```
-Microsoft Facilitator Agent
-         ↓
-    Claude Desktop
-         ↓
-  Darbot Graph MCP Server
-         ↓
-    Microsoft Graph API
-         ↓
-   Microsoft 365 Services
-```
-
-### Step 1: Microsoft Facilitator Agent Setup
-
-#### 1.1 Install Prerequisites
-```bash
-# Install Node.js (if not already installed)
-# Download from https://nodejs.org/
-
-# Install Microsoft Facilitator Agent
-npm install -g microsoft-facilitator-agent
-```
-
-#### 1.2 Configure Facilitator Agent
-Create `facilitator-config.json`:
-```json
-{
-  "name": "Microsoft365Facilitator",
-  "description": "Advanced Microsoft 365 automation and management agent",
-  "mcpServers": {
-    "darbot-graph": {
-      "url": "http://localhost:5000",
-      "capabilities": [
-        "user-management",
-        "group-management", 
-        "email-automation",
-        "calendar-management",
-        "teams-integration",
-        "sharepoint-operations",
-        "security-monitoring",
-        "analytics-reporting"
-      ]
-    }
-  },
-  "workflows": {
-    "userOnboarding": {
-      "steps": [
-        "darbot-graph-create-user",
-        "darbot-graph-add-group-member", 
-        "darbot-graph-send-mail"
-      ]
-    },
-    "securityMonitoring": {
-      "steps": [
-        "darbot-graph-get-risky-users",
-        "darbot-graph-get-sign-in-logs",
-        "darbot-graph-get-audit-logs"
-      ]
-    }
-  }
-}
-```
-
-### Step 2: Advanced Integration Patterns
-
-#### 2.1 User Lifecycle Management
-```javascript
-// Example workflow: Complete user onboarding
-const onboardingWorkflow = async (userDetails) => {
-  // 1. Create user account
-  const user = await callTool('darbot-graph-create-user', {
-    displayName: userDetails.name,
-    userPrincipalName: userDetails.email,
-    mailNickname: userDetails.alias,
-    password: generateSecurePassword(),
-    jobTitle: userDetails.role,
-    department: userDetails.department
-  });
-  
-  // 2. Add to appropriate groups
-  for (const groupId of userDetails.groups) {
-    await callTool('darbot-graph-add-group-member', {
-      groupId: groupId,
-      userId: user.userId
-    });
-  }
-  
-  // 3. Send welcome email
-  await callTool('darbot-graph-send-mail', {
-    to: [userDetails.email],
-    subject: 'Welcome to the Organization',
-    body: generateWelcomeEmail(userDetails),
-    bodyType: 'Html'
-  });
-  
-  // 4. Create calendar for first day
-  await callTool('darbot-graph-create-calendar-event', {
-    userId: user.userId,
-    subject: 'First Day Orientation',
-    startTime: userDetails.startDate + 'T09:00:00',
-    endTime: userDetails.startDate + 'T17:00:00',
-    body: 'Welcome to your first day!'
-  });
-  
-  return user;
-};
-```
-
-#### 2.2 Security Monitoring Automation
-```javascript
-// Example workflow: Daily security check
-const securityMonitoringWorkflow = async () => {
-  // 1. Check for risky users
-  const riskyUsers = await callTool('darbot-graph-get-risky-users', {
-    top: 50
-  });
-  
-  // 2. Get recent sign-in anomalies
-  const signInLogs = await callTool('darbot-graph-get-sign-in-logs', {
-    top: 100,
-    filter: "createdDateTime ge " + getYesterdayISO()
-  });
-  
-  // 3. Review audit logs for suspicious activity
-  const auditLogs = await callTool('darbot-graph-get-audit-logs', {
-    top: 100,
-    filter: "activityDateTime ge " + getYesterdayISO()
-  });
-  
-  // 4. Generate security report
-  const report = generateSecurityReport(riskyUsers, signInLogs, auditLogs);
-  
-  // 5. Send to security team
-  await callTool('darbot-graph-send-mail', {
-    to: ['security-team@company.com'],
-    subject: 'Daily Security Monitoring Report',
-    body: report,
-    bodyType: 'Html'
-  });
-  
-  return report;
-};
-```
-
-#### 2.3 Team Collaboration Setup
-```javascript
-// Example workflow: Project team setup
-const projectTeamSetup = async (projectDetails) => {
-  // 1. Create project group
-  const group = await callTool('darbot-graph-create-group', {
-    displayName: projectDetails.name,
-    mailNickname: projectDetails.alias,
-    description: projectDetails.description,
-    groupType: 'Microsoft365'
-  });
-  
-  // 2. Add team members
-  for (const memberId of projectDetails.members) {
-    await callTool('darbot-graph-add-group-member', {
-      groupId: group.groupId,
-      userId: memberId
-    });
-  }
-  
-  // 3. Create team channels for collaboration
-  const channels = ['General', 'Development', 'Documentation', 'Testing'];
-  for (const channelName of channels) {
-    await callTool('darbot-graph-create-team-channel', {
-      teamId: group.groupId,
-      displayName: channelName,
-      description: `${channelName} discussions for ${projectDetails.name}`
-    });
-  }
-  
-  // 4. Send project kickoff email
-  await callTool('darbot-graph-send-mail', {
-    to: projectDetails.memberEmails,
-    subject: `Project ${projectDetails.name} - Kickoff`,
-    body: generateKickoffEmail(projectDetails),
-    bodyType: 'Html'
-  });
-  
-  return group;
-};
-```
-
-### Step 3: Advanced Configuration Options
-
-#### 3.1 Custom Tool Chains
-Create custom tool combinations for common workflows:
-
-```json
-{
-  "customWorkflows": {
-    "quarterlyReview": [
-      "darbot-graph-get-usage-reports",
-      "darbot-graph-get-teams-activity", 
-      "darbot-graph-get-email-activity",
-      "darbot-graph-get-sharepoint-activity"
-    ],
-    "incidentResponse": [
-      "darbot-graph-get-risky-users",
-      "darbot-graph-confirm-risky-user",
-      "darbot-graph-reset-user-password",
-      "darbot-graph-send-mail"
-    ]
-  }
-}
-```
-
-#### 3.2 Real-time Monitoring
-Set up continuous monitoring using Server-Sent Events:
-
-```javascript
-const eventSource = new EventSource('http://localhost:5000/sse');
-eventSource.onmessage = function(event) {
-  if (event.data !== 'ping') {
-    console.log('MCP Server Event:', event.data);
-    // Process real-time events
-  }
-};
-```
-
-## Production Deployment Considerations
+## Production Considerations
 
 ### Security Best Practices
-
-#### 1. Credential Management
-- **Never** store secrets in source code
-- Use Azure Key Vault for production secrets
+- Store secrets in Azure Key Vault for production
 - Implement credential rotation policies
-- Monitor for credential exposure
-
-#### 2. Network Security
-```json
-{
-  "NetworkSecurity": {
-    "AllowedHosts": ["specific-domains-only.com"],
-    "RequireHttps": true,
-    "HstsMaxAge": 31536000,
-    "ContentSecurityPolicy": "default-src 'self'"
-  }
-}
-```
-
-#### 3. Application Permissions Review
-Regularly audit and minimize permissions:
-- Review assigned Graph API permissions quarterly
-- Remove unused permissions
-- Implement least-privilege access
-- Monitor permission usage through audit logs
+- Use least-privilege permissions
+- Monitor API usage and audit logs
 
 ### Performance Optimization
-
-#### 1. Caching Configuration
-```json
-{
-  "Caching": {
-    "UserCache": {
-      "ExpirationMinutes": 15,
-      "MaxSize": 1000
-    },
-    "GroupCache": {
-      "ExpirationMinutes": 30,
-      "MaxSize": 500
-    }
-  }
-}
-```
-
-#### 2. Rate Limiting
-```json
-{
-  "RateLimit": {
-    "RequestsPerMinute": 60,
-    "RequestsPerHour": 1000,
-    "EnableThrottling": true
-  }
-}
-```
+- Implement response caching for frequently accessed data
+- Use pagination for large result sets
+- Configure appropriate timeout values
+- Monitor Graph API rate limits
 
 ### Monitoring and Logging
+- Enable Application Insights for production monitoring
+- Implement structured logging
+- Set up health checks and alerts
+- Track tool usage metrics
 
-#### 1. Application Insights Integration
-```json
-{
-  "ApplicationInsights": {
-    "InstrumentationKey": "your-insights-key",
-    "CloudRole": "DarbotGraphMcpServer",
-    "EnableDependencyTracking": true
-  }
-}
-```
+## Troubleshooting
 
-#### 2. Health Checks
-```json
-{
-  "HealthChecks": {
-    "GraphAPI": {
-      "Timeout": "00:00:30",
-      "FailureStatus": "Degraded"
-    },
-    "Database": {
-      "Timeout": "00:00:15", 
-      "FailureStatus": "Unhealthy"
-    }
-  }
-}
-```
+### Common Issues
 
-## Troubleshooting Guide
-
-### Common Issues and Solutions
-
-#### 1. Authentication Failures
-**Problem**: "Unable to authenticate to Microsoft Graph"
-**Solutions**:
+**Authentication Failures**
 - Verify Azure AD app registration settings
 - Check client secret hasn't expired
 - Confirm admin consent has been granted
-- Validate tenant ID format
 
-#### 2. Permission Denied Errors  
-**Problem**: "Insufficient privileges to complete the operation"
-**Solutions**:
-- Review required API permissions list
+**Permission Denied Errors**
+- Review required API permissions
 - Ensure admin consent is granted
-- Check user/group scope limitations
-- Verify application permissions vs delegated permissions
+- Check scope limitations
 
-#### 3. Tool Discovery Issues
-**Problem**: Tools not appearing in Claude Desktop
-**Solutions**:
+**Tool Discovery Issues**
 - Restart Claude Desktop completely
 - Verify MCP server configuration path
 - Check server is running on correct port
-- Review environment variable configuration
 
-#### 4. Performance Issues
-**Problem**: Slow response times
-**Solutions**:
-- Implement response caching
-- Review Graph API rate limits
-- Optimize query filters
-- Consider pagination for large datasets
+## Support and Resources
 
-### Diagnostic Commands
+- **Command Reference**: [cmd_lib.md](./cmd_lib.md)
+- **Microsoft Graph Documentation**: [docs.microsoft.com/graph](https://docs.microsoft.com/en-us/graph/)
+- **MCP Protocol**: [modelcontextprotocol.io](https://modelcontextprotocol.io/)
+- **Azure AD Documentation**: [docs.microsoft.com/azure/active-directory](https://docs.microsoft.com/en-us/azure/active-directory/)
 
-```bash
-# Check server health
-curl -v http://localhost:5000/health
+## Microsoft Graph Resources
 
-# Verify tool count
-curl http://localhost:5000/tools | jq '. | length'
+This server is built on the official Microsoft Graph SDKs and follows Microsoft Graph best practices:
 
-# Test authentication with minimal query
-curl -X POST http://localhost:5000/call-tool \
-  -H "Content-Type: application/json" \
-  -d '{"name": "darbot-graph-get-users", "arguments": {"top": 1}}'
+### Official SDKs
+- **[Microsoft Graph .NET SDK](https://github.com/microsoftgraph/msgraph-sdk-dotnet)** - v1.0 API support
+- **[Microsoft Graph .NET Beta SDK](https://github.com/microsoftgraph/msgraph-beta-sdk-dotnet)** - Preview API support
+- **[Microsoft Graph PowerShell](https://learn.microsoft.com/en-us/powershell/microsoftgraph/get-started)** - Reference for comprehensive API coverage
 
-# Monitor server logs
-dotnet run --project src/DarbotGraphMcp.Server/DarbotGraphMcp.Server.csproj --verbosity detailed
-```
+### Key Components Used
+- **Microsoft.Graph**: Production-ready v1.0 APIs
+- **Microsoft.Graph.Beta**: Preview APIs for latest features
+- **Microsoft.Graph.Applications**: Application management capabilities
+- **Microsoft.Graph.Authentication**: Azure Identity integration
 
-### Getting Help
+### API Reference
+- **[Graph Explorer](https://developer.microsoft.com/en-us/graph/graph-explorer)** - Interactive API testing
+- **[Graph API Documentation](https://docs.microsoft.com/en-us/graph/api/overview)** - Complete API reference
+- **[Graph Permissions Reference](https://docs.microsoft.com/en-us/graph/permissions-reference)** - Required permissions for each API
 
-1. **GitHub Issues**: Report bugs and feature requests
-2. **Microsoft Graph Documentation**: [https://docs.microsoft.com/en-us/graph/](https://docs.microsoft.com/en-us/graph/)
-3. **MCP Protocol Specification**: [https://modelcontextprotocol.io/](https://modelcontextprotocol.io/)
-4. **Azure AD Documentation**: [https://docs.microsoft.com/en-us/azure/active-directory/](https://docs.microsoft.com/en-us/azure/active-directory/)
+## Extensibility
 
-## Tool Inventory
-This MCP server provides **56 comprehensive Microsoft Graph tools**, all following the consistent `darbot-graph-` naming convention:
+The Darbot Graph MCP Server is designed for maximum extensibility to accommodate the full breadth of Microsoft Graph APIs:
 
-### User Management (8 tools)
-- darbot-graph-get-users
-- darbot-graph-get-user
-- darbot-graph-create-user
-- darbot-graph-update-user
-- darbot-graph-delete-user
-- darbot-graph-reset-user-password
-- darbot-graph-get-user-manager
-- darbot-graph-set-user-manager
+### Adding New Tool Categories
 
-### Group Management (8 tools)
-- darbot-graph-get-groups
-- darbot-graph-get-group
-- darbot-graph-create-group
-- darbot-graph-update-group
-- darbot-graph-delete-group
-- darbot-graph-add-group-member
-- darbot-graph-remove-group-member
-- darbot-graph-get-group-members
-
-### Email Management (8 tools)
-- darbot-graph-send-mail
-- darbot-graph-get-mailbox-settings
-- darbot-graph-get-mail-folders
-- darbot-graph-create-mail-folder
-- darbot-graph-get-messages
-- darbot-graph-reply-to-message
-- darbot-graph-forward-message
-- darbot-graph-move-message
-
-### Calendar Management (8 tools)
-- darbot-graph-get-calendar-events
-- darbot-graph-create-calendar-event
-- darbot-graph-update-calendar-event
-- darbot-graph-delete-calendar-event
-- darbot-graph-get-calendars
-- darbot-graph-create-calendar
-- darbot-graph-accept-event
-- darbot-graph-decline-event
-
-### Teams and Communication (8 tools)
-- darbot-graph-get-teams
-- darbot-graph-get-team-channels
-- darbot-graph-create-team-channel
-- darbot-graph-get-channel-messages
-- darbot-graph-send-channel-message
-- darbot-graph-reply-to-channel-message
-- darbot-graph-get-team-members
-- darbot-graph-add-team-member
-
-### OneDrive and SharePoint (7 tools)
-- darbot-graph-get-drive-items
-- darbot-graph-upload-file
-- darbot-graph-download-file
-- darbot-graph-share-file
-- darbot-graph-get-sharepoint-sites
-- darbot-graph-get-site-lists
-- darbot-graph-get-list-items
-
-### Security and Compliance (5 tools)
-- darbot-graph-get-sign-in-logs
-- darbot-graph-get-audit-logs
-- darbot-graph-get-risky-users
-- darbot-graph-confirm-risky-user
-- darbot-graph-get-conditional-access-policies
-
-### Reports and Analytics (4 tools)
-- darbot-graph-get-usage-reports
-- darbot-graph-get-teams-activity
-- darbot-graph-get-email-activity
-- darbot-graph-get-sharepoint-activity
-
-## Operating Modes
-
-### Production Mode
-When properly configured with Azure AD credentials, the server provides full Microsoft Graph functionality:
-- Real-time data from your Microsoft 365 tenant
-- Complete CRUD operations for users, groups, and content
-- Advanced security and compliance monitoring
-- Full integration with Microsoft Facilitator Agent workflows
-
-### Demonstration Mode  
-When Azure AD credentials are not configured, the server runs in demonstration mode with:
-- Sample data for user and group queries
-- Placeholder responses for all tools indicating implementation status
-- Full tool schema documentation for development planning
-- Safe testing environment without affecting production data
-
-## Architecture
-
-### Darbot Graph MCP Server (`src/DarbotGraphMcp.Server/`)
-- **ASP.NET Core web application** - Production-ready server framework
-- **Microsoft Graph SDK integration** - Latest Graph SDK with full API coverage
-- **RESTful API endpoints** - MCP protocol-compliant endpoints
-- **Server-Sent Events (SSE)** - Real-time communication support
-- **56 comprehensive Microsoft Graph tools** - Complete Microsoft 365 operations
-- **App-only authentication** - Secure service-to-service authentication
-- **Comprehensive error handling** - Robust exception management and logging
-- **JSON schema validation** - Input validation for all tool calls
-
-### Client App (`src/DarbotMcp.ClientApp/`) 
-- **Blazor web application** - Interactive testing interface
-- **MCP client implementation** - Full MCP protocol support
-- **Real-time chat interface** - WebSocket-based communication
-- **Tool testing capabilities** - Interactive tool exploration and testing
-
-### Service Integration Layer
-- **Microsoft Facilitator Agent compatibility** - Seamless workflow integration
-- **Claude Desktop integration** - Native MCP server support
-- **Extensible architecture** - Easy to add new tools and capabilities
-- **Multi-tenant support** - Configurable for multiple Azure AD tenants
-
-## API Endpoints
-
-- `GET /health` - Health check endpoint
-- `GET /tools` - List available MCP tools
-- `POST /call-tool` - Execute an MCP tool
-- `POST /sse` - Server-Sent Events endpoint for MCP communication
-
-## Tool Schemas
-
-Each tool follows the MCP tool schema with:
-- `name`: Tool identifier
-- `description`: Human-readable description
-- `inputSchema`: JSON schema defining required and optional parameters
-
-Example tool schema:
-```json
+1. **Extend ToolCategories.cs**:
+```csharp
+public static List<object> GetNewCategoryTools()
 {
-  "name": "darbot-graph-get-users",
-  "description": "Get a list of users from Microsoft Graph with advanced filtering",
-  "inputSchema": {
-    "type": "object",
-    "properties": {
-      "top": {
-        "type": "integer",
-        "description": "Number of users to return (max 999)"
-      },
-      "filter": {
-        "type": "string",
-        "description": "OData filter expression"
-      }
-    }
-  }
+    return new List<object>
+    {
+        new
+        {
+            name = "darbot-graph-newcategory-action",
+            description = "Description of the new tool",
+            inputSchema = new { /* schema definition */ }
+        }
+    };
 }
 ```
 
-## Security Considerations
+2. **Implement in GraphServiceEnhanced.cs**:
+```csharp
+"darbot-graph-newcategory-action" => await NewCategoryActionAsync(arguments),
+```
 
-- All Microsoft Graph operations require appropriate permissions
-- App-only authentication is used for service-to-service calls
-- Sensitive configuration should be stored in Azure Key Vault for production
-- Consider implementing rate limiting and request validation
+3. **Add to GetAvailableTools()**:
+```csharp
+tools.AddRange(ToolCategories.GetNewCategoryTools());
+```
 
-## Development Roadmap
+### Supported Graph API Areas for Extension
 
-### Phase 1: Core Microsoft Graph Integration ✅
-- [x] User management tools (8 tools)
-- [x] Group management tools (8 tools)
-- [x] Email operations (8 tools)
-- [x] Basic MCP server structure
+The current architecture supports adding tools for any Microsoft Graph API endpoint:
 
-### Phase 2: Extended Graph Features ✅
-- [x] Calendar and event management (8 tools)
-- [x] Teams integration and messaging (8 tools)
-- [x] OneDrive and SharePoint operations (7 tools)
-- [x] Security and compliance tools (5 tools)
+#### Ready for Implementation 🔄
+- **Device Management**: Intune device operations, compliance policies
+- **Identity Protection**: Conditional access, risk policies, named locations
+- **Directory Management**: Administrative units, organizational contacts
+- **Contacts**: Personal and organization contact management
+- **Tasks/Planner**: Microsoft Planner integration for task management
+- **OneNote**: Notebook, section, and page operations
+- **Licenses**: Subscription and license assignment management
+- **External Identities**: B2B collaboration and B2C management
+- **Bookings**: Microsoft Bookings appointment and business management
+- **Education**: Education-specific classes, assignments, and roster management
+- **Compliance**: Data loss prevention, retention policies, eDiscovery
+- **Search**: Microsoft Search query and administration
+- **Cloud Communications**: Teams calls, meetings, and presence
+- **Print**: Universal Print service management
 
-### Phase 3: Reports and Analytics ✅
-- [x] Usage reports and analytics (4 tools)
-- [x] Activity monitoring
-- [x] Performance metrics
+#### Implementation Pattern
+Each new category follows the established pattern:
+```
+darbot-graph-{category}-{action}
+```
 
-### Phase 4: Production Features (In Progress)
-- [x] 50+ comprehensive tools implemented
-- [x] Consistent darbot-graph- naming convention
-- [ ] Authentication improvements
-- [ ] Error handling and logging
-- [ ] Performance optimization
-- [ ] Comprehensive testing
-- [ ] Documentation and examples
+Examples of potential future tools:
+- `darbot-graph-devices-list` - List managed devices
+- `darbot-graph-planner-tasks-create` - Create Planner tasks
+- `darbot-graph-onenote-pages-create` - Create OneNote pages
+- `darbot-graph-compliance-policies-list` - List compliance policies
+
+### Contributing New Tools
+
+1. **Identify Graph API**: Choose from [Microsoft Graph API reference](https://docs.microsoft.com/en-us/graph/api/overview)
+2. **Design Tool Schema**: Define input parameters and validation
+3. **Implement Service Method**: Add async method in GraphServiceEnhanced
+4. **Add Tool Definition**: Include in appropriate ToolCategories method
+5. **Test & Document**: Validate functionality and update cmd_lib.md
+
+### SDK Version Management
+
+The server maintains compatibility with both stable and preview APIs:
+- **Stable Operations**: Use `_graphClient` (Microsoft.Graph)
+- **Preview Features**: Use `_betaGraphClient` (Microsoft.Graph.Beta)
+
+This ensures access to the latest Graph capabilities while maintaining production stability.
 
 ## Contributing
 
 1. Fork the repository
 2. Create a feature branch
-3. Make your changes
-4. Add tests if applicable
-5. Submit a pull request
+3. Make your changes with tests
+4. Submit a pull request
 
 ## License
 
-This project is licensed under the MIT License - see the LICENSE file for details.
-
-## Support
-
-For issues and questions:
-- Open a GitHub issue
-- Review the Microsoft Graph documentation
-- Check the MCP protocol specification
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
