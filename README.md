@@ -2,8 +2,8 @@
 
 Easily install the Darbot Graph MCP Server for VS Code or VS Code Insiders:
 
-[![Install with NPX in VS Code](https://img.shields.io/badge/VS_Code-Install_Darbot_Graph_MCP-0098FF?style=flat-square&logo=visualstudiocode&logoColor=white)](https://insiders.vscode.dev/redirect/mcp/install?name=darbot-graph&config=%7B%22type%22%3A%22stdio%22%2C%22command%22%3A%22npx%22%2C%22args%22%3A%5B%22-y%22%2C%22%40dayour%2Fdarbot-graph-mcp%22%2C%22%24%7Binput%3Aazure_tenant_id%7D%22%2C%22%24%7Binput%3Aazure_client_id%7D%22%2C%22%24%7Binput%3Aazure_client_secret%7D%22%5D%7D&inputs=%5B%7B%22id%22%3A%22azure_tenant_id%22%2C%22type%22%3A%22promptString%22%2C%22description%22%3A%22Azure%20AD%20Tenant%20ID%20(leave%20empty%20for%20demo%20mode)%22%7D%2C%7B%22id%22%3A%22azure_client_id%22%2C%22type%22%3A%22promptString%22%2C%22description%22%3A%22Azure%20AD%20Client%20ID%20(leave%20empty%20for%20demo%20mode)%22%7D%2C%7B%22id%22%3A%22azure_client_secret%22%2C%22type%22%3A%22promptString%22%2C%22description%22%3A%22Azure%20AD%20Client%20Secret%20(leave%20empty%20for%20demo%20mode)%22%7D%5D)
-[![Install with NPX in VS Code Insiders](https://img.shields.io/badge/VS_Code_Insiders-Install_Darbot_Graph_MCP-24bfa5?style=flat-square&logo=visualstudiocode&logoColor=white)](https://insiders.vscode.dev/redirect/mcp/install?name=darbot-graph&quality=insiders&config=%7B%22type%22%3A%22stdio%22%2C%22command%22%3A%22npx%22%2C%22args%22%3A%5B%22-y%22%2C%22%40dayour%2Fdarbot-graph-mcp%22%2C%22%24%7Binput%3Aazure_tenant_id%7D%22%2C%22%24%7Binput%3Aazure_client_id%7D%22%2C%22%24%7Binput%3Aazure_client_secret%7D%22%5D%7D&inputs=%5B%7B%22id%22%3A%22azure_tenant_id%22%2C%22type%22%3A%22promptString%22%2C%22description%22%3A%22Azure%20AD%20Tenant%20ID%20(leave%20empty%20for%20demo%20mode)%22%7D%2C%7B%22id%22%3A%22azure_client_id%22%2C%22type%22%3A%22promptString%22%2C%22description%22%3A%22Azure%20AD%20Client%20ID%20(leave%20empty%20for%20demo%20mode)%22%7D%2C%7B%22id%22%3A%22azure_client_secret%22%2C%22type%22%3A%22promptString%22%2C%22description%22%3A%22Azure%20AD%20Client%20Secret%20(leave%20empty%20for%20demo%20mode)%22%7D%5D)
+[![Install with NPX in VS Code](https://img.shields.io/badge/VS_Code-Install_Darbot_Graph_MCP-0098FF?style=flat-square&logo=visualstudiocode&logoColor=white)](https://insiders.vscode.dev/redirect/mcp/install?name=darbot-graph&config=%7B%22type%22%3A%22stdio%22%2C%22command%22%3A%22npx%22%2C%22args%22%3A%5B%22-y%22%2C%22%40darbotlabs%2Fdarbot-graph-mcp%22%2C%22%24%7Binput%3Aazure_tenant_id%7D%22%2C%22%24%7Binput%3Aazure_client_id%7D%22%2C%22%24%7Binput%3Aazure_client_secret%7D%22%5D%7D&inputs=%5B%7B%22id%22%3A%22azure_tenant_id%22%2C%22type%22%3A%22promptString%22%2C%22description%22%3A%22Azure%20AD%20Tenant%20ID%20(leave%20empty%20for%20demo%20mode)%22%7D%2C%7B%22id%22%3A%22azure_client_id%22%2C%22type%22%3A%22promptString%22%2C%22description%22%3A%22Azure%20AD%20Client%20ID%20(leave%20empty%20for%20demo%20mode)%22%7D%2C%7B%22id%22%3A%22azure_client_secret%22%2C%22type%22%3A%22promptString%22%2C%22description%22%3A%22Azure%20AD%20Client%20Secret%20(leave%20empty%20for%20demo%20mode)%22%7D%5D)
+[![Install with NPX in VS Code Insiders](https://img.shields.io/badge/VS_Code_Insiders-Install_Darbot_Graph_MCP-24bfa5?style=flat-square&logo=visualstudiocode&logoColor=white)](https://insiders.vscode.dev/redirect/mcp/install?name=darbot-graph&quality=insiders&config=%7B%22type%22%3A%22stdio%22%2C%22command%22%3A%22npx%22%2C%22args%22%3A%5B%22-y%22%2C%22%40darbotlabs%2Fdarbot-graph-mcp%22%2C%22%24%7Binput%3Aazure_tenant_id%7D%22%2C%22%24%7Binput%3Aazure_client_id%7D%22%2C%22%24%7Binput%3Aazure_client_secret%7D%22%5D%7D&inputs=%5B%7B%22id%22%3A%22azure_tenant_id%22%2C%22type%22%3A%22promptString%22%2C%22description%22%3A%22Azure%20AD%20Tenant%20ID%20(leave%20empty%20for%20demo%20mode)%22%7D%2C%7B%22id%22%3A%22azure_client_id%22%2C%22type%22%3A%22promptString%22%2C%22description%22%3A%22Azure%20AD%20Client%20ID%20(leave%20empty%20for%20demo%20mode)%22%7D%2C%7B%22id%22%3A%22azure_client_secret%22%2C%22type%22%3A%22promptString%22%2C%22description%22%3A%22Azure%20AD%20Client%20Secret%20(leave%20empty%20for%20demo%20mode)%22%7D%5D)
 
 The **ultimate extensible MCP server for any and all Microsoft Graph API needs**. A comprehensive, production-ready Model Context Protocol (MCP) server that provides extensive Microsoft Graph operations for Claude and other MCP-compatible AI assistants. Features hierarchical tool organization optimized for Visual Studio Code's tool limits.
 
@@ -255,7 +255,7 @@ For detailed setup instructions, see the [Azure AD Setup Guide](#detailed-azure-
       "command": "npx",
       "args": [
         "-y", 
-        "@dayour/darbot-graph-mcp",
+        "@darbotlabs/darbot-graph-mcp",
         "your-tenant-id",
         "your-client-id", 
         "your-client-secret"
@@ -298,7 +298,7 @@ Leave the Azure AD credentials empty to run in demo mode:
   "mcpServers": {
     "darbot-graph": {
       "command": "npx",
-      "args": ["-y", "@dayour/darbot-graph-mcp"]
+      "args": ["-y", "@darbotlabs/darbot-graph-mcp"]
     }
   }
 }

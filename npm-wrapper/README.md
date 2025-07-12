@@ -6,22 +6,22 @@ This NPM package provides a convenient wrapper for the Darbot Graph MCP Server, 
 
 ```bash
 # Global installation
-npm install -g @dayour/darbot-graph-mcp
+npm install -g @darbotlabs/darbot-graph-mcp
 
 # Or use directly with npx (recommended)
-npx @dayour/darbot-graph-mcp
+npx @darbotlabs/darbot-graph-mcp
 ```
 
 ## Usage
 
 ### Demo Mode (No Azure AD setup required)
 ```bash
-npx @dayour/darbot-graph-mcp
+npx @darbotlabs/darbot-graph-mcp
 ```
 
 ### Production Mode (With Azure AD credentials)
 ```bash
-npx @dayour/darbot-graph-mcp <tenant-id> <client-id> <client-secret>
+npx @darbotlabs/darbot-graph-mcp <tenant-id> <client-id> <client-secret>
 ```
 
 ### Environment Variables
@@ -29,7 +29,7 @@ npx @dayour/darbot-graph-mcp <tenant-id> <client-id> <client-secret>
 export AZURE_TENANT_ID="your-tenant-id"
 export AZURE_CLIENT_ID="your-client-id"  
 export AZURE_CLIENT_SECRET="your-client-secret"
-npx @dayour/darbot-graph-mcp
+npx @darbotlabs/darbot-graph-mcp
 ```
 
 ## VS Code Integration
@@ -41,7 +41,7 @@ This package is designed to work seamlessly with VS Code's MCP server installati
   "mcpServers": {
     "darbot-graph": {
       "command": "npx",
-      "args": ["-y", "@dayour/darbot-graph-mcp", "tenant-id", "client-id", "client-secret"]
+      "args": ["-y", "@darbotlabs/darbot-graph-mcp", "tenant-id", "client-id", "client-secret"]
     }
   }
 }

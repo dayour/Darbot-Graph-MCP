@@ -6,7 +6,7 @@
 {
   "type": "stdio",
   "command": "npx",
-  "args": ["-y", "@dayour/darbot-graph-mcp", "${input:azure_tenant_id}", "${input:azure_client_id}", "${input:azure_client_secret}"]
+  "args": ["-y", "@darbotlabs/darbot-graph-mcp", "${input:azure_tenant_id}", "${input:azure_client_id}", "${input:azure_client_secret}"]
 }
 ```
 

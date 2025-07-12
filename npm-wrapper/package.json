@@ -1,5 +1,5 @@
 {
-  "name": "@dayour/darbot-graph-mcp",
+  "name": "@darbotlabs/darbot-graph-mcp",
   "version": "1.0.0",
   "description": "NPM wrapper for Darbot Graph MCP Server - Ultimate extensible MCP server for Microsoft Graph API",
   "main": "index.js",
