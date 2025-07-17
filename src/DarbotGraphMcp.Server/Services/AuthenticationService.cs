@@ -153,6 +153,18 @@ public class AuthenticationService : IAuthenticationService
             return envValue;
         }
 
+        // Try user-friendly environment variables first
+        var friendlyEnvKey = GetFriendlyEnvironmentKey(key);
+        if (!string.IsNullOrEmpty(friendlyEnvKey))
+        {
+            var friendlyEnvValue = Environment.GetEnvironmentVariable(friendlyEnvKey);
+            if (!string.IsNullOrEmpty(friendlyEnvValue))
+            {
+                _logger.LogDebug("Using friendly environment variable for {Key}: {Value}", key, friendlyEnvValue);
+                return friendlyEnvValue;
+            }
+        }
+
         // Try standard environment variables
         var standardEnvKey = $"AZURE_AD_{key.ToUpperInvariant()}";
         var standardEnvValue = Environment.GetEnvironmentVariable(standardEnvKey);
@@ -185,6 +197,18 @@ public class AuthenticationService : IAuthenticationService
             return IsTrueValue(envValue);
         }
 
+        // Try user-friendly environment variables first
+        var friendlyEnvKey = GetFriendlyEnvironmentKey(key);
+        if (!string.IsNullOrEmpty(friendlyEnvKey))
+        {
+            var friendlyEnvValue = Environment.GetEnvironmentVariable(friendlyEnvKey);
+            if (!string.IsNullOrEmpty(friendlyEnvValue))
+            {
+                _logger.LogDebug("Using friendly environment variable for {Key}: {Value}", key, friendlyEnvValue);
+                return IsTrueValue(friendlyEnvValue);
+            }
+        }
+
         // Try standard environment variables
         var standardEnvKey = $"AZURE_AD_{key.ToUpperInvariant()}";
         var standardEnvValue = Environment.GetEnvironmentVariable(standardEnvKey);
@@ -198,6 +222,21 @@ public class AuthenticationService : IAuthenticationService
         var configValue = _configuration.GetValue<bool>($"AzureAd:{key}");
         _logger.LogDebug("Using configuration setting for {Key}: {Value}", key, configValue);
         return configValue;
+    }
+
+    private string? GetFriendlyEnvironmentKey(string key)
+    {
+        return key switch
+        {
+            "TenantId" => "AZURE_TENANT_ID",
+            "ClientId" => "AZURE_CLIENT_ID", 
+            "ClientSecret" => "AZURE_CLIENT_SECRET",
+            "UseAzureCli" => "AZURE_USE_CLI",
+            "UseVSCode" => "AZURE_USE_VSCODE",
+            "UseManagedIdentity" => "AZURE_USE_MANAGED_IDENTITY", 
+            "UseDefaultChain" => "AZURE_USE_DEFAULT_CHAIN",
+            _ => null
+        };
     }
 
     private bool IsTrueValue(string value)

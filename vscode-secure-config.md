@@ -15,9 +15,9 @@ The most secure approach using environment variables:
       "command": "npx",
       "args": ["-y", "@darbotlabs/darbot-graph-mcp"],
       "env": {
-        "AZURE_AD_TENANT_ID": "your-tenant-id",
-        "AZURE_AD_CLIENT_ID": "your-client-id",
-        "AZURE_AD_CLIENT_SECRET": "your-client-secret"
+        "AZURE_TENANT_ID": "your-tenant-id",
+        "AZURE_CLIENT_ID": "your-client-id",
+        "AZURE_CLIENT_SECRET": "your-client-secret"
       }
     }
   }
@@ -35,8 +35,8 @@ Use existing Azure CLI session:
       "command": "npx",
       "args": ["-y", "@darbotlabs/darbot-graph-mcp"],
       "env": {
-        "AZURE_AD_TENANT_ID": "your-tenant-id",
-        "AZURE_AD_USE_AZURE_CLI": "true"
+        "AZURE_TENANT_ID": "your-tenant-id",
+        "AZURE_USE_CLI": "true"
       }
     }
   }
@@ -59,8 +59,8 @@ Use VS Code's built-in Azure authentication:
       "command": "npx",
       "args": ["-y", "@darbotlabs/darbot-graph-mcp"],
       "env": {
-        "AZURE_AD_TENANT_ID": "your-tenant-id",
-        "AZURE_AD_USE_VSCODE": "true"
+        "AZURE_TENANT_ID": "your-tenant-id",
+        "AZURE_USE_VSCODE": "true"
       }
     }
   }
@@ -82,8 +82,8 @@ Try multiple authentication methods automatically:
       "command": "npx",
       "args": ["-y", "@darbotlabs/darbot-graph-mcp"],
       "env": {
-        "AZURE_AD_TENANT_ID": "your-tenant-id",
-        "AZURE_AD_USE_DEFAULT_CHAIN": "true"
+        "AZURE_TENANT_ID": "your-tenant-id",
+        "AZURE_USE_DEFAULT_CHAIN": "true"
       }
     }
   }
@@ -103,7 +103,7 @@ For applications running on Azure infrastructure:
       "command": "npx",
       "args": ["-y", "@darbotlabs/darbot-graph-mcp"],
       "env": {
-        "AZURE_AD_USE_MANAGED_IDENTITY": "true"
+        "AZURE_USE_MANAGED_IDENTITY": "true"
       }
     }
   }
@@ -113,12 +113,12 @@ For applications running on Azure infrastructure:
 ## 🎯 One-Click Secure Installation
 
 ### Environment Variables Setup
-[![Install with Environment Variables](https://img.shields.io/badge/VS_Code-Secure_Install-green?style=flat-square&logo=visualstudiocode)](https://insiders.vscode.dev/redirect/mcp/install?name=darbot-graph&config=%7B%22type%22%3A%22stdio%22%2C%22command%22%3A%22npx%22%2C%22args%22%3A%5B%22-y%22%2C%22%40darbotlabs%2Fdarbot-graph-mcp%22%5D%2C%22env%22%3A%7B%22AZURE_AD_TENANT_ID%22%3A%22%24%7Benv%3AAZURE_AD_TENANT_ID%7D%22%2C%22AZURE_AD_CLIENT_ID%22%3A%22%24%7Benv%3AAZURE_AD_CLIENT_ID%7D%22%2C%22AZURE_AD_CLIENT_SECRET%22%3A%22%24%7Benv%3AAZURE_AD_CLIENT_SECRET%7D%22%7D%7D)
+[![Install with Environment Variables](https://img.shields.io/badge/VS_Code-Secure_Install-green?style=flat-square&logo=visualstudiocode)](https://insiders.vscode.dev/redirect/mcp/install?name=darbot-graph&config=%7B%22type%22%3A%22stdio%22%2C%22command%22%3A%22npx%22%2C%22args%22%3A%5B%22-y%22%2C%22%40darbotlabs%2Fdarbot-graph-mcp%22%5D%2C%22env%22%3A%7B%22AZURE_TENANT_ID%22%3A%22%24%7Benv%3AAZURE_TENANT_ID%7D%22%2C%22AZURE_CLIENT_ID%22%3A%22%24%7Benv%3AAZURE_CLIENT_ID%7D%22%2C%22AZURE_CLIENT_SECRET%22%3A%22%24%7Benv%3AAZURE_CLIENT_SECRET%7D%22%7D%7D)
 
 Prerequisites: Set environment variables before clicking
 
 ### Azure CLI Setup
-[![Install with Azure CLI](https://img.shields.io/badge/VS_Code-Azure_CLI_Install-blue?style=flat-square&logo=visualstudiocode)](https://insiders.vscode.dev/redirect/mcp/install?name=darbot-graph&config=%7B%22type%22%3A%22stdio%22%2C%22command%22%3A%22npx%22%2C%22args%22%3A%5B%22-y%22%2C%22%40darbotlabs%2Fdarbot-graph-mcp%22%5D%2C%22env%22%3A%7B%22AZURE_AD_TENANT_ID%22%3A%22%24%7Binput%3Aazure_tenant_id%7D%22%2C%22AZURE_AD_USE_AZURE_CLI%22%3A%22true%22%7D%7D&inputs=%5B%7B%22id%22%3A%22azure_tenant_id%22%2C%22type%22%3A%22promptString%22%2C%22description%22%3A%22Azure%20AD%20Tenant%20ID%22%7D%5D)
+[![Install with Azure CLI](https://img.shields.io/badge/VS_Code-Azure_CLI_Install-blue?style=flat-square&logo=visualstudiocode)](https://insiders.vscode.dev/redirect/mcp/install?name=darbot-graph&config=%7B%22type%22%3A%22stdio%22%2C%22command%22%3A%22npx%22%2C%22args%22%3A%5B%22-y%22%2C%22%40darbotlabs%2Fdarbot-graph-mcp%22%5D%2C%22env%22%3A%7B%22AZURE_TENANT_ID%22%3A%22%24%7Binput%3Aazure_tenant_id%7D%22%2C%22AZURE_USE_CLI%22%3A%22true%22%7D%7D&inputs=%5B%7B%22id%22%3A%22azure_tenant_id%22%2C%22type%22%3A%22promptString%22%2C%22description%22%3A%22Azure%20AD%20Tenant%20ID%22%7D%5D)
 
 Prerequisites: Run `az login` first
 

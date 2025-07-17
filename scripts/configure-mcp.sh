@@ -121,9 +121,9 @@ case $choice in
                     echo -e "${GREEN}📝 Environment Variables Configuration${NC}"
                     echo "Add these to your environment:"
                     echo
-                    echo "export AZURE_AD_TENANT_ID=\"$tenant_id\""
-                    echo "export AZURE_AD_CLIENT_ID=\"$client_id\""
-                    echo "export AZURE_AD_CLIENT_SECRET=\"$client_secret\""
+                    echo "export AZURE_TENANT_ID=\"$tenant_id\""
+                    echo "export AZURE_CLIENT_ID=\"$client_id\""
+                    echo "export AZURE_CLIENT_SECRET=\"$client_secret\""
                     echo
                     echo "For permanent setup, add to your shell profile (.bashrc, .zshrc, etc.)"
                     ;;
@@ -153,9 +153,9 @@ case $choice in
                     echo -e "${GREEN}📝 All Configuration Options${NC}"
                     echo
                     echo "1. Environment Variables (recommended):"
-                    echo "   export AZURE_AD_TENANT_ID=\"$tenant_id\""
-                    echo "   export AZURE_AD_CLIENT_ID=\"$client_id\""
-                    echo "   export AZURE_AD_CLIENT_SECRET=\"$client_secret\""
+                    echo "   export AZURE_TENANT_ID=\"$tenant_id\""
+                    echo "   export AZURE_CLIENT_ID=\"$client_id\""
+                    echo "   export AZURE_CLIENT_SECRET=\"$client_secret\""
                     echo
                     echo "2. VS Code settings.json:"
                     echo "   Add env section to mcp.servers.darbot-graph"
@@ -204,8 +204,8 @@ case $choice in
         echo "Use this configuration:"
         echo
         echo "Environment variables:"
-        echo "export AZURE_AD_TENANT_ID=\"$tenant_id\""
-        echo "export AZURE_AD_USE_AZURE_CLI=true"
+        echo "export AZURE_TENANT_ID=\"$tenant_id\""
+        echo "export AZURE_USE_CLI=true"
         echo
         echo "Or in VS Code settings.json:"
         echo '"env": {'
@@ -240,8 +240,8 @@ case $choice in
             echo "Use this configuration:"
             echo
             echo "Environment variables:"
-            echo "export AZURE_AD_TENANT_ID=\"$tenant_id\""
-            echo "export AZURE_AD_USE_VSCODE=true"
+            echo "export AZURE_TENANT_ID=\"$tenant_id\""
+            echo "export AZURE_USE_VSCODE=true"
             echo
             echo "Or in VS Code settings.json:"
             echo '"env": {'
@@ -265,10 +265,10 @@ case $choice in
         echo "Use this configuration:"
         echo
         echo "Environment variables:"
-        echo "export AZURE_AD_USE_MANAGED_IDENTITY=true"
+        echo "export AZURE_USE_MANAGED_IDENTITY=true"
         echo
         echo "Optional - specify client ID for user-assigned managed identity:"
-        echo "export AZURE_AD_CLIENT_ID=\"your-managed-identity-client-id\""
+        echo "export AZURE_CLIENT_ID=\"your-managed-identity-client-id\""
         echo
         echo "Or in VS Code settings.json:"
         echo '"env": {'
@@ -296,9 +296,9 @@ case $choice in
         echo
         echo "Environment variables:"
         if [[ -n "$tenant_id" ]]; then
-            echo "export AZURE_AD_TENANT_ID=\"$tenant_id\""
+            echo "export AZURE_TENANT_ID=\"$tenant_id\""
         fi
-        echo "export AZURE_AD_USE_DEFAULT_CHAIN=true"
+        echo "export AZURE_USE_DEFAULT_CHAIN=true"
         echo
         echo "Or in VS Code settings.json:"
         echo '"env": {'
@@ -316,7 +316,16 @@ case $choice in
         echo
         echo "Supported environment variables:"
         echo
-        echo "Standard format:"
+        echo "User-friendly format (recommended):"
+        echo "• AZURE_TENANT_ID"
+        echo "• AZURE_CLIENT_ID"
+        echo "• AZURE_CLIENT_SECRET"
+        echo "• AZURE_USE_CLI"
+        echo "• AZURE_USE_VSCODE"
+        echo "• AZURE_USE_MANAGED_IDENTITY"
+        echo "• AZURE_USE_DEFAULT_CHAIN"
+        echo
+        echo "Legacy format:"
         echo "• AZURE_AD_TENANT_ID"
         echo "• AZURE_AD_CLIENT_ID"
         echo "• AZURE_AD_CLIENT_SECRET"
