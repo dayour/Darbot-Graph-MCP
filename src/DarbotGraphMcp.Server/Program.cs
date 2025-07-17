@@ -10,49 +10,21 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddLogging();
 builder.Services.AddControllers();
 
+// Add Authentication service
+builder.Services.AddSingleton<IAuthenticationService, AuthenticationService>();
+
 // Configure Microsoft Graph client
 builder.Services.AddScoped<Microsoft.Graph.GraphServiceClient>(provider =>
 {
-    var configuration = provider.GetRequiredService<IConfiguration>();
-    
-    // Use ClientSecretCredential for app-only authentication
-    var clientId = configuration["AzureAd:ClientId"];
-    var clientSecret = configuration["AzureAd:ClientSecret"];
-    var tenantId = configuration["AzureAd:TenantId"];
-    
-    // For demo/testing purposes, use placeholder values if not configured
-    if (string.IsNullOrEmpty(clientId) || string.IsNullOrEmpty(clientSecret) || string.IsNullOrEmpty(tenantId))
-    {
-        clientId = "00000000-0000-0000-0000-000000000000";
-        clientSecret = "placeholder-secret";
-        tenantId = "00000000-0000-0000-0000-000000000000";
-    }
-    
-    var credential = new ClientSecretCredential(tenantId, clientId, clientSecret);
-    
-    return new Microsoft.Graph.GraphServiceClient(credential);
+    var authService = provider.GetRequiredService<IAuthenticationService>();
+    return authService.CreateGraphServiceClient();
 });
 
 // Configure Microsoft Graph Beta client
 builder.Services.AddScoped<Microsoft.Graph.Beta.GraphServiceClient>(provider =>
 {
-    var configuration = provider.GetRequiredService<IConfiguration>();
-    
-    var clientId = configuration["AzureAd:ClientId"];
-    var clientSecret = configuration["AzureAd:ClientSecret"];
-    var tenantId = configuration["AzureAd:TenantId"];
-    
-    // For demo/testing purposes, use placeholder values if not configured
-    if (string.IsNullOrEmpty(clientId) || string.IsNullOrEmpty(clientSecret) || string.IsNullOrEmpty(tenantId))
-    {
-        clientId = "00000000-0000-0000-0000-000000000000";
-        clientSecret = "placeholder-secret";
-        tenantId = "00000000-0000-0000-0000-000000000000";
-    }
-    
-    var credential = new ClientSecretCredential(tenantId, clientId, clientSecret);
-    
-    return new Microsoft.Graph.Beta.GraphServiceClient(credential);
+    var authService = provider.GetRequiredService<IAuthenticationService>();
+    return authService.CreateBetaGraphServiceClient();
 });
 
 // Add Enhanced Graph service
@@ -71,6 +43,17 @@ app.MapControllers();
 
 // MCP Server endpoints
 app.MapGet("/health", () => "Darbot Graph MCP Server - Enhanced");
+
+// Authentication info endpoint
+app.MapGet("/auth-info", (IAuthenticationService authService) =>
+{
+    return new
+    {
+        isConfigured = authService.IsConfigured,
+        authenticationMethod = authService.AuthenticationMethod,
+        timestamp = DateTime.UtcNow
+    };
+});
 
 // MCP protocol endpoints
 app.MapPost("/sse", async (HttpContext context, IGraphServiceEnhanced graphService) =>

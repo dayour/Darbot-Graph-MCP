@@ -15,12 +15,14 @@ public class GraphServiceEnhanced : IGraphServiceEnhanced
 {
     private readonly Microsoft.Graph.GraphServiceClient _graphClient;
     private readonly Microsoft.Graph.Beta.GraphServiceClient _betaGraphClient;
+    private readonly IAuthenticationService _authService;
     private readonly ILogger<GraphServiceEnhanced> _logger;
 
-    public GraphServiceEnhanced(Microsoft.Graph.GraphServiceClient graphClient, Microsoft.Graph.Beta.GraphServiceClient betaGraphClient, ILogger<GraphServiceEnhanced> logger)
+    public GraphServiceEnhanced(Microsoft.Graph.GraphServiceClient graphClient, Microsoft.Graph.Beta.GraphServiceClient betaGraphClient, IAuthenticationService authService, ILogger<GraphServiceEnhanced> logger)
     {
         _graphClient = graphClient;
         _betaGraphClient = betaGraphClient;
+        _authService = authService;
         _logger = logger;
     }
 
@@ -184,11 +186,16 @@ public class GraphServiceEnhanced : IGraphServiceEnhanced
         }
         catch (Exception ex)
         {
-            _logger.LogWarning(ex, "Graph client not properly configured, returning demo data");
+            var authInfo = _authService.IsConfigured 
+                ? $"Authentication configured: {_authService.AuthenticationMethod}"
+                : "No authentication configured";
+            
+            _logger.LogWarning(ex, "Graph client authentication failed ({AuthInfo}), returning demo data", authInfo);
             return new { 
                 success = true,
                 demo = true,
-                message = "Demo mode - Azure AD not configured", 
+                authenticationMethod = _authService.AuthenticationMethod,
+                message = $"Demo mode - {authInfo}", 
                 users = new[] {
                     new { Id = "demo-1", DisplayName = "Demo User 1", UserPrincipalName = "demo1@example.com", Mail = "demo1@example.com", JobTitle = "Developer", Department = "IT" },
                     new { Id = "demo-2", DisplayName = "Demo User 2", UserPrincipalName = "demo2@example.com", Mail = "demo2@example.com", JobTitle = "Manager", Department = "IT" }
