@@ -500,30 +500,104 @@ $env:AzureAd__ClientId="your-client-id"
 $env:AzureAd__ClientSecret="your-client-secret"
 ```
 
-### Step 5: Validation
+### Step 5: Credential Validation & Startup
 
-#### 5.1 Test Health Endpoint
+The server now includes comprehensive credential validation on startup:
+
+#### 5.1 Startup Validation Results
+When you start the server, you'll see detailed validation results:
+
+**Demo Mode (No Credentials):**
+```
+=== Darbot Graph MCP Server - Credential Validation ===
+✓ Azure AD credentials not configured - running in demo mode
+  💡 Configure Azure AD credentials in appsettings.json or environment variables to access real Microsoft 365 data
+  💡 See documentation for Azure AD app registration steps
+```
+
+**Invalid Credentials:**
+```
+❌ Invalid Azure AD Tenant ID format
+  ❌ Tenant ID 'invalid-tenant-id' is not a valid GUID format
+  💡 Tenant ID must be in GUID format (e.g., 12345678-1234-1234-1234-123456789012)
+  💡 Find your Tenant ID in Azure Portal > Azure Active Directory > Overview
+```
+
+**VS Code Input Prompt Detection:**
+```
+⚠️ VS Code input prompt configuration detected
+  ⚠️ Configuration contains VS Code input prompt variables (${input:...})
+  💡 This configuration is for VS Code MCP installation with user prompts
+  💡 Use direct credential values in appsettings.json for server-side deployment
+```
+
+**Successful Validation:**
+```
+✅ Azure AD credentials validated successfully
+  ✓ Successfully authenticated with tenant: your-tenant-id
+  ✓ Microsoft Graph API access confirmed
+```
+
+#### 5.2 Test Health Endpoint
 ```bash
 curl http://localhost:5000/health
 # Expected: "Darbot Graph MCP Server - Enhanced"
 ```
 
-#### 5.2 Test Tool Count
+#### 5.3 Test Tool Count
 ```bash
 curl http://localhost:5000/tools | jq length
 # Expected: 64
 ```
 
-#### 5.3 Test Tool Execution
+#### 5.4 Test Tool Execution with Enhanced Error Handling
 ```bash
 curl -X POST http://localhost:5000/call-tool \
   -H "Content-Type: application/json" \
   -d '{"name": "darbot-graph-users-list", "arguments": {"top": 2}}' | jq
 ```
 
-Expected successful response includes real user data from your tenant.
+**Demo Mode Response:**
+```json
+{
+  "success": true,
+  "demo": true,
+  "mode": "demo",
+  "message": "Demo mode - Azure AD not configured. Configure credentials in appsettings.json to access real Microsoft 365 data.",
+  "users": [...]
+}
+```
+
+**Error Response (Invalid Credentials):**
+```json
+{
+  "success": false,
+  "error": "Invalid Azure AD Tenant ID format",
+  "details": ["Tenant ID 'invalid-tenant-id' is not a valid GUID format"],
+  "suggestions": [
+    "Tenant ID must be in GUID format (e.g., 12345678-1234-1234-1234-123456789012)",
+    "Find your Tenant ID in Azure Portal > Azure Active Directory > Overview"
+  ],
+  "mode": "invalid"
+}
+```
+
+#### 5.5 Validation Features
+- **GUID Format Validation**: Ensures tenant and client IDs are valid GUIDs
+- **Authentication Testing**: Tests actual authentication with Microsoft Graph
+- **VS Code Integration Detection**: Identifies input prompt configurations
+- **Specific Error Messages**: Provides actionable troubleshooting guidance
+- **Graceful Fallback**: Continues in demo mode when credentials are invalid
 
 ## Production Considerations
+
+### Enhanced Credential Validation
+The server includes comprehensive startup validation:
+- **Format Validation**: GUID format checking for tenant/client IDs
+- **Authentication Testing**: Real-time validation with Microsoft Graph API
+- **Configuration Detection**: Automatic detection of VS Code input prompts
+- **Error Categorization**: Specific error types with actionable suggestions
+- **Graceful Degradation**: Seamless fallback to demo mode
 
 ### Security Best Practices
 - Store secrets in Azure Key Vault for production
@@ -546,6 +620,18 @@ Expected successful response includes real user data from your tenant.
 ## Troubleshooting
 
 For comprehensive troubleshooting guidance, see the **[Troubleshooting Guide (TROUBLESHOOTING.md)](./TROUBLESHOOTING.md)**.
+
+
+**Credential Validation Failures**
+- Invalid GUID format for tenant/client IDs
+- VS Code input prompt variables (${input:...}) in configuration
+- Authentication failures due to incorrect credentials
+- Insufficient Microsoft Graph API permissions
+
+**Authentication Failures**
+- Verify Azure AD app registration settings
+- Check client secret hasn't expired
+- Confirm admin consent has been granted
 
 ### Quick Diagnostics
 
