@@ -25,7 +25,7 @@ builder.Services.AddScoped<Microsoft.Graph.GraphServiceClient>(provider =>
     var clientSecret = configuration["AzureAd:ClientSecret"];
     var tenantId = configuration["AzureAd:TenantId"];
     
-copilot/fix-11
+    
     // Always use placeholder values for the Graph client construction
     // Real credential validation happens at startup and in the enhanced service
     var placeholderTenantId = "00000000-0000-0000-0000-000000000000";
