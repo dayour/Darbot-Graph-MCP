@@ -11,6 +11,7 @@ builder.Services.AddLogging();
 builder.Services.AddControllers();
 
 // Add credential validation service
+
 builder.Services.AddSingleton<ICredentialValidationService, CredentialValidationService>();
 
 // Configure Microsoft Graph client with credential validation
@@ -24,11 +25,13 @@ builder.Services.AddScoped<Microsoft.Graph.GraphServiceClient>(provider =>
     var clientSecret = configuration["AzureAd:ClientSecret"];
     var tenantId = configuration["AzureAd:TenantId"];
     
+copilot/fix-11
     // Always use placeholder values for the Graph client construction
     // Real credential validation happens at startup and in the enhanced service
     var placeholderTenantId = "00000000-0000-0000-0000-000000000000";
     var placeholderClientId = "00000000-0000-0000-0000-000000000000";
     var placeholderSecret = "placeholder-secret";
+
     
     var credential = new ClientSecretCredential(placeholderTenantId, placeholderClientId, placeholderSecret);
     
@@ -45,11 +48,13 @@ builder.Services.AddScoped<Microsoft.Graph.Beta.GraphServiceClient>(provider =>
     var clientSecret = configuration["AzureAd:ClientSecret"];
     var tenantId = configuration["AzureAd:TenantId"];
     
+
     // Always use placeholder values for the Graph client construction
     // Real credential validation happens at startup and in the enhanced service
     var placeholderTenantId = "00000000-0000-0000-0000-000000000000";
     var placeholderClientId = "00000000-0000-0000-0000-000000000000";
     var placeholderSecret = "placeholder-secret";
+
     
     var credential = new ClientSecretCredential(placeholderTenantId, placeholderClientId, placeholderSecret);
     
@@ -58,6 +63,9 @@ builder.Services.AddScoped<Microsoft.Graph.Beta.GraphServiceClient>(provider =>
 
 // Add Enhanced Graph service
 builder.Services.AddScoped<IGraphServiceEnhanced, GraphServiceEnhanced>();
+
+// Add Tenant Validation service for security
+builder.Services.AddScoped<ITenantValidationService, TenantValidationService>();
 
 var app = builder.Build();
 
@@ -157,6 +165,24 @@ app.MapControllers();
 // MCP Server endpoints
 app.MapGet("/health", () => "Darbot Graph MCP Server - Enhanced");
 
+// MCP validation endpoint - allows checking credential status
+app.MapGet("/validate", async (ICredentialValidationService validationService) =>
+{
+    var result = await validationService.ValidateCredentialsAsync();
+    return new
+    {
+        isValid = result.IsValid,
+        summary = result.GetFormattedSummary(),
+        validationItems = result.ValidationItems.Select(v => new 
+        { 
+            isValid = v.IsValid, 
+            message = v.Message, 
+            details = v.Details 
+        }),
+        suggestions = result.Suggestions
+    };
+});
+
 // MCP protocol endpoints
 app.MapPost("/sse", async (HttpContext context, IGraphServiceEnhanced graphService) =>
 {
@@ -188,6 +214,41 @@ app.MapPost("/call-tool", async (ToolCallRequest request, IGraphServiceEnhanced 
 {
     return await graphService.CallToolAsync(request.Name, request.Arguments);
 });
+
+// Perform credential validation on startup
+using (var scope = app.Services.CreateScope())
+{
+    var validationService = scope.ServiceProvider.GetRequiredService<ICredentialValidationService>();
+    var logger = scope.ServiceProvider.GetRequiredService<ILogger<Program>>();
+    
+    logger.LogInformation("=== Darbot Graph MCP Server Startup ===");
+    logger.LogInformation("Starting credential validation...");
+    
+    try
+    {
+        var validationResult = await validationService.ValidateCredentialsAsync();
+        
+        logger.LogInformation("Credential validation completed");
+        logger.LogInformation("Validation Summary:\n{Summary}", validationResult.GetFormattedSummary());
+        
+        if (!validationResult.IsValid)
+        {
+            logger.LogWarning("⚠️  Credential validation failed - server will run in demo mode");
+            logger.LogWarning("Some MCP tools may not function correctly with invalid credentials");
+        }
+        else
+        {
+            logger.LogInformation("✅ All credential validations passed - server ready for production use");
+        }
+    }
+    catch (Exception ex)
+    {
+        logger.LogError(ex, "❌ Credential validation encountered an error");
+        logger.LogWarning("Server will continue startup but may have limited functionality");
+    }
+    
+    logger.LogInformation("=== Startup validation complete ===");
+}
 
 app.Run();
 
