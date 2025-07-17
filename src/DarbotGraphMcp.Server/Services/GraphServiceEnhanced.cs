@@ -1,5 +1,6 @@
 using Microsoft.Graph;
 using Microsoft.Graph.Beta;
+using Azure.Identity;
 using System.Text.Json;
 using DarbotGraphMcp.Server.Services;
 
@@ -16,12 +17,21 @@ public class GraphServiceEnhanced : IGraphServiceEnhanced
     private readonly Microsoft.Graph.GraphServiceClient _graphClient;
     private readonly Microsoft.Graph.Beta.GraphServiceClient _betaGraphClient;
     private readonly ILogger<GraphServiceEnhanced> _logger;
+    private readonly ICredentialValidationService _credentialValidator;
+    private readonly IConfiguration _configuration;
 
-    public GraphServiceEnhanced(Microsoft.Graph.GraphServiceClient graphClient, Microsoft.Graph.Beta.GraphServiceClient betaGraphClient, ILogger<GraphServiceEnhanced> logger)
+    public GraphServiceEnhanced(
+        Microsoft.Graph.GraphServiceClient graphClient, 
+        Microsoft.Graph.Beta.GraphServiceClient betaGraphClient, 
+        ILogger<GraphServiceEnhanced> logger,
+        ICredentialValidationService credentialValidator,
+        IConfiguration configuration)
     {
         _graphClient = graphClient;
         _betaGraphClient = betaGraphClient;
         _logger = logger;
+        _credentialValidator = credentialValidator;
+        _configuration = configuration;
     }
 
     public List<object> GetAvailableTools()
@@ -148,9 +158,65 @@ public class GraphServiceEnhanced : IGraphServiceEnhanced
     {
         try
         {
+            // Validate credentials before attempting Graph API call
+            var tenantId = _configuration["AzureAd:TenantId"];
+            var clientId = _configuration["AzureAd:ClientId"];
+            var clientSecret = _configuration["AzureAd:ClientSecret"];
+            
+            if (!_credentialValidator.AreCredentialsConfigured(tenantId, clientId, clientSecret))
+            {
+                _logger.LogInformation("Azure AD credentials not configured, returning demo data for users list");
+                return new { 
+                    success = true,
+                    demo = true,
+                    mode = "demo",
+                    message = "Demo mode - Azure AD not configured. Configure credentials in appsettings.json to access real Microsoft 365 data.", 
+                    users = new[] {
+                        new { 
+                            Id = "demo-1", 
+                            DisplayName = "Demo User 1", 
+                            UserPrincipalName = "demo1@example.com", 
+                            Mail = "demo1@example.com", 
+                            JobTitle = "Developer", 
+                            Department = "IT",
+                            AccountEnabled = true,
+                            CreatedDateTime = DateTimeOffset.UtcNow.AddDays(-30)
+                        },
+                        new { 
+                            Id = "demo-2", 
+                            DisplayName = "Demo User 2", 
+                            UserPrincipalName = "demo2@example.com", 
+                            Mail = "demo2@example.com", 
+                            JobTitle = "Manager", 
+                            Department = "IT",
+                            AccountEnabled = true,
+                            CreatedDateTime = DateTimeOffset.UtcNow.AddDays(-60)
+                        }
+                    }
+                };
+            }
+            
+            // Validate credential format before using Graph client
+            var validationResult = await _credentialValidator.ValidateCredentialsAsync(tenantId, clientId, clientSecret);
+            if (!validationResult.IsValid)
+            {
+                _logger.LogError("Credential validation failed for users list: {Message}", validationResult.Message);
+                return new { 
+                    success = false,
+                    error = validationResult.Message,
+                    details = validationResult.Details,
+                    suggestions = validationResult.Suggestions,
+                    mode = validationResult.Mode.ToString().ToLower()
+                };
+            }
+            
+            // Use validated credentials to create a proper Graph client
+            var credential = new ClientSecretCredential(tenantId, clientId, clientSecret);
+            var validatedGraphClient = new Microsoft.Graph.GraphServiceClient(credential);
+            
             var args = arguments?.Deserialize<GetUsersArgs>();
             
-            var request = _graphClient.Users.GetAsync(requestConfig =>
+            var request = validatedGraphClient.Users.GetAsync(requestConfig =>
             {
                 if (args?.Top.HasValue == true)
                     requestConfig.QueryParameters.Top = args.Top.Value;
@@ -178,20 +244,50 @@ public class GraphServiceEnhanced : IGraphServiceEnhanced
 
             return new { 
                 success = true,
+                mode = "production",
                 count = userList?.Count ?? 0,
                 users = userList 
             };
         }
+        catch (Azure.Identity.AuthenticationFailedException ex)
+        {
+            _logger.LogError(ex, "Azure AD authentication failed for users list: {Message}", ex.Message);
+            return new { 
+                success = false,
+                error = "Azure AD authentication failed",
+                details = ex.Message,
+                suggestions = new[] {
+                    "Verify your Azure AD app registration settings",
+                    "Check that the client secret has not expired",
+                    "Ensure the app has required API permissions and admin consent"
+                }
+            };
+        }
+        catch (ServiceException ex) when ((int)ex.ResponseStatusCode == 403)
+        {
+            _logger.LogError(ex, "Insufficient permissions for users list: {Message}", ex.Message);
+            return new { 
+                success = false,
+                error = "Insufficient permissions to access Microsoft Graph",
+                details = ex.Message,
+                suggestions = new[] {
+                    "Grant admin consent for User.Read.All permission",
+                    "Ensure the app registration has required Microsoft Graph API permissions",
+                    "Contact your administrator to grant necessary permissions"
+                }
+            };
+        }
         catch (Exception ex)
         {
-            _logger.LogWarning(ex, "Graph client not properly configured, returning demo data");
+            _logger.LogError(ex, "Unexpected error getting users: {Message}", ex.Message);
             return new { 
-                success = true,
-                demo = true,
-                message = "Demo mode - Azure AD not configured", 
-                users = new[] {
-                    new { Id = "demo-1", DisplayName = "Demo User 1", UserPrincipalName = "demo1@example.com", Mail = "demo1@example.com", JobTitle = "Developer", Department = "IT" },
-                    new { Id = "demo-2", DisplayName = "Demo User 2", UserPrincipalName = "demo2@example.com", Mail = "demo2@example.com", JobTitle = "Manager", Department = "IT" }
+                success = false,
+                error = "Unexpected error occurred",
+                details = ex.Message,
+                suggestions = new[] {
+                    "Check network connectivity to Microsoft Graph API",
+                    "Verify firewall settings allow HTTPS traffic to graph.microsoft.com",
+                    "Review application logs for detailed error information"
                 }
             };
         }
