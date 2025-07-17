@@ -58,6 +58,9 @@ builder.Services.AddScoped<Microsoft.Graph.Beta.GraphServiceClient>(provider =>
 // Add Enhanced Graph service
 builder.Services.AddScoped<IGraphServiceEnhanced, GraphServiceEnhanced>();
 
+// Add Tenant Validation service for security
+builder.Services.AddScoped<ITenantValidationService, TenantValidationService>();
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline
