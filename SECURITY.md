@@ -1,6 +1,3 @@
-Analyze this line by line, then include a refine version with no errors
-
-
 # Security Guide
 
 ## Overview
