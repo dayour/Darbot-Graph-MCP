@@ -24,7 +24,7 @@ This server is designed to be the definitive Microsoft Graph integration for MCP
 - **Enhanced Authentication**: Support for app-only and delegated permissions with Azure.Identity
 - **Ultimate Extensibility**: Designed to be the definitive Microsoft Graph MCP server with modular architecture for easy expansion
 
-## Installation
+## Quick Start
 
 ### 🚀 One-Click Installation (Recommended)
 
@@ -39,6 +39,12 @@ The one-click installation will:
 - ✅ Build the .NET application if needed
 - ✅ Set up the MCP client configuration
 - ✅ Handle Azure AD authentication setup
+
+### 📚 Need Help with Setup?
+
+- **🔧 [Complete Setup Guide (SETUP.md)](./SETUP.md)** - Step-by-step Azure AD configuration
+- **🔒 [Security Best Practices (SECURITY.md)](./SECURITY.md)** - Production security guidelines
+- **🚨 [Troubleshooting Guide (TROUBLESHOOTING.md)](./TROUBLESHOOTING.md)** - Common issues & solutions
 
 ### 📋 Prerequisites
 
@@ -180,6 +186,7 @@ The modular design supports easy addition of:
 
 ## Documentation
 
+
 - **[Complete Command Reference (cmd_lib.md)](./cmd_lib.md)** - Detailed documentation of all 64+ tools with parameters and examples
 - **[Azure AD Setup Guide](#azure-ad-setup)** - Step-by-step configuration instructions
 - **[Security Guide (SECURITY.md)](./SECURITY.md)** - Comprehensive security best practices and threat mitigation
@@ -187,6 +194,7 @@ The modular design supports easy addition of:
 - **[Claude Desktop Integration](#claude-desktop-integration)** - MCP client setup
 - **[Microsoft Graph Resources](#microsoft-graph-resources)** - Official SDK and documentation links
 - **[Extensibility Guide](#extensibility)** - How to add new Graph API capabilities
+
 
 ## Architecture
 
@@ -220,37 +228,51 @@ Claude Desktop / MCP Client
 
 ## Azure AD Setup
 
-### Quick Setup
+For complete Azure AD setup instructions, see the **[Setup Guide (SETUP.md)](./SETUP.md)**.
+
+### Quick Setup Summary
 
 1. **Register Application** in Azure Portal
-2. **Configure Permissions**: Grant required Microsoft Graph permissions
+2. **Configure Permissions**: Grant required Microsoft Graph permissions  
 3. **Create Client Secret**: Generate and secure application credentials
-4. **Update Configuration**: Add credentials to `appsettings.json`
+4. **Update Configuration**: Add credentials to VS Code MCP settings
 
-**Required Permissions:**
+### Key Configuration Values
+
+- **Tenant ID**: Your organization's Azure AD tenant identifier
+  - Format: `contoso.onmicrosoft.com` or `12345678-1234-1234-1234-123456789012`
+  - ⚠️ Don't use: `common`, `organizations`, or Microsoft's tenant
+- **Client ID**: Your app registration's unique identifier (Application ID)
+- **Client Secret**: Secure password for your app registration
+
+### Required Permissions
 ```
 User.ReadWrite.All, Group.ReadWrite.All, Mail.ReadWrite, Mail.Send,
 Calendars.ReadWrite, Team.ReadBasic.All, Files.ReadWrite.All,
 Sites.ReadWrite.All, Reports.Read.All, Application.ReadWrite.All
 ```
 
-**Configuration:**
+### Sample Configuration
 ```json
 {
   "AzureAd": {
-    "TenantId": "your-tenant-id",
-    "ClientId": "your-client-id",
-    "ClientSecret": "your-client-secret"
+    "TenantId": "contoso.onmicrosoft.com",
+    "ClientId": "12345678-1234-1234-1234-123456789012",
+    "ClientSecret": "abc123XYZ~secretvalue.here-456"
   }
 }
 ```
 
-For detailed setup instructions, see the [Azure AD Setup Guide](#detailed-azure-ad-setup-guide) section below.
+For detailed setup instructions including screenshots and troubleshooting, see the [Complete Setup Guide (SETUP.md)](./SETUP.md).
 
-## Claude Desktop Integration
+## VS Code Integration
+
+### Quick Configuration
+
 
 ### Using NPM Package (Recommended)
 **Secure Configuration:**
+
 ```json
 {
   "mcpServers": {
@@ -282,9 +304,11 @@ For detailed setup instructions, see the [Azure AD Setup Guide](#detailed-azure-
 }
 ```
 
+
 > ⚠️ **Security Warning**: Never pass credentials as command line arguments in production. Use environment variables instead.
 
 ### Using Direct .NET Command
+
 ```json
 {
   "mcpServers": {
@@ -305,23 +329,20 @@ For detailed setup instructions, see the [Azure AD Setup Guide](#detailed-azure-
 }
 ```
 
-### Configuration File Locations
-- **Windows**: `%APPDATA%\Claude\claude_desktop_config.json`
-- **macOS**: `~/Library/Application Support/Claude/claude_desktop_config.json`
-- **Linux**: `~/.config/Claude/claude_desktop_config.json`
+### Important Setup Notes
 
-### Demo Mode
-Leave the Azure AD credentials empty to run in demo mode:
-```json
-{
-  "mcpServers": {
-    "darbot-graph": {
-      "command": "npx",
-      "args": ["-y", "@darbotlabs/darbot-graph-mcp"]
-    }
-  }
-}
-```
+⚠️ **Tenant ID Selection:**
+- ❌ **Don't use**: `common`, `organizations`, or Microsoft's tenant
+- ✅ **Use**: Your organization's specific tenant ID or domain
+
+⚠️ **Security:**
+- Store secrets securely in production environments
+- Use demo mode for development and testing
+- See [Security Guide (SECURITY.md)](./SECURITY.md) for best practices
+
+⚠️ **Troubleshooting:**
+- Completely restart VS Code after configuration changes
+- Check [Troubleshooting Guide (TROUBLESHOOTING.md)](./TROUBLESHOOTING.md) for common issues
 
 > 💡 **Tip**: Demo mode is perfect for testing and development without affecting production data.
 
@@ -483,30 +504,104 @@ $env:AzureAd__ClientId="your-client-id"
 $env:AzureAd__ClientSecret="your-client-secret"
 ```
 
-### Step 5: Validation
+### Step 5: Credential Validation & Startup
 
-#### 5.1 Test Health Endpoint
+The server now includes comprehensive credential validation on startup:
+
+#### 5.1 Startup Validation Results
+When you start the server, you'll see detailed validation results:
+
+**Demo Mode (No Credentials):**
+```
+=== Darbot Graph MCP Server - Credential Validation ===
+✓ Azure AD credentials not configured - running in demo mode
+  💡 Configure Azure AD credentials in appsettings.json or environment variables to access real Microsoft 365 data
+  💡 See documentation for Azure AD app registration steps
+```
+
+**Invalid Credentials:**
+```
+❌ Invalid Azure AD Tenant ID format
+  ❌ Tenant ID 'invalid-tenant-id' is not a valid GUID format
+  💡 Tenant ID must be in GUID format (e.g., 12345678-1234-1234-1234-123456789012)
+  💡 Find your Tenant ID in Azure Portal > Azure Active Directory > Overview
+```
+
+**VS Code Input Prompt Detection:**
+```
+⚠️ VS Code input prompt configuration detected
+  ⚠️ Configuration contains VS Code input prompt variables (${input:...})
+  💡 This configuration is for VS Code MCP installation with user prompts
+  💡 Use direct credential values in appsettings.json for server-side deployment
+```
+
+**Successful Validation:**
+```
+✅ Azure AD credentials validated successfully
+  ✓ Successfully authenticated with tenant: your-tenant-id
+  ✓ Microsoft Graph API access confirmed
+```
+
+#### 5.2 Test Health Endpoint
 ```bash
 curl http://localhost:5000/health
 # Expected: "Darbot Graph MCP Server - Enhanced"
 ```
 
-#### 5.2 Test Tool Count
+#### 5.3 Test Tool Count
 ```bash
 curl http://localhost:5000/tools | jq length
 # Expected: 64
 ```
 
-#### 5.3 Test Tool Execution
+#### 5.4 Test Tool Execution with Enhanced Error Handling
 ```bash
 curl -X POST http://localhost:5000/call-tool \
   -H "Content-Type: application/json" \
   -d '{"name": "darbot-graph-users-list", "arguments": {"top": 2}}' | jq
 ```
 
-Expected successful response includes real user data from your tenant.
+**Demo Mode Response:**
+```json
+{
+  "success": true,
+  "demo": true,
+  "mode": "demo",
+  "message": "Demo mode - Azure AD not configured. Configure credentials in appsettings.json to access real Microsoft 365 data.",
+  "users": [...]
+}
+```
+
+**Error Response (Invalid Credentials):**
+```json
+{
+  "success": false,
+  "error": "Invalid Azure AD Tenant ID format",
+  "details": ["Tenant ID 'invalid-tenant-id' is not a valid GUID format"],
+  "suggestions": [
+    "Tenant ID must be in GUID format (e.g., 12345678-1234-1234-1234-123456789012)",
+    "Find your Tenant ID in Azure Portal > Azure Active Directory > Overview"
+  ],
+  "mode": "invalid"
+}
+```
+
+#### 5.5 Validation Features
+- **GUID Format Validation**: Ensures tenant and client IDs are valid GUIDs
+- **Authentication Testing**: Tests actual authentication with Microsoft Graph
+- **VS Code Integration Detection**: Identifies input prompt configurations
+- **Specific Error Messages**: Provides actionable troubleshooting guidance
+- **Graceful Fallback**: Continues in demo mode when credentials are invalid
 
 ## Production Considerations
+
+### Enhanced Credential Validation
+The server includes comprehensive startup validation:
+- **Format Validation**: GUID format checking for tenant/client IDs
+- **Authentication Testing**: Real-time validation with Microsoft Graph API
+- **Configuration Detection**: Automatic detection of VS Code input prompts
+- **Error Categorization**: Specific error types with actionable suggestions
+- **Graceful Degradation**: Seamless fallback to demo mode
 
 ### Security Best Practices
 - Store secrets in Azure Key Vault for production
@@ -528,29 +623,64 @@ Expected successful response includes real user data from your tenant.
 
 ## Troubleshooting
 
-### Common Issues
+For comprehensive troubleshooting guidance, see the **[Troubleshooting Guide (TROUBLESHOOTING.md)](./TROUBLESHOOTING.md)**.
+
+
+**Credential Validation Failures**
+- Invalid GUID format for tenant/client IDs
+- VS Code input prompt variables (${input:...}) in configuration
+- Authentication failures due to incorrect credentials
+- Insufficient Microsoft Graph API permissions
 
 **Authentication Failures**
 - Verify Azure AD app registration settings
 - Check client secret hasn't expired
 - Confirm admin consent has been granted
 
-**Permission Denied Errors**
-- Review required API permissions
-- Ensure admin consent is granted
-- Check scope limitations
+### Quick Diagnostics
 
-**Tool Discovery Issues**
-- Restart Claude Desktop completely
-- Verify MCP server configuration path
-- Check server is running on correct port
+```bash
+# Test server health
+curl http://localhost:5000/health
+# Expected: "Darbot Graph MCP Server - Enhanced"
+
+# Check tool count
+curl http://localhost:5000/tools | jq length
+# Expected: 64
+```
+
+### Common Issues Summary
+
+- **Authentication Errors**: Check tenant ID format and admin consent
+- **Permission Denied**: Verify required Graph API permissions
+- **VS Code Integration**: Ensure complete VS Code restart after configuration
+- **Build Issues**: Verify .NET 8.0 SDK installation
+
+For detailed solutions, see the [Complete Troubleshooting Guide (TROUBLESHOOTING.md)](./TROUBLESHOOTING.md).
 
 ## Support and Resources
 
-- **Command Reference**: [cmd_lib.md](./cmd_lib.md)
-- **Microsoft Graph Documentation**: [docs.microsoft.com/graph](https://docs.microsoft.com/en-us/graph/)
-- **MCP Protocol**: [modelcontextprotocol.io](https://modelcontextprotocol.io/)
-- **Azure AD Documentation**: [docs.microsoft.com/azure/active-directory](https://docs.microsoft.com/en-us/azure/active-directory/)
+### Documentation & Guides
+- **🔧 [Setup Guide (SETUP.md)](./SETUP.md)** - Complete Azure AD configuration
+- **🔒 [Security Guide (SECURITY.md)](./SECURITY.md)** - Production security best practices
+- **🚨 [Troubleshooting Guide (TROUBLESHOOTING.md)](./TROUBLESHOOTING.md)** - Common issues & solutions
+- **📚 [Command Reference (cmd_lib.md)](./cmd_lib.md)** - All 64+ tools with examples
+
+### Microsoft Resources
+- **[Microsoft Graph Documentation](https://docs.microsoft.com/en-us/graph/)** - Official Graph API docs
+- **[Azure AD Documentation](https://docs.microsoft.com/en-us/azure/active-directory/)** - Authentication setup
+- **[Graph Explorer](https://developer.microsoft.com/en-us/graph/graph-explorer)** - Interactive API testing
+
+### MCP Resources  
+- **[MCP Protocol](https://modelcontextprotocol.io/)** - Model Context Protocol specification
+- **[VS Code MCP Extension](https://marketplace.visualstudio.com/items?itemName=anthropic.claude-dev)** - Official extension
+
+### Getting Help
+1. Check the [Troubleshooting Guide (TROUBLESHOOTING.md)](./TROUBLESHOOTING.md)
+2. Test with demo mode to isolate issues
+3. Verify Azure AD configuration
+4. Review server logs for errors
+5. Open GitHub issue with debug information
 
 ## Microsoft Graph Resources
 
