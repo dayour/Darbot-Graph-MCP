@@ -182,6 +182,8 @@ The modular design supports easy addition of:
 
 - **[Complete Command Reference (cmd_lib.md)](./cmd_lib.md)** - Detailed documentation of all 64+ tools with parameters and examples
 - **[Azure AD Setup Guide](#azure-ad-setup)** - Step-by-step configuration instructions
+- **[Security Guide (SECURITY.md)](./SECURITY.md)** - Comprehensive security best practices and threat mitigation
+- **[Troubleshooting Guide (TROUBLESHOOTING.md)](./TROUBLESHOOTING.md)** - Common issues and solutions
 - **[Claude Desktop Integration](#claude-desktop-integration)** - MCP client setup
 - **[Microsoft Graph Resources](#microsoft-graph-resources)** - Official SDK and documentation links
 - **[Extensibility Guide](#extensibility)** - How to add new Graph API capabilities
@@ -248,6 +250,7 @@ For detailed setup instructions, see the [Azure AD Setup Guide](#detailed-azure-
 ## Claude Desktop Integration
 
 ### Using NPM Package (Recommended)
+**Secure Configuration:**
 ```json
 {
   "mcpServers": {
@@ -255,15 +258,31 @@ For detailed setup instructions, see the [Azure AD Setup Guide](#detailed-azure-
       "command": "npx",
       "args": [
         "-y", 
-        "@darbotlabs/darbot-graph-mcp",
-        "your-tenant-id",
-        "your-client-id", 
-        "your-client-secret"
-      ]
+        "@darbotlabs/darbot-graph-mcp"
+      ],
+      "env": {
+        "AzureAd__TenantId": "your-tenant-id",
+        "AzureAd__ClientId": "your-client-id", 
+        "AzureAd__ClientSecret": "your-client-secret"
+      }
     }
   }
 }
 ```
+
+**Demo Mode (Safe for Testing):**
+```json
+{
+  "mcpServers": {
+    "darbot-graph": {
+      "command": "npx",
+      "args": ["-y", "@darbotlabs/darbot-graph-mcp"]
+    }
+  }
+}
+```
+
+> ⚠️ **Security Warning**: Never pass credentials as command line arguments in production. Use environment variables instead.
 
 ### Using Direct .NET Command
 ```json
@@ -303,6 +322,8 @@ Leave the Azure AD credentials empty to run in demo mode:
   }
 }
 ```
+
+> 💡 **Tip**: Demo mode is perfect for testing and development without affecting production data.
 
 ## Usage Examples
 

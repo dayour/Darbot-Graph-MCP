@@ -2,6 +2,8 @@ using Microsoft.Graph;
 using Microsoft.Graph.Beta;
 using Azure.Identity;
 using System.Text.Json;
+using System.Security;
+using System.Text.RegularExpressions;
 using DarbotGraphMcp.Server.Services;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -14,18 +16,40 @@ builder.Services.AddControllers();
 builder.Services.AddScoped<Microsoft.Graph.GraphServiceClient>(provider =>
 {
     var configuration = provider.GetRequiredService<IConfiguration>();
+    var logger = provider.GetRequiredService<ILogger<Program>>();
     
     // Use ClientSecretCredential for app-only authentication
     var clientId = configuration["AzureAd:ClientId"];
     var clientSecret = configuration["AzureAd:ClientSecret"];
     var tenantId = configuration["AzureAd:TenantId"];
     
+    // Security validation for tenant ID to prevent cross-tenant issues
+    if (!string.IsNullOrEmpty(tenantId))
+    {
+        if (!IsValidTenantId(tenantId))
+        {
+            logger.LogError("Invalid tenant ID format detected. Must be a valid GUID.");
+            throw new ArgumentException("Invalid tenant ID format. Must be a valid GUID.");
+        }
+        
+        if (IsPlaceholderTenantId(tenantId))
+        {
+            logger.LogError("Security warning: Placeholder tenant ID detected. This could lead to cross-tenant security issues.");
+            throw new SecurityException("Placeholder tenant ID not allowed. Use your organization's actual tenant ID.");
+        }
+    }
+    
     // For demo/testing purposes, use placeholder values if not configured
     if (string.IsNullOrEmpty(clientId) || string.IsNullOrEmpty(clientSecret) || string.IsNullOrEmpty(tenantId))
     {
+        logger.LogInformation("Azure AD credentials not configured. Running in demo mode.");
         clientId = "00000000-0000-0000-0000-000000000000";
         clientSecret = "placeholder-secret";
         tenantId = "00000000-0000-0000-0000-000000000000";
+    }
+    else
+    {
+        logger.LogInformation("Azure AD credentials configured for tenant: {TenantId}", tenantId);
     }
     
     var credential = new ClientSecretCredential(tenantId, clientId, clientSecret);
@@ -37,10 +61,27 @@ builder.Services.AddScoped<Microsoft.Graph.GraphServiceClient>(provider =>
 builder.Services.AddScoped<Microsoft.Graph.Beta.GraphServiceClient>(provider =>
 {
     var configuration = provider.GetRequiredService<IConfiguration>();
+    var logger = provider.GetRequiredService<ILogger<Program>>();
     
     var clientId = configuration["AzureAd:ClientId"];
     var clientSecret = configuration["AzureAd:ClientSecret"];
     var tenantId = configuration["AzureAd:TenantId"];
+    
+    // Security validation for tenant ID (same as regular Graph client)
+    if (!string.IsNullOrEmpty(tenantId))
+    {
+        if (!IsValidTenantId(tenantId))
+        {
+            logger.LogError("Invalid tenant ID format detected for Beta client. Must be a valid GUID.");
+            throw new ArgumentException("Invalid tenant ID format. Must be a valid GUID.");
+        }
+        
+        if (IsPlaceholderTenantId(tenantId))
+        {
+            logger.LogError("Security warning: Placeholder tenant ID detected for Beta client.");
+            throw new SecurityException("Placeholder tenant ID not allowed. Use your organization's actual tenant ID.");
+        }
+    }
     
     // For demo/testing purposes, use placeholder values if not configured
     if (string.IsNullOrEmpty(clientId) || string.IsNullOrEmpty(clientSecret) || string.IsNullOrEmpty(tenantId))
@@ -105,6 +146,32 @@ app.MapPost("/call-tool", async (ToolCallRequest request, IGraphServiceEnhanced 
 });
 
 app.Run();
+
+// Security validation functions
+static bool IsValidTenantId(string tenantId)
+{
+    if (string.IsNullOrEmpty(tenantId)) return false;
+    
+    // GUID pattern validation - more permissive pattern
+    var guidPattern = @"^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$";
+    return Regex.IsMatch(tenantId, guidPattern, RegexOptions.IgnoreCase);
+}
+
+static bool IsPlaceholderTenantId(string tenantId)
+{
+    if (string.IsNullOrEmpty(tenantId)) return false;
+    
+    // Common placeholder tenant IDs that should not be used in production
+    var placeholderTenantIds = new[]
+    {
+        "00000000-0000-0000-0000-000000000000",
+        "11111111-1111-1111-1111-111111111111",
+        "ffffffff-ffff-ffff-ffff-ffffffffffff",
+        "12345678-1234-1234-1234-123456789012"
+    };
+    
+    return placeholderTenantIds.Contains(tenantId.ToLowerInvariant());
+}
 
 // Tool call request model
 public record ToolCallRequest(string Name, JsonElement? Arguments);
