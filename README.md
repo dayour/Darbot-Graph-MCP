@@ -186,13 +186,15 @@ The modular design supports easy addition of:
 
 ## Documentation
 
-- **🎯 [VS Code Quick Setup (VSCODE_SETUP.md)](./VSCODE_SETUP.md)** - Fast VS Code MCP configuration
-- **🔧 [Complete Setup Guide (SETUP.md)](./SETUP.md)** - Step-by-step configuration with Azure AD
-- **🔒 [Security Best Practices (SECURITY.md)](./SECURITY.md)** - Production security guidelines  
-- **🚨 [Troubleshooting Guide (TROUBLESHOOTING.md)](./TROUBLESHOOTING.md)** - Common issues & solutions
-- **📚 [Complete Command Reference (cmd_lib.md)](./cmd_lib.md)** - Detailed documentation of all 64+ tools with parameters and examples
-- **📖 [Microsoft Graph Resources](#microsoft-graph-resources)** - Official SDK and documentation links
-- **🔧 [Extensibility Guide](#extensibility)** - How to add new Graph API capabilities
+
+- **[Complete Command Reference (cmd_lib.md)](./cmd_lib.md)** - Detailed documentation of all 64+ tools with parameters and examples
+- **[Azure AD Setup Guide](#azure-ad-setup)** - Step-by-step configuration instructions
+- **[Security Guide (SECURITY.md)](./SECURITY.md)** - Comprehensive security best practices and threat mitigation
+- **[Troubleshooting Guide (TROUBLESHOOTING.md)](./TROUBLESHOOTING.md)** - Common issues and solutions
+- **[Claude Desktop Integration](#claude-desktop-integration)** - MCP client setup
+- **[Microsoft Graph Resources](#microsoft-graph-resources)** - Official SDK and documentation links
+- **[Extensibility Guide](#extensibility)** - How to add new Graph API capabilities
+
 
 ## Architecture
 
@@ -267,16 +269,10 @@ For detailed setup instructions including screenshots and troubleshooting, see t
 
 ### Quick Configuration
 
-For detailed setup instructions, see the **[Complete Setup Guide (SETUP.md)](./SETUP.md)**.
 
-### Configuration File Locations
-- **Windows**: `%APPDATA%\Claude\claude_desktop_config.json`
-- **macOS**: `~/Library/Application Support/Claude/claude_desktop_config.json`
-- **Linux**: `~/.config/Claude/claude_desktop_config.json`
+### Using NPM Package (Recommended)
+**Secure Configuration:**
 
-### Basic Configuration Examples
-
-#### Using NPM Package (Recommended)
 ```json
 {
   "mcpServers": {
@@ -284,17 +280,19 @@ For detailed setup instructions, see the **[Complete Setup Guide (SETUP.md)](./S
       "command": "npx",
       "args": [
         "-y", 
-        "@darbotlabs/darbot-graph-mcp",
-        "your-tenant-id",
-        "your-client-id", 
-        "your-client-secret"
-      ]
+        "@darbotlabs/darbot-graph-mcp"
+      ],
+      "env": {
+        "AzureAd__TenantId": "your-tenant-id",
+        "AzureAd__ClientId": "your-client-id", 
+        "AzureAd__ClientSecret": "your-client-secret"
+      }
     }
   }
 }
 ```
 
-#### Demo Mode (No Azure AD Required)
+**Demo Mode (Safe for Testing):**
 ```json
 {
   "mcpServers": {
@@ -306,7 +304,11 @@ For detailed setup instructions, see the **[Complete Setup Guide (SETUP.md)](./S
 }
 ```
 
-#### Using Direct .NET Command
+
+> ⚠️ **Security Warning**: Never pass credentials as command line arguments in production. Use environment variables instead.
+
+### Using Direct .NET Command
+
 ```json
 {
   "mcpServers": {
@@ -341,6 +343,8 @@ For detailed setup instructions, see the **[Complete Setup Guide (SETUP.md)](./S
 ⚠️ **Troubleshooting:**
 - Completely restart VS Code after configuration changes
 - Check [Troubleshooting Guide (TROUBLESHOOTING.md)](./TROUBLESHOOTING.md) for common issues
+
+> 💡 **Tip**: Demo mode is perfect for testing and development without affecting production data.
 
 ## Usage Examples
 

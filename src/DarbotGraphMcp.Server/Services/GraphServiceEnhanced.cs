@@ -157,8 +157,37 @@ public class GraphServiceEnhanced : IGraphServiceEnhanced
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "Error calling tool {ToolName}", toolName);
-            return new { error = ex.Message, details = ex.ToString() };
+            _logger.LogError(ex, "Error calling tool {ToolName} with arguments: {Arguments}", 
+                toolName, arguments?.ToString() ?? "none");
+            
+            // Provide detailed error information for troubleshooting
+            var errorResponse = new
+            {
+                error = ex.Message,
+                toolName = toolName,
+                errorType = ex.GetType().Name,
+                timestamp = DateTime.UtcNow.ToString("yyyy-MM-ddTHH:mm:ss.fffZ"),
+                details = ex.ToString()
+            };
+            
+            // Log additional context for Graph-specific errors
+            if (ex is Microsoft.Graph.ServiceException graphEx)
+            {
+                _logger.LogError("Graph API Error - Status: {Status}, Message: {Message}", 
+                    graphEx.ResponseStatusCode, graphEx.Message);
+                
+                return new
+                {
+                    error = graphEx.Message,
+                    toolName = toolName,
+                    errorType = "GraphApiError",
+                    statusCode = (int?)graphEx.ResponseStatusCode,
+                    timestamp = DateTime.UtcNow.ToString("yyyy-MM-ddTHH:mm:ss.fffZ"),
+                    troubleshooting = "Check Azure AD permissions and tenant configuration. See TROUBLESHOOTING.md for common solutions."
+                };
+            }
+            
+            return errorResponse;
         }
     }
 
