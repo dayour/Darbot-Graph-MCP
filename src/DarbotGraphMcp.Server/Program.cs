@@ -10,6 +10,16 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddLogging();
 builder.Services.AddControllers();
 
+
+// Add Authentication service
+builder.Services.AddSingleton<IAuthenticationService, AuthenticationService>();
+
+// Configure Microsoft Graph client
+builder.Services.AddScoped<Microsoft.Graph.GraphServiceClient>(provider =>
+{
+    var authService = provider.GetRequiredService<IAuthenticationService>();
+    return authService.CreateGraphServiceClient();
+
 // Add credential validation service
 
 builder.Services.AddSingleton<ICredentialValidationService, CredentialValidationService>();
@@ -36,11 +46,16 @@ builder.Services.AddScoped<Microsoft.Graph.GraphServiceClient>(provider =>
     var credential = new ClientSecretCredential(placeholderTenantId, placeholderClientId, placeholderSecret);
     
     return new Microsoft.Graph.GraphServiceClient(credential);
+
 });
 
 // Configure Microsoft Graph Beta client with credential validation
 builder.Services.AddScoped<Microsoft.Graph.Beta.GraphServiceClient>(provider =>
 {
+
+    var authService = provider.GetRequiredService<IAuthenticationService>();
+    return authService.CreateBetaGraphServiceClient();
+
     var configuration = provider.GetRequiredService<IConfiguration>();
     var logger = provider.GetRequiredService<ILogger<Program>>();
     
@@ -59,6 +74,7 @@ builder.Services.AddScoped<Microsoft.Graph.Beta.GraphServiceClient>(provider =>
     var credential = new ClientSecretCredential(placeholderTenantId, placeholderClientId, placeholderSecret);
     
     return new Microsoft.Graph.Beta.GraphServiceClient(credential);
+
 });
 
 // Add Enhanced Graph service
@@ -165,6 +181,16 @@ app.MapControllers();
 // MCP Server endpoints
 app.MapGet("/health", () => "Darbot Graph MCP Server - Enhanced");
 
+
+// Authentication info endpoint
+app.MapGet("/auth-info", (IAuthenticationService authService) =>
+{
+    return new
+    {
+        isConfigured = authService.IsConfigured,
+        authenticationMethod = authService.AuthenticationMethod,
+        timestamp = DateTime.UtcNow
+
 // MCP validation endpoint - allows checking credential status
 app.MapGet("/validate", async (ICredentialValidationService validationService) =>
 {
@@ -180,6 +206,7 @@ app.MapGet("/validate", async (ICredentialValidationService validationService) =
             details = v.Details 
         }),
         suggestions = result.Suggestions
+
     };
 });
 
