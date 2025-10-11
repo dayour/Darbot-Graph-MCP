@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Wiki - Darbot Graph MCP</title>
+    <link rel="stylesheet" href="assets/css/style.css">
+    <link rel="stylesheet" href="assets/css/docs.css">
+</head>
+<body>
+    <nav class="nav-bar">
+        <div class="nav-container">
+            <div class="nav-brand"><span class="brand-icon">⭐</span><span class="brand-text">Darbot Graph MCP</span></div>
+            <div class="nav-links">
+                <a href="index.html" class="nav-link">Home</a>
+                <a href="docs.html" class="nav-link">Documentation</a>
+                <a href="api.html" class="nav-link">API Reference</a>
+                <a href="examples.html" class="nav-link">Examples</a>
+                <a href="extensibility.html" class="nav-link">Extensibility</a>
+                <a href="wiki.html" class="nav-link active">Wiki</a>
+                <a href="https://github.com/dayour/Darbot-Graph-MCP" class="nav-link" target="_blank">GitHub</a>
+            </div>
+        </div>
+    </nav>
+
+    <section class="docs-hero">
+        <div class="container"><h1 class="gradient-text">Wiki</h1><p>Knowledge base and community resources</p></div>
+    </section>
+
+    <section class="section"><div class="container"><div class="docs-content" style="max-width: 900px; margin: 0 auto;">
+        <article class="docs-article">
+            <h2>Quick Links</h2>
+            <div class="resources-grid" style="grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1.5rem;">
+                <a href="https://github.com/dayour/Darbot-Graph-MCP/wiki" class="resource-card" target="_blank">
+                    <div class="resource-icon">📖</div>
+                    <h3>GitHub Wiki</h3>
+                    <p>Community-maintained wiki</p>
+                </a>
+                <a href="https://github.com/dayour/Darbot-Graph-MCP/discussions" class="resource-card" target="_blank">
+                    <div class="resource-icon">💬</div>
+                    <h3>Discussions</h3>
+                    <p>Community discussions</p>
+                </a>
+                <a href="https://github.com/dayour/Darbot-Graph-MCP/issues" class="resource-card" target="_blank">
+                    <div class="resource-icon">🐛</div>
+                    <h3>Issues</h3>
+                    <p>Report bugs and issues</p>
+                </a>
+            </div>
+        </article>
+
+        <article class="docs-article">
+            <h2>Frequently Asked Questions</h2>
+            
+            <h3>What is Darbot Graph MCP?</h3>
+            <p>Darbot Graph MCP is an extensible MCP (Model Context Protocol) server that bridges AI assistants with Microsoft 365 services through Microsoft Graph API.</p>
+            
+            <h3>Do I need Azure AD credentials?</h3>
+            <p>No, you can use demo mode for testing. For production use with real Microsoft 365 data, Azure AD credentials are required.</p>
+            
+            <h3>Which VS Code version is supported?</h3>
+            <p>Both VS Code stable and VS Code Insiders with MCP support are compatible.</p>
+            
+            <h3>Can I add custom tools?</h3>
+            <p>Yes! The framework is designed for extensibility. See the <a href="extensibility.html">Extensibility Guide</a>.</p>
+            
+            <h3>Is this production-ready?</h3>
+            <p>This is a research and development prototype demonstrating MCP integration with Microsoft Graph. Use appropriate security measures for production.</p>
+        </article>
+
+        <article class="docs-article">
+            <h2>Glossary</h2>
+            
+            <h3>MCP (Model Context Protocol)</h3>
+            <p>A protocol for connecting AI assistants to external tools and services.</p>
+            
+            <h3>Microsoft Graph</h3>
+            <p>Unified API endpoint for accessing Microsoft 365, Azure AD, and other Microsoft services.</p>
+            
+            <h3>Azure AD (Azure Active Directory)</h3>
+            <p>Microsoft's cloud-based identity and access management service.</p>
+            
+            <h3>Tool</h3>
+            <p>An MCP-compatible function that performs a specific operation (e.g., sending email, listing users).</p>
+            
+            <h3>Demo Mode</h3>
+            <p>Testing mode that provides simulated responses without requiring Azure AD authentication.</p>
+        </article>
+
+        <article class="docs-article">
+            <h2>Tutorials</h2>
+            
+            <h3>Getting Started</h3>
+            <ul>
+                <li><a href="docs.html#installation">Installation Guide</a></li>
+                <li><a href="docs.html#azure-registration">Azure AD Setup</a></li>
+                <li><a href="docs.html#quick-start">Quick Start Tutorial</a></li>
+            </ul>
+            
+            <h3>Common Tasks</h3>
+            <ul>
+                <li><a href="examples.html">User Provisioning Example</a></li>
+                <li><a href="examples.html">Email Automation Example</a></li>
+                <li><a href="examples.html">Teams Integration Example</a></li>
+            </ul>
+            
+            <h3>Advanced Topics</h3>
+            <ul>
+                <li><a href="extensibility.html">Adding Custom Tools</a></li>
+                <li><a href="docs.html#security">Security Best Practices</a></li>
+                <li><a href="docs.html#performance">Performance Optimization</a></li>
+            </ul>
+        </article>
+
+        <article class="docs-article">
+            <h2>Resources</h2>
+            
+            <h3>Microsoft Documentation</h3>
+            <ul>
+                <li><a href="https://docs.microsoft.com/en-us/graph/" target="_blank">Microsoft Graph Documentation</a></li>
+                <li><a href="https://docs.microsoft.com/en-us/azure/active-directory/" target="_blank">Azure AD Documentation</a></li>
+                <li><a href="https://developer.microsoft.com/en-us/graph/graph-explorer" target="_blank">Graph Explorer</a></li>
+            </ul>
+            
+            <h3>MCP Resources</h3>
+            <ul>
+                <li><a href="https://modelcontextprotocol.io/" target="_blank">MCP Protocol Specification</a></li>
+                <li><a href="https://marketplace.visualstudio.com/items?itemName=anthropic.claude-dev" target="_blank">VS Code MCP Extension</a></li>
+            </ul>
+            
+            <h3>Community</h3>
+            <ul>
+                <li><a href="https://github.com/dayour/Darbot-Graph-MCP" target="_blank">GitHub Repository</a></li>
+                <li><a href="https://github.com/dayour/Darbot-Graph-MCP/issues" target="_blank">Issue Tracker</a></li>
+                <li><a href="https://github.com/dayour/Darbot-Graph-MCP/blob/main/CONTRIBUTING.md" target="_blank">Contributing Guidelines</a></li>
+            </ul>
+        </article>
+
+        <div class="info-box">
+            <div class="info-icon">💡</div>
+            <div>
+                <h4>Contribute to the Wiki</h4>
+                <p>Help improve this wiki by contributing to the <a href="https://github.com/dayour/Darbot-Graph-MCP/wiki" target="_blank">GitHub Wiki</a>!</p>
+            </div>
+        </div>
+    </div></div></section>
+
+    <footer class="footer"><div class="container"><div class="footer-bottom"><p>&copy; 2024 Darbot Labs. Licensed under MIT License.</p></div></div></footer>
+    
+    <div id="clippy-assistant" class="clippy-container">
+        <div class="clippy-icon" onclick="toggleClippy()"><svg viewBox="0 0 124 124" fill="none"><path d="M62 10 L62 114 M10 62 L114 62" stroke="currentColor" stroke-width="8" stroke-linecap="round"/><circle cx="62" cy="62" r="50" stroke="currentColor" stroke-width="4" fill="none"/></svg></div>
+        <div class="clippy-chat" id="clippy-chat" style="display: none;">
+            <div class="clippy-header"><div class="clippy-title"><span class="clippy-avatar">📎</span><span>Darbot Assistant</span></div><button class="clippy-close" onclick="toggleClippy()">×</button></div>
+            <div class="clippy-messages" id="clippy-messages"><div class="clippy-message assistant"><div class="message-avatar">📎</div><div class="message-content">Search the wiki or ask me anything!</div></div></div>
+            <div class="clippy-input-container"><input type="text" id="clippy-input" class="clippy-input" placeholder="What can I help you find?"><button class="clippy-send" onclick="sendClippyMessage()"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"/></svg></button></div>
+            <div class="clippy-powered">Powered by Spark LLM API</div>
+        </div>
+    </div>
+    <script src="assets/js/main.js"></script><script src="assets/js/clippy.js"></script>
+</body>
+</html>

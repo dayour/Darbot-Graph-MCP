@@ -1,0 +1,393 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Darbot Graph MCP - Ultimate extensible MCP server for Microsoft Graph API with 64+ tools">
+    <meta name="keywords" content="MCP, Microsoft Graph, AI, Claude, VS Code, Azure AD, Microsoft 365">
+    <title>Darbot Graph MCP - Microsoft Graph for AI Assistants</title>
+    <link rel="stylesheet" href="assets/css/style.css">
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>⭐</text></svg>">
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="nav-bar">
+        <div class="nav-container">
+            <div class="nav-brand">
+                <span class="brand-icon">⭐</span>
+                <span class="brand-text">Darbot Graph MCP</span>
+            </div>
+            <div class="nav-links">
+                <a href="#home" class="nav-link active">Home</a>
+                <a href="docs.html" class="nav-link">Documentation</a>
+                <a href="api.html" class="nav-link">API Reference</a>
+                <a href="examples.html" class="nav-link">Examples</a>
+                <a href="extensibility.html" class="nav-link">Extensibility</a>
+                <a href="wiki.html" class="nav-link">Wiki</a>
+                <a href="https://github.com/dayour/Darbot-Graph-MCP" class="nav-link" target="_blank">GitHub</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="hero-background"></div>
+        <div class="hero-content">
+            <div class="hero-badge">
+                <span class="badge-pulse"></span>
+                <span>v1.0.0 • MCP Protocol Compatible</span>
+            </div>
+            <h1 class="hero-title">
+                <span class="gradient-text">Darbot Graph MCP</span>
+            </h1>
+            <p class="hero-subtitle">
+                Ultimate Extensible MCP Server for Microsoft Graph API
+            </p>
+            <p class="hero-description">
+                Bridge AI assistants with Microsoft 365 services through 64+ comprehensive tools.<br>
+                Built on official Microsoft Graph SDKs with enterprise-grade security.
+            </p>
+            <div class="hero-actions">
+                <a href="#quick-start" class="btn btn-primary">
+                    <span>Get Started</span>
+                    <svg class="btn-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6"/>
+                    </svg>
+                </a>
+                <a href="docs.html" class="btn btn-secondary">
+                    <svg class="btn-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/>
+                    </svg>
+                    <span>Documentation</span>
+                </a>
+                <a href="https://github.com/dayour/Darbot-Graph-MCP" class="btn btn-outline" target="_blank">
+                    <svg class="btn-icon" fill="currentColor" viewBox="0 0 24 24">
+                        <path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/>
+                    </svg>
+                    <span>View on GitHub</span>
+                </a>
+            </div>
+        </div>
+        <div class="hero-stats">
+            <div class="stat-card">
+                <div class="stat-value">64+</div>
+                <div class="stat-label">Tools</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value">10</div>
+                <div class="stat-label">Categories</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value">100%</div>
+                <div class="stat-label">Graph SDK</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Features Section -->
+    <section class="section features-section" id="features">
+        <div class="container">
+            <h2 class="section-title">
+                <span class="gradient-text">Key Features</span>
+            </h2>
+            <div class="features-grid">
+                <div class="feature-card">
+                    <div class="feature-icon">🚀</div>
+                    <h3>64+ Comprehensive Tools</h3>
+                    <p>Coverage of Microsoft Graph API operations across all major Microsoft 365 services</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">🏗️</div>
+                    <h3>Official SDK Foundation</h3>
+                    <p>Built on Microsoft.Graph SDK and Microsoft.Graph.Beta SDK for maximum compatibility</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">📊</div>
+                    <h3>Hierarchical Organization</h3>
+                    <p>Optimized for Visual Studio Code's 128 tool limit with logical categorization</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">🔄</div>
+                    <h3>Dual SDK Support</h3>
+                    <p>Microsoft Graph v1.0 and Beta API support for stable and preview features</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">🎯</div>
+                    <h3>Demo Mode</h3>
+                    <p>Safe testing environment without affecting production data</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">🔐</div>
+                    <h3>Enterprise Security</h3>
+                    <p>App-only and delegated permissions with Azure.Identity integration</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">🔌</div>
+                    <h3>Ultimate Extensibility</h3>
+                    <p>Modular architecture designed for easy expansion to any Graph API</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">⚡</div>
+                    <h3>One-Click Install</h3>
+                    <p>Quick installation via NPX for VS Code and VS Code Insiders</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Tool Categories Section -->
+    <section class="section categories-section">
+        <div class="container">
+            <h2 class="section-title">
+                <span class="gradient-text">Tool Categories</span>
+            </h2>
+            <div class="categories-grid">
+                <div class="category-card">
+                    <div class="category-header">
+                        <span class="category-icon">👥</span>
+                        <h3>User Management</h3>
+                    </div>
+                    <p class="category-desc">Complete user lifecycle & directory operations</p>
+                    <div class="category-tools">8 tools</div>
+                </div>
+                <div class="category-card">
+                    <div class="category-header">
+                        <span class="category-icon">👨‍👩‍👧‍👦</span>
+                        <h3>Group Management</h3>
+                    </div>
+                    <p class="category-desc">Security & distribution groups, dynamic membership</p>
+                    <div class="category-tools">8 tools</div>
+                </div>
+                <div class="category-card">
+                    <div class="category-header">
+                        <span class="category-icon">📧</span>
+                        <h3>Email Management</h3>
+                    </div>
+                    <p class="category-desc">Mail sending, folder management, message operations</p>
+                    <div class="category-tools">8 tools</div>
+                </div>
+                <div class="category-card">
+                    <div class="category-header">
+                        <span class="category-icon">📅</span>
+                        <h3>Calendar Management</h3>
+                    </div>
+                    <p class="category-desc">Events, calendars, scheduling, responses</p>
+                    <div class="category-tools">8 tools</div>
+                </div>
+                <div class="category-card">
+                    <div class="category-header">
+                        <span class="category-icon">👥</span>
+                        <h3>Teams Management</h3>
+                    </div>
+                    <p class="category-desc">Teams, channels, messages, membership</p>
+                    <div class="category-tools">8 tools</div>
+                </div>
+                <div class="category-card">
+                    <div class="category-header">
+                        <span class="category-icon">📁</span>
+                        <h3>File Management</h3>
+                    </div>
+                    <p class="category-desc">OneDrive/SharePoint files, folders, sharing</p>
+                    <div class="category-tools">8 tools</div>
+                </div>
+                <div class="category-card">
+                    <div class="category-header">
+                        <span class="category-icon">🔒</span>
+                        <h3>Security & Compliance</h3>
+                    </div>
+                    <p class="category-desc">Audit logs, secure scores, alerts</p>
+                    <div class="category-tools">8 tools</div>
+                </div>
+                <div class="category-card">
+                    <div class="category-header">
+                        <span class="category-icon">📊</span>
+                        <h3>Reports & Analytics</h3>
+                    </div>
+                    <p class="category-desc">Usage reports, activity analytics</p>
+                    <div class="category-tools">8 tools</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Quick Start Section -->
+    <section class="section quick-start-section" id="quick-start">
+        <div class="container">
+            <h2 class="section-title">
+                <span class="gradient-text">Quick Start</span>
+            </h2>
+            <div class="quick-start-content">
+                <div class="install-methods">
+                    <div class="install-card">
+                        <h3>🚀 One-Click Installation</h3>
+                        <p>The fastest way to get started:</p>
+                        <div class="install-buttons">
+                            <a href="https://insiders.vscode.dev/redirect/mcp/install?name=darbot-graph&config=%7B%22type%22%3A%22stdio%22%2C%22command%22%3A%22npx%22%2C%22args%22%3A%5B%22-y%22%2C%22%40darbotlabs%2Fdarbot-graph-mcp%22%2C%22%24%7Binput%3Aazure_tenant_id%7D%22%2C%22%24%7Binput%3Aazure_client_id%7D%22%2C%22%24%7Binput%3Aazure_client_secret%7D%22%5D%7D" class="btn btn-primary" target="_blank">
+                                Install for VS Code
+                            </a>
+                            <a href="https://insiders.vscode.dev/redirect/mcp/install?name=darbot-graph&quality=insiders&config=%7B%22type%22%3A%22stdio%22%2C%22command%22%3A%22npx%22%2C%22args%22%3A%5B%22-y%22%2C%22%40darbotlabs%2Fdarbot-graph-mcp%22%2C%22%24%7Binput%3Aazure_tenant_id%7D%22%2C%22%24%7Binput%3Aazure_client_id%7D%22%2C%22%24%7Binput%3Aazure_client_secret%7D%22%5D%7D" class="btn btn-secondary" target="_blank">
+                                Install for VS Code Insiders
+                            </a>
+                        </div>
+                    </div>
+                    <div class="install-card">
+                        <h3>📦 NPX Installation</h3>
+                        <p>Install via NPX:</p>
+                        <div class="code-block">
+                            <code>npx -y @darbotlabs/darbot-graph-mcp</code>
+                            <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                        </div>
+                    </div>
+                    <div class="install-card">
+                        <h3>🔧 Manual Installation</h3>
+                        <p>Clone and build from source:</p>
+                        <div class="code-block">
+                            <code>git clone https://github.com/dayour/darbot-graph-mcp.git
+cd darbot-graph-mcp
+dotnet restore
+dotnet build</code>
+                            <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                        </div>
+                    </div>
+                </div>
+                <div class="prerequisites">
+                    <h3>📋 Prerequisites</h3>
+                    <ul>
+                        <li>✅ VS Code or VS Code Insiders with MCP support</li>
+                        <li>✅ .NET 8.0 SDK or later</li>
+                        <li>✅ Azure subscription with Azure Active Directory</li>
+                        <li>✅ Node.js 16+ (for NPX installation)</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Resources Section -->
+    <section class="section resources-section">
+        <div class="container">
+            <h2 class="section-title">
+                <span class="gradient-text">Resources</span>
+            </h2>
+            <div class="resources-grid">
+                <a href="docs.html" class="resource-card">
+                    <div class="resource-icon">📚</div>
+                    <h3>Documentation</h3>
+                    <p>Complete setup guides and tutorials</p>
+                </a>
+                <a href="api.html" class="resource-card">
+                    <div class="resource-icon">🔧</div>
+                    <h3>API Reference</h3>
+                    <p>Detailed command library with 64+ tools</p>
+                </a>
+                <a href="examples.html" class="resource-card">
+                    <div class="resource-icon">💡</div>
+                    <h3>Examples</h3>
+                    <p>Real-world usage scenarios</p>
+                </a>
+                <a href="extensibility.html" class="resource-card">
+                    <div class="resource-icon">🔌</div>
+                    <h3>Extensibility</h3>
+                    <p>Add custom Graph API capabilities</p>
+                </a>
+                <a href="https://github.com/dayour/Darbot-Graph-MCP/blob/main/SECURITY.md" class="resource-card" target="_blank">
+                    <div class="resource-icon">🔒</div>
+                    <h3>Security</h3>
+                    <p>Best practices and guidelines</p>
+                </a>
+                <a href="https://github.com/dayour/Darbot-Graph-MCP/blob/main/TROUBLESHOOTING.md" class="resource-card" target="_blank">
+                    <div class="resource-icon">🚨</div>
+                    <h3>Troubleshooting</h3>
+                    <p>Common issues and solutions</p>
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h4>Darbot Graph MCP</h4>
+                    <p>Ultimate extensible MCP server for Microsoft Graph API</p>
+                </div>
+                <div class="footer-section">
+                    <h4>Documentation</h4>
+                    <ul>
+                        <li><a href="docs.html">Getting Started</a></li>
+                        <li><a href="api.html">API Reference</a></li>
+                        <li><a href="examples.html">Examples</a></li>
+                        <li><a href="extensibility.html">Extensibility</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h4>Community</h4>
+                    <ul>
+                        <li><a href="https://github.com/dayour/Darbot-Graph-MCP" target="_blank">GitHub</a></li>
+                        <li><a href="https://github.com/dayour/Darbot-Graph-MCP/issues" target="_blank">Issues</a></li>
+                        <li><a href="https://github.com/dayour/Darbot-Graph-MCP/blob/main/CONTRIBUTING.md" target="_blank">Contributing</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h4>Resources</h4>
+                    <ul>
+                        <li><a href="https://docs.microsoft.com/en-us/graph/" target="_blank">Microsoft Graph</a></li>
+                        <li><a href="https://modelcontextprotocol.io/" target="_blank">MCP Protocol</a></li>
+                        <li><a href="https://developer.microsoft.com/en-us/graph/graph-explorer" target="_blank">Graph Explorer</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2024 Darbot Labs. Licensed under MIT License.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Clippy Assistant -->
+    <div id="clippy-assistant" class="clippy-container">
+        <div class="clippy-icon" onclick="toggleClippy()">
+            <svg viewBox="0 0 124 124" fill="none">
+                <path d="M62 10 L62 114 M10 62 L114 62" stroke="currentColor" stroke-width="8" stroke-linecap="round"/>
+                <circle cx="62" cy="62" r="50" stroke="currentColor" stroke-width="4" fill="none"/>
+            </svg>
+        </div>
+        <div class="clippy-chat" id="clippy-chat" style="display: none;">
+            <div class="clippy-header">
+                <div class="clippy-title">
+                    <span class="clippy-avatar">📎</span>
+                    <span>Darbot Assistant</span>
+                </div>
+                <button class="clippy-close" onclick="toggleClippy()">×</button>
+            </div>
+            <div class="clippy-messages" id="clippy-messages">
+                <div class="clippy-message assistant">
+                    <div class="message-avatar">📎</div>
+                    <div class="message-content">
+                        Hi! I'm your Darbot Graph MCP assistant. I can help you with:
+                        <ul>
+                            <li>Setting up Azure AD authentication</li>
+                            <li>Understanding tool categories</li>
+                            <li>Adding extensibility</li>
+                            <li>Troubleshooting issues</li>
+                        </ul>
+                        What would you like to know?
+                    </div>
+                </div>
+            </div>
+            <div class="clippy-input-container">
+                <input type="text" id="clippy-input" class="clippy-input" placeholder="Ask me anything...">
+                <button class="clippy-send" onclick="sendClippyMessage()">
+                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"/>
+                    </svg>
+                </button>
+            </div>
+            <div class="clippy-powered">Powered by Spark LLM API</div>
+        </div>
+    </div>
+
+    <script src="assets/js/main.js"></script>
+    <script src="assets/js/clippy.js"></script>
+</body>
+</html>

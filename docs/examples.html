@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Examples - Darbot Graph MCP</title>
+    <link rel="stylesheet" href="assets/css/style.css">
+    <link rel="stylesheet" href="assets/css/docs.css">
+</head>
+<body>
+    <nav class="nav-bar">
+        <div class="nav-container">
+            <div class="nav-brand"><span class="brand-icon">⭐</span><span class="brand-text">Darbot Graph MCP</span></div>
+            <div class="nav-links">
+                <a href="index.html" class="nav-link">Home</a>
+                <a href="docs.html" class="nav-link">Documentation</a>
+                <a href="api.html" class="nav-link">API Reference</a>
+                <a href="examples.html" class="nav-link active">Examples</a>
+                <a href="extensibility.html" class="nav-link">Extensibility</a>
+                <a href="wiki.html" class="nav-link">Wiki</a>
+                <a href="https://github.com/dayour/Darbot-Graph-MCP" class="nav-link" target="_blank">GitHub</a>
+            </div>
+        </div>
+    </nav>
+
+    <section class="docs-hero">
+        <div class="container"><h1 class="gradient-text">Examples</h1><p>Real-world usage scenarios and code samples</p></div>
+    </section>
+
+    <section class="section"><div class="container"><div class="docs-content" style="max-width: 900px; margin: 0 auto;">
+        <article class="docs-article">
+            <h2>User Provisioning</h2>
+            <p>Automate user account creation and configuration.</p>
+            <div class="code-block"><code>// Create new user
+darbot-graph-users-create
+  displayName: "John Doe"
+  userPrincipalName: "john.doe@company.com"
+  mailNickname: "johndoe"
+  
+// Assign license
+darbot-graph-users-license-assign
+  userId: "john.doe@company.com"
+  skuId: "O365_BUSINESS_PREMIUM"</code></div>
+        </article>
+
+        <article class="docs-article">
+            <h2>Email Automation</h2>
+            <p>Send automated emails with attachments.</p>
+            <div class="code-block"><code>// Send email
+darbot-graph-mail-send
+  subject: "Weekly Report"
+  body: "<h1>Report</h1><p>This is the weekly report.</p>"
+  toRecipients: ["team@company.com"]
+  importance: "High"</code></div>
+        </article>
+
+        <article class="docs-article">
+            <h2>Calendar Management</h2>
+            <p>Schedule meetings and manage calendars.</p>
+            <div class="code-block"><code>// Create meeting
+darbot-graph-calendar-events-create
+  subject: "Team Standup"
+  start: "2024-01-15T09:00:00"
+  end: "2024-01-15T09:30:00"
+  attendees: ["alice@company.com", "bob@company.com"]</code></div>
+        </article>
+
+        <article class="docs-article">
+            <h2>Teams Collaboration</h2>
+            <p>Post messages and manage Teams channels.</p>
+            <div class="code-block"><code>// Send Teams message
+darbot-graph-teams-messages-send
+  teamId: "team-guid"
+  channelId: "channel-guid"
+  content: "Deployment completed successfully!"</code></div>
+        </article>
+
+        <article class="docs-article">
+            <h2>Security Monitoring</h2>
+            <p>Monitor security events and risks.</p>
+            <div class="code-block"><code>// List security risks
+darbot-graph-security-risks-list
+  filter: "riskLevel eq 'high'"
+  
+// Get audit logs
+darbot-graph-security-audit-list
+  startDate: "2024-01-01"
+  endDate: "2024-01-31"</code></div>
+        </article>
+
+        <article class="docs-article">
+            <h2>Reporting</h2>
+            <p>Generate usage and activity reports.</p>
+            <div class="code-block"><code>// Get Teams usage
+darbot-graph-reports-teams
+  period: "D30"
+  
+// Get Microsoft 365 usage
+darbot-graph-reports-usage
+  reportType: "UserActivity"
+  period: "D7"</code></div>
+        </article>
+
+        <div class="info-box">
+            <div class="info-icon">💡</div>
+            <div><h4>More Examples</h4>
+            <p>Find more examples and use cases in the <a href="https://github.com/dayour/Darbot-Graph-MCP/tree/main/examples" target="_blank">GitHub repository</a>.</p></div>
+        </div>
+    </div></div></section>
+
+    <footer class="footer"><div class="container"><div class="footer-bottom"><p>&copy; 2024 Darbot Labs. Licensed under MIT License.</p></div></div></footer>
+    
+    <div id="clippy-assistant" class="clippy-container">
+        <div class="clippy-icon" onclick="toggleClippy()"><svg viewBox="0 0 124 124" fill="none"><path d="M62 10 L62 114 M10 62 L114 62" stroke="currentColor" stroke-width="8" stroke-linecap="round"/><circle cx="62" cy="62" r="50" stroke="currentColor" stroke-width="4" fill="none"/></svg></div>
+        <div class="clippy-chat" id="clippy-chat" style="display: none;">
+            <div class="clippy-header"><div class="clippy-title"><span class="clippy-avatar">📎</span><span>Darbot Assistant</span></div><button class="clippy-close" onclick="toggleClippy()">×</button></div>
+            <div class="clippy-messages" id="clippy-messages"><div class="clippy-message assistant"><div class="message-avatar">📎</div><div class="message-content">Need help with an example?</div></div></div>
+            <div class="clippy-input-container"><input type="text" id="clippy-input" class="clippy-input" placeholder="Ask about examples..."><button class="clippy-send" onclick="sendClippyMessage()"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"/></svg></button></div>
+            <div class="clippy-powered">Powered by Spark LLM API</div>
+        </div>
+    </div>
+    <script src="assets/js/main.js"></script><script src="assets/js/clippy.js"></script>
+</body>
+</html>
