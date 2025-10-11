@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Extensibility - Darbot Graph MCP</title>
+    <link rel="stylesheet" href="assets/css/style.css">
+    <link rel="stylesheet" href="assets/css/docs.css">
+</head>
+<body>
+    <nav class="nav-bar">
+        <div class="nav-container">
+            <div class="nav-brand"><span class="brand-icon">⭐</span><span class="brand-text">Darbot Graph MCP</span></div>
+            <div class="nav-links">
+                <a href="index.html" class="nav-link">Home</a>
+                <a href="docs.html" class="nav-link">Documentation</a>
+                <a href="api.html" class="nav-link">API Reference</a>
+                <a href="examples.html" class="nav-link">Examples</a>
+                <a href="extensibility.html" class="nav-link active">Extensibility</a>
+                <a href="wiki.html" class="nav-link">Wiki</a>
+                <a href="https://github.com/dayour/Darbot-Graph-MCP" class="nav-link" target="_blank">GitHub</a>
+            </div>
+        </div>
+    </nav>
+
+    <section class="docs-hero">
+        <div class="container"><h1 class="gradient-text">Extensibility</h1><p>Extend Darbot Graph MCP with custom tools</p></div>
+    </section>
+
+    <section class="section"><div class="container"><div class="docs-content" style="max-width: 900px; margin: 0 auto;">
+        <article class="docs-article">
+            <h2>Architecture Overview</h2>
+            <p>Darbot Graph MCP is designed for maximum extensibility to accommodate the full breadth of Microsoft Graph APIs.</p>
+            
+            <h3>Modular Design</h3>
+            <ul>
+                <li><strong>Tool Categories</strong>: Organized by functional domain</li>
+                <li><strong>Service Layer</strong>: Abstraction for Graph API calls</li>
+                <li><strong>SDK Support</strong>: Both v1.0 and Beta APIs</li>
+                <li><strong>Naming Convention</strong>: Hierarchical tool naming</li>
+            </ul>
+        </article>
+
+        <article class="docs-article">
+            <h2>Adding New Tools</h2>
+            
+            <h3>Step 1: Identify Graph API</h3>
+            <p>Choose from the <a href="https://docs.microsoft.com/en-us/graph/api/overview" target="_blank">Microsoft Graph API reference</a>.</p>
+            
+            <h3>Step 2: Design Tool Schema</h3>
+            <p>Define input parameters and validation rules.</p>
+            <div class="code-block"><code>// Example tool schema
+{
+  "name": "darbot-graph-{category}-{action}",
+  "description": "Tool description",
+  "inputSchema": {
+    "type": "object",
+    "properties": {
+      "param1": { "type": "string", "description": "..." }
+    },
+    "required": ["param1"]
+  }
+}</code></div>
+
+            <h3>Step 3: Implement Service Method</h3>
+            <p>Add async method in GraphServiceEnhanced.cs</p>
+            <div class="code-block"><code>public async Task&lt;string&gt; MyCustomOperationAsync(string param1)
+{
+    // Use _graphClient for stable API
+    // Use _betaGraphClient for preview API
+    
+    var result = await _graphClient
+        .Users
+        .GetAsync();
+        
+    return JsonSerializer.Serialize(result);
+}</code></div>
+
+            <h3>Step 4: Add Tool Definition</h3>
+            <p>Include in appropriate ToolCategories method.</p>
+            <div class="code-block"><code>new Tool
+{
+    Name = "darbot-graph-{category}-{action}",
+    Description = "Tool description",
+    InputSchema = new
+    {
+        type = "object",
+        properties = new { ... }
+    }
+}</code></div>
+
+            <h3>Step 5: Test & Document</h3>
+            <ul>
+                <li>Test in demo mode</li>
+                <li>Test with real Azure AD</li>
+                <li>Update cmd_lib.md</li>
+                <li>Add examples</li>
+            </ul>
+        </article>
+
+        <article class="docs-article">
+            <h2>Supported Graph API Areas</h2>
+            
+            <h3>Ready for Implementation 🔄</h3>
+            <ul>
+                <li><strong>Device Management</strong>: Intune device operations, compliance policies</li>
+                <li><strong>Identity Protection</strong>: Conditional access, risk policies</li>
+                <li><strong>Directory Management</strong>: Administrative units, organizational contacts</li>
+                <li><strong>Contacts</strong>: Personal and organization contact management</li>
+                <li><strong>Tasks/Planner</strong>: Microsoft Planner integration</li>
+                <li><strong>OneNote</strong>: Notebook, section, and page operations</li>
+                <li><strong>Licenses</strong>: Subscription and license management</li>
+                <li><strong>External Identities</strong>: B2B collaboration and B2C</li>
+                <li><strong>Bookings</strong>: Microsoft Bookings appointment management</li>
+                <li><strong>Education</strong>: Education-specific classes and assignments</li>
+                <li><strong>Compliance</strong>: Data loss prevention, retention policies</li>
+                <li><strong>Search</strong>: Microsoft Search query and administration</li>
+                <li><strong>Cloud Communications</strong>: Teams calls and meetings</li>
+                <li><strong>Print</strong>: Universal Print service management</li>
+            </ul>
+        </article>
+
+        <article class="docs-article">
+            <h2>SDK Version Management</h2>
+            
+            <h3>Stable Operations</h3>
+            <p>Use <code>_graphClient</code> for production-ready APIs (Microsoft.Graph v5.x).</p>
+            
+            <h3>Preview Features</h3>
+            <p>Use <code>_betaGraphClient</code> for beta/preview APIs (Microsoft.Graph.Beta).</p>
+            
+            <div class="warning-box">
+                <div class="warning-icon">⚠️</div>
+                <div>
+                    <h4>Beta API Caution</h4>
+                    <p>Beta APIs may change without notice. Use stable APIs for production scenarios.</p>
+                </div>
+            </div>
+        </article>
+
+        <article class="docs-article">
+            <h2>Contributing</h2>
+            
+            <h3>Guidelines</h3>
+            <ul>
+                <li>Follow the established naming convention</li>
+                <li>Provide comprehensive error handling</li>
+                <li>Include demo mode support</li>
+                <li>Add detailed documentation</li>
+                <li>Write tests for new tools</li>
+            </ul>
+            
+            <h3>Pull Request Process</h3>
+            <ol>
+                <li>Fork the repository</li>
+                <li>Create a feature branch</li>
+                <li>Implement your changes</li>
+                <li>Add tests and documentation</li>
+                <li>Submit pull request</li>
+            </ol>
+            
+            <p>See <a href="https://github.com/dayour/Darbot-Graph-MCP/blob/main/CONTRIBUTING.md" target="_blank">CONTRIBUTING.md</a> for details.</p>
+        </article>
+
+        <article class="docs-article">
+            <h2>Framework Components</h2>
+            
+            <h3>Core Files</h3>
+            <ul>
+                <li><code>GraphServiceEnhanced.cs</code> - Service implementation</li>
+                <li><code>ToolCategories.cs</code> - Tool definitions</li>
+                <li><code>Program.cs</code> - Server initialization</li>
+                <li><code>McpServer.cs</code> - MCP protocol handler</li>
+            </ul>
+            
+            <h3>Authentication</h3>
+            <ul>
+                <li><code>AzureAdOptions.cs</code> - Configuration model</li>
+                <li><code>GraphClientFactory.cs</code> - Client initialization</li>
+            </ul>
+            
+            <h3>Testing</h3>
+            <ul>
+                <li><code>DemoModeHandler.cs</code> - Simulated responses</li>
+                <li><code>GraphServiceTests.cs</code> - Unit tests</li>
+            </ul>
+        </article>
+
+        <div class="success-box">
+            <div class="success-icon">✅</div>
+            <div>
+                <h4>Ready to Extend?</h4>
+                <p>Start by exploring the <a href="https://github.com/dayour/Darbot-Graph-MCP/tree/main/src" target="_blank">source code</a> and identifying a Graph API to implement!</p>
+            </div>
+        </div>
+    </div></div></section>
+
+    <footer class="footer"><div class="container"><div class="footer-bottom"><p>&copy; 2024 Darbot Labs. Licensed under MIT License.</p></div></div></footer>
+    
+    <div id="clippy-assistant" class="clippy-container">
+        <div class="clippy-icon" onclick="toggleClippy()"><svg viewBox="0 0 124 124" fill="none"><path d="M62 10 L62 114 M10 62 L114 62" stroke="currentColor" stroke-width="8" stroke-linecap="round"/><circle cx="62" cy="62" r="50" stroke="currentColor" stroke-width="4" fill="none"/></svg></div>
+        <div class="clippy-chat" id="clippy-chat" style="display: none;">
+            <div class="clippy-header"><div class="clippy-title"><span class="clippy-avatar">📎</span><span>Darbot Assistant</span></div><button class="clippy-close" onclick="toggleClippy()">×</button></div>
+            <div class="clippy-messages" id="clippy-messages"><div class="clippy-message assistant"><div class="message-avatar">📎</div><div class="message-content">I can help you add custom tools!</div></div></div>
+            <div class="clippy-input-container"><input type="text" id="clippy-input" class="clippy-input" placeholder="Ask about adding extensibility..."><button class="clippy-send" onclick="sendClippyMessage()"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"/></svg></button></div>
+            <div class="clippy-powered">Powered by Spark LLM API</div>
+        </div>
+    </div>
+    <script src="assets/js/main.js"></script><script src="assets/js/clippy.js"></script>
+</body>
+</html>

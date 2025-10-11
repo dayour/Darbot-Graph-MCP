@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>API Reference - Darbot Graph MCP</title>
+    <link rel="stylesheet" href="assets/css/style.css">
+    <link rel="stylesheet" href="assets/css/docs.css">
+</head>
+<body>
+    <nav class="nav-bar">
+        <div class="nav-container">
+            <div class="nav-brand">
+                <span class="brand-icon">⭐</span>
+                <span class="brand-text">Darbot Graph MCP</span>
+            </div>
+            <div class="nav-links">
+                <a href="index.html" class="nav-link">Home</a>
+                <a href="docs.html" class="nav-link">Documentation</a>
+                <a href="api.html" class="nav-link active">API Reference</a>
+                <a href="examples.html" class="nav-link">Examples</a>
+                <a href="extensibility.html" class="nav-link">Extensibility</a>
+                <a href="wiki.html" class="nav-link">Wiki</a>
+                <a href="https://github.com/dayour/Darbot-Graph-MCP" class="nav-link" target="_blank">GitHub</a>
+            </div>
+        </div>
+    </nav>
+
+    <section class="docs-hero">
+        <div class="container">
+            <h1 class="gradient-text">API Reference</h1>
+            <p>Complete documentation of all 64+ tools</p>
+        </div>
+    </section>
+
+    <section class="section">
+        <div class="container">
+            <div class="docs-layout">
+                <aside class="docs-sidebar">
+                    <nav class="docs-nav">
+                        <div class="docs-nav-section">
+                            <h3>Categories</h3>
+                            <a href="#users" class="docs-nav-link active">User Management</a>
+                            <a href="#groups" class="docs-nav-link">Group Management</a>
+                            <a href="#mail" class="docs-nav-link">Email Management</a>
+                            <a href="#calendar" class="docs-nav-link">Calendar Management</a>
+                            <a href="#teams" class="docs-nav-link">Teams Management</a>
+                            <a href="#files" class="docs-nav-link">Files Management</a>
+                            <a href="#sharepoint" class="docs-nav-link">SharePoint</a>
+                            <a href="#security" class="docs-nav-link">Security</a>
+                            <a href="#reports" class="docs-nav-link">Reports</a>
+                            <a href="#apps" class="docs-nav-link">Applications</a>
+                        </div>
+                    </nav>
+                </aside>
+
+                <main class="docs-content">
+                    <article id="overview" class="docs-article">
+                        <h2>Overview</h2>
+                        <p>Darbot Graph MCP provides 64+ tools organized into 10 logical categories. All tools follow the naming pattern: <code>darbot-graph-{category}-{action}</code></p>
+                        
+                        <div class="info-box">
+                            <div class="info-icon">💡</div>
+                            <div>
+                                <h4>Tool Naming Convention</h4>
+                                <p>Tools are hierarchically organized for easy discovery and VS Code's tool limit optimization.</p>
+                            </div>
+                        </div>
+                    </article>
+
+                    <article id="users" class="docs-article">
+                        <h2>User Management (8 tools)</h2>
+                        <p>Complete user lifecycle and directory operations.</p>
+
+                        <h3>darbot-graph-users-list</h3>
+                        <p>List users in the directory.</p>
+                        <div class="code-block">
+                            <code>Parameters:
+  filter (string, optional): OData filter expression
+  top (number, optional): Number of results to return
+  orderby (string, optional): Order results by property</code>
+                        </div>
+
+                        <h3>darbot-graph-users-create</h3>
+                        <p>Create a new user in Azure AD.</p>
+                        <div class="code-block">
+                            <code>Parameters:
+  displayName (string, required): User's display name
+  userPrincipalName (string, required): User's UPN
+  mailNickname (string, required): Mail alias
+  accountEnabled (boolean, optional): Enable account (default: true)</code>
+                        </div>
+
+                        <h3>darbot-graph-users-get</h3>
+                        <p>Get details of a specific user.</p>
+                        
+                        <h3>darbot-graph-users-update</h3>
+                        <p>Update user properties.</p>
+
+                        <h3>darbot-graph-users-delete</h3>
+                        <p>Delete a user from the directory.</p>
+
+                        <h3>darbot-graph-users-password-reset</h3>
+                        <p>Reset a user's password.</p>
+
+                        <h3>darbot-graph-users-license-assign</h3>
+                        <p>Assign licenses to a user.</p>
+
+                        <h3>darbot-graph-users-manager-get</h3>
+                        <p>Get user's manager information.</p>
+                    </article>
+
+                    <article id="groups" class="docs-article">
+                        <h2>Group Management (8 tools)</h2>
+                        <p>Security and distribution groups, dynamic membership.</p>
+
+                        <h3>darbot-graph-groups-list</h3>
+                        <p>List groups in the directory.</p>
+
+                        <h3>darbot-graph-groups-create</h3>
+                        <p>Create a new group.</p>
+
+                        <h3>darbot-graph-groups-members-add</h3>
+                        <p>Add members to a group.</p>
+
+                        <h3>darbot-graph-groups-members-remove</h3>
+                        <p>Remove members from a group.</p>
+
+                        <h3>darbot-graph-groups-members-list</h3>
+                        <p>List group members.</p>
+                        
+                        <p><em>And 3 more tools...</em></p>
+                    </article>
+
+                    <article id="mail" class="docs-article">
+                        <h2>Email Management (8 tools)</h2>
+                        <p>Mail sending, folder management, message operations.</p>
+
+                        <h3>darbot-graph-mail-send</h3>
+                        <p>Send an email message.</p>
+                        <div class="code-block">
+                            <code>Parameters:
+  subject (string, required): Email subject
+  body (string, required): Email body (supports HTML)
+  toRecipients (array, required): List of recipient email addresses
+  ccRecipients (array, optional): CC recipients
+  importance (string, optional): Low, Normal, High</code>
+                        </div>
+
+                        <h3>darbot-graph-mail-messages-list</h3>
+                        <p>List email messages.</p>
+
+                        <h3>darbot-graph-mail-folders-list</h3>
+                        <p>List mail folders.</p>
+
+                        <p><em>And 5 more tools...</em></p>
+                    </article>
+
+                    <article id="calendar" class="docs-article">
+                        <h2>Calendar Management (8 tools)</h2>
+                        <p>Events, calendars, scheduling, responses.</p>
+
+                        <h3>darbot-graph-calendar-events-create</h3>
+                        <p>Create a calendar event.</p>
+
+                        <h3>darbot-graph-calendar-events-list</h3>
+                        <p>List calendar events.</p>
+
+                        <h3>darbot-graph-calendar-list</h3>
+                        <p>List calendars.</p>
+
+                        <p><em>And 5 more tools...</em></p>
+                    </article>
+
+                    <article id="teams" class="docs-article">
+                        <h2>Teams Management (8 tools)</h2>
+                        <p>Teams, channels, messages, membership.</p>
+
+                        <h3>darbot-graph-teams-list</h3>
+                        <p>List Microsoft Teams.</p>
+
+                        <h3>darbot-graph-teams-messages-send</h3>
+                        <p>Send a message to a Teams channel.</p>
+
+                        <p><em>And 6 more tools...</em></p>
+                    </article>
+
+                    <article id="files" class="docs-article">
+                        <h2>Files Management (4 tools)</h2>
+                        <p>OneDrive and SharePoint file operations.</p>
+
+                        <h3>darbot-graph-files-upload</h3>
+                        <p>Upload a file to OneDrive/SharePoint.</p>
+
+                        <h3>darbot-graph-files-share</h3>
+                        <p>Share a file with others.</p>
+
+                        <p><em>And 2 more tools...</em></p>
+                    </article>
+
+                    <article id="sharepoint" class="docs-article">
+                        <h2>SharePoint (3 tools)</h2>
+                        <p>Sites, lists, and content management.</p>
+
+                        <h3>darbot-graph-sharepoint-sites-list</h3>
+                        <p>List SharePoint sites.</p>
+
+                        <h3>darbot-graph-sharepoint-items-list</h3>
+                        <p>List items from a SharePoint list.</p>
+
+                        <p><em>And 1 more tool...</em></p>
+                    </article>
+
+                    <article id="security" class="docs-article">
+                        <h2>Security (5 tools)</h2>
+                        <p>Risk detection, audit logs, sign-ins.</p>
+
+                        <h3>darbot-graph-security-risks-list</h3>
+                        <p>List security risk detections.</p>
+
+                        <h3>darbot-graph-security-audit-list</h3>
+                        <p>List audit log events.</p>
+
+                        <p><em>And 3 more tools...</em></p>
+                    </article>
+
+                    <article id="reports" class="docs-article">
+                        <h2>Reports & Analytics (4 tools)</h2>
+                        <p>Usage analytics and activity reports.</p>
+
+                        <h3>darbot-graph-reports-usage</h3>
+                        <p>Get Microsoft 365 usage reports.</p>
+
+                        <h3>darbot-graph-reports-teams</h3>
+                        <p>Get Teams activity reports.</p>
+
+                        <p><em>And 2 more tools...</em></p>
+                    </article>
+
+                    <article id="apps" class="docs-article">
+                        <h2>Applications (8 tools)</h2>
+                        <p>App registrations, permissions, service principals.</p>
+
+                        <h3>darbot-graph-apps-list</h3>
+                        <p>List application registrations.</p>
+
+                        <h3>darbot-graph-apps-permissions-grant</h3>
+                        <p>Grant API permissions to an application.</p>
+
+                        <p><em>And 6 more tools...</em></p>
+                        
+                        <div class="info-box">
+                            <div class="info-icon">📚</div>
+                            <div>
+                                <h4>Complete Reference</h4>
+                                <p>For detailed documentation of all tools with parameters and examples, see <a href="https://github.com/dayour/Darbot-Graph-MCP/blob/main/cmd_lib.md" target="_blank">cmd_lib.md</a> on GitHub.</p>
+                            </div>
+                        </div>
+                    </article>
+                </main>
+            </div>
+        </div>
+    </section>
+
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-bottom">
+                <p>&copy; 2024 Darbot Labs. Licensed under MIT License.</p>
+            </div>
+        </div>
+    </footer>
+
+    <div id="clippy-assistant" class="clippy-container">
+        <div class="clippy-icon" onclick="toggleClippy()">
+            <svg viewBox="0 0 124 124" fill="none">
+                <path d="M62 10 L62 114 M10 62 L114 62" stroke="currentColor" stroke-width="8" stroke-linecap="round"/>
+                <circle cx="62" cy="62" r="50" stroke="currentColor" stroke-width="4" fill="none"/>
+            </svg>
+        </div>
+        <div class="clippy-chat" id="clippy-chat" style="display: none;">
+            <div class="clippy-header">
+                <div class="clippy-title">
+                    <span class="clippy-avatar">📎</span>
+                    <span>Darbot Assistant</span>
+                </div>
+                <button class="clippy-close" onclick="toggleClippy()">×</button>
+            </div>
+            <div class="clippy-messages" id="clippy-messages">
+                <div class="clippy-message assistant">
+                    <div class="message-avatar">📎</div>
+                    <div class="message-content">Ask me about any tool or API!</div>
+                </div>
+            </div>
+            <div class="clippy-input-container">
+                <input type="text" id="clippy-input" class="clippy-input" placeholder="Which tool would you like to know about?">
+                <button class="clippy-send" onclick="sendClippyMessage()">
+                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"/>
+                    </svg>
+                </button>
+            </div>
+            <div class="clippy-powered">Powered by Spark LLM API</div>
+        </div>
+    </div>
+
+    <script src="assets/js/main.js"></script>
+    <script src="assets/js/clippy.js"></script>
+    <script src="assets/js/docs.js"></script>
+</body>
+</html>

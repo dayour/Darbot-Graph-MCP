@@ -1,0 +1,31 @@
+# GitHub Pages Configuration for Darbot Graph MCP
+
+# Theme (using default GitHub Pages theme)
+theme: jekyll-theme-minimal
+
+# Site settings
+title: Darbot Graph MCP
+description: Ultimate extensible MCP server for Microsoft Graph API
+author: Dayour
+baseurl: "/Darbot-Graph-MCP"
+url: "https://dayour.github.io"
+
+# Build settings
+markdown: kramdown
+
+# Exclude from processing
+exclude:
+  - README.md
+  - Gemfile
+  - Gemfile.lock
+  - node_modules
+  - vendor
+
+# Include assets
+include:
+  - assets
+
+# Plugins
+plugins:
+  - jekyll-feed
+  - jekyll-seo-tag

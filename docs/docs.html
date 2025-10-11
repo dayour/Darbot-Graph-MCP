@@ -1,0 +1,589 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Comprehensive documentation for Darbot Graph MCP Server">
+    <title>Documentation - Darbot Graph MCP</title>
+    <link rel="stylesheet" href="assets/css/style.css">
+    <link rel="stylesheet" href="assets/css/docs.css">
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📚</text></svg>">
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="nav-bar">
+        <div class="nav-container">
+            <div class="nav-brand">
+                <span class="brand-icon">⭐</span>
+                <span class="brand-text">Darbot Graph MCP</span>
+            </div>
+            <div class="nav-links">
+                <a href="index.html" class="nav-link">Home</a>
+                <a href="docs.html" class="nav-link active">Documentation</a>
+                <a href="api.html" class="nav-link">API Reference</a>
+                <a href="examples.html" class="nav-link">Examples</a>
+                <a href="extensibility.html" class="nav-link">Extensibility</a>
+                <a href="wiki.html" class="nav-link">Wiki</a>
+                <a href="https://github.com/dayour/Darbot-Graph-MCP" class="nav-link" target="_blank">GitHub</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Documentation Hero -->
+    <section class="docs-hero">
+        <div class="container">
+            <h1 class="gradient-text">Documentation</h1>
+            <p>Everything you need to know about Darbot Graph MCP</p>
+        </div>
+    </section>
+
+    <!-- Documentation Content -->
+    <section class="section docs-section">
+        <div class="container">
+            <div class="docs-layout">
+                <!-- Sidebar Navigation -->
+                <aside class="docs-sidebar">
+                    <nav class="docs-nav">
+                        <div class="docs-nav-section">
+                            <h3>Getting Started</h3>
+                            <a href="#introduction" class="docs-nav-link active">Introduction</a>
+                            <a href="#installation" class="docs-nav-link">Installation</a>
+                            <a href="#quick-start" class="docs-nav-link">Quick Start</a>
+                            <a href="#prerequisites" class="docs-nav-link">Prerequisites</a>
+                        </div>
+                        <div class="docs-nav-section">
+                            <h3>Azure AD Setup</h3>
+                            <a href="#azure-registration" class="docs-nav-link">App Registration</a>
+                            <a href="#azure-permissions" class="docs-nav-link">API Permissions</a>
+                            <a href="#azure-secrets" class="docs-nav-link">Client Secrets</a>
+                            <a href="#azure-config" class="docs-nav-link">Configuration</a>
+                        </div>
+                        <div class="docs-nav-section">
+                            <h3>Configuration</h3>
+                            <a href="#vscode-config" class="docs-nav-link">VS Code Setup</a>
+                            <a href="#environment-vars" class="docs-nav-link">Environment Variables</a>
+                            <a href="#demo-mode" class="docs-nav-link">Demo Mode</a>
+                        </div>
+                        <div class="docs-nav-section">
+                            <h3>Advanced Topics</h3>
+                            <a href="#security" class="docs-nav-link">Security Best Practices</a>
+                            <a href="#troubleshooting" class="docs-nav-link">Troubleshooting</a>
+                            <a href="#performance" class="docs-nav-link">Performance Tips</a>
+                        </div>
+                    </nav>
+                </aside>
+
+                <!-- Main Documentation Content -->
+                <main class="docs-content">
+                    <!-- Introduction -->
+                    <article id="introduction" class="docs-article">
+                        <h2>Introduction</h2>
+                        <p>Darbot Graph MCP Server is an ultimate extensible MCP (Model Context Protocol) server for Microsoft Graph API. It bridges AI assistants with Microsoft 365 services through 64+ comprehensive tools built on official Microsoft Graph SDKs.</p>
+                        
+                        <div class="info-box">
+                            <div class="info-icon">💡</div>
+                            <div>
+                                <h4>What is MCP?</h4>
+                                <p>Model Context Protocol (MCP) is a standard for connecting AI assistants to external tools and services. It enables AI models to interact with real-world APIs and data sources.</p>
+                            </div>
+                        </div>
+
+                        <h3>Key Features</h3>
+                        <ul>
+                            <li><strong>64+ Comprehensive Tools</strong>: Coverage of Microsoft Graph API operations</li>
+                            <li><strong>Official SDK Foundation</strong>: Built on Microsoft.Graph SDK v5.x and Beta SDK</li>
+                            <li><strong>Hierarchical Organization</strong>: Optimized for VS Code's tool limits</li>
+                            <li><strong>Dual SDK Support</strong>: Access to both stable and preview APIs</li>
+                            <li><strong>Demo Mode</strong>: Safe testing without production data</li>
+                            <li><strong>Enterprise Security</strong>: Azure AD authentication with best practices</li>
+                        </ul>
+
+                        <h3>Architecture</h3>
+                        <p>The server is built using .NET 8.0 and follows a modular architecture:</p>
+                        <ul>
+                            <li><strong>MCP Server Layer</strong>: Handles protocol communication</li>
+                            <li><strong>Service Layer</strong>: Microsoft Graph API integration</li>
+                            <li><strong>Tool Categories</strong>: Organized by functional domain</li>
+                            <li><strong>Authentication Layer</strong>: Azure AD integration</li>
+                        </ul>
+                    </article>
+
+                    <!-- Installation -->
+                    <article id="installation" class="docs-article">
+                        <h2>Installation</h2>
+                        
+                        <h3>Option 1: One-Click Installation (Recommended)</h3>
+                        <p>The fastest way to get started:</p>
+                        <ol>
+                            <li>Click the install button for your VS Code version:</li>
+                        </ol>
+                        <div class="install-buttons">
+                            <a href="https://insiders.vscode.dev/redirect/mcp/install?name=darbot-graph" class="btn btn-primary" target="_blank">Install for VS Code</a>
+                            <a href="https://insiders.vscode.dev/redirect/mcp/install?name=darbot-graph&quality=insiders" class="btn btn-secondary" target="_blank">Install for VS Code Insiders</a>
+                        </div>
+                        <ol start="2">
+                            <li>Enter your Azure AD credentials when prompted (or leave empty for demo mode)</li>
+                            <li>Wait for installation to complete</li>
+                            <li>Restart VS Code</li>
+                        </ol>
+
+                        <h3>Option 2: NPX Installation</h3>
+                        <div class="code-block">
+                            <code>npx -y @darbotlabs/darbot-graph-mcp [TENANT_ID] [CLIENT_ID] [CLIENT_SECRET]</code>
+                            <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                        </div>
+
+                        <h3>Option 3: Manual Installation</h3>
+                        <div class="code-block">
+                            <code>git clone https://github.com/dayour/darbot-graph-mcp.git
+cd darbot-graph-mcp
+dotnet restore
+dotnet build
+dotnet run --project src/DarbotGraphMcp.Server</code>
+                            <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                        </div>
+                    </article>
+
+                    <!-- Quick Start -->
+                    <article id="quick-start" class="docs-article">
+                        <h2>Quick Start</h2>
+                        
+                        <h3>1. Verify Installation</h3>
+                        <p>After installation, verify the server is running by checking the MCP status in VS Code.</p>
+
+                        <h3>2. Test with Demo Mode</h3>
+                        <p>If you installed without Azure AD credentials, you're in demo mode. Try these commands:</p>
+                        <div class="code-block">
+                            <code>darbot-graph-users-list
+darbot-graph-mail-send
+darbot-graph-teams-list</code>
+                            <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                        </div>
+
+                        <h3>3. Configure Azure AD (Production)</h3>
+                        <p>For production use, configure Azure AD authentication. See <a href="#azure-registration">Azure AD Setup</a>.</p>
+
+                        <div class="warning-box">
+                            <div class="warning-icon">⚠️</div>
+                            <div>
+                                <h4>Important</h4>
+                                <p>Demo mode provides simulated responses only. For actual Microsoft 365 operations, you must configure Azure AD authentication.</p>
+                            </div>
+                        </div>
+                    </article>
+
+                    <!-- Prerequisites -->
+                    <article id="prerequisites" class="docs-article">
+                        <h2>Prerequisites</h2>
+                        
+                        <h3>Required Software</h3>
+                        <ul>
+                            <li><strong>VS Code</strong> or <strong>VS Code Insiders</strong> with MCP extension</li>
+                            <li><strong>.NET 8.0 SDK</strong> or later (<a href="https://dotnet.microsoft.com/download" target="_blank">Download</a>)</li>
+                            <li><strong>Node.js 16+</strong> for NPX installation</li>
+                        </ul>
+
+                        <h3>Azure Requirements (Production)</h3>
+                        <ul>
+                            <li><strong>Azure subscription</strong> with admin access</li>
+                            <li><strong>Azure Active Directory</strong> tenant</li>
+                            <li><strong>Microsoft 365 tenant</strong> (optional, for M365 operations)</li>
+                            <li><strong>Global Administrator</strong> or <strong>Application Administrator</strong> role</li>
+                        </ul>
+
+                        <h3>Permissions</h3>
+                        <p>The following Microsoft Graph API permissions are required:</p>
+                        <div class="code-block">
+                            <code>User.ReadWrite.All
+Group.ReadWrite.All
+Mail.ReadWrite
+Calendars.ReadWrite
+Files.ReadWrite.All
+Sites.ReadWrite.All
+Team.ReadBasic.All
+Reports.Read.All
+SecurityEvents.Read.All
+AuditLog.Read.All</code>
+                            <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                        </div>
+                    </article>
+
+                    <!-- Azure AD Registration -->
+                    <article id="azure-registration" class="docs-article">
+                        <h2>Azure AD App Registration</h2>
+                        
+                        <h3>Step 1: Register Application</h3>
+                        <ol>
+                            <li>Sign in to the <a href="https://portal.azure.com" target="_blank">Azure Portal</a></li>
+                            <li>Navigate to <strong>Azure Active Directory</strong> → <strong>App registrations</strong></li>
+                            <li>Click <strong>New registration</strong></li>
+                            <li>Enter application details:
+                                <ul>
+                                    <li>Name: <code>Darbot Graph MCP</code></li>
+                                    <li>Supported account types: <code>Single tenant</code></li>
+                                    <li>Redirect URI: Leave empty</li>
+                                </ul>
+                            </li>
+                            <li>Click <strong>Register</strong></li>
+                        </ol>
+
+                        <div class="success-box">
+                            <div class="success-icon">✅</div>
+                            <div>
+                                <h4>Success</h4>
+                                <p>Your application is now registered. Note the <strong>Application (client) ID</strong> and <strong>Directory (tenant) ID</strong> from the overview page.</p>
+                            </div>
+                        </div>
+
+                        <h3>Step 2: Configure API Permissions</h3>
+                        <ol>
+                            <li>In your app registration, go to <strong>API permissions</strong></li>
+                            <li>Click <strong>Add a permission</strong> → <strong>Microsoft Graph</strong></li>
+                            <li>Select <strong>Application permissions</strong></li>
+                            <li>Add the following permissions:
+                                <ul>
+                                    <li>User.ReadWrite.All</li>
+                                    <li>Group.ReadWrite.All</li>
+                                    <li>Mail.ReadWrite</li>
+                                    <li>Calendars.ReadWrite</li>
+                                    <li>Files.ReadWrite.All</li>
+                                    <li>Sites.ReadWrite.All</li>
+                                    <li>Team.ReadBasic.All</li>
+                                    <li>Reports.Read.All</li>
+                                    <li>SecurityEvents.Read.All</li>
+                                    <li>AuditLog.Read.All</li>
+                                </ul>
+                            </li>
+                            <li>Click <strong>Grant admin consent</strong></li>
+                        </ol>
+
+                        <div class="warning-box">
+                            <div class="warning-icon">⚠️</div>
+                            <div>
+                                <h4>Admin Consent Required</h4>
+                                <p>Application permissions require admin consent. Ensure you have Global Administrator or Application Administrator role.</p>
+                            </div>
+                        </div>
+                    </article>
+
+                    <!-- Azure Secrets -->
+                    <article id="azure-secrets" class="docs-article">
+                        <h2>Client Secrets</h2>
+                        
+                        <h3>Create Client Secret</h3>
+                        <ol>
+                            <li>In your app registration, go to <strong>Certificates & secrets</strong></li>
+                            <li>Click <strong>New client secret</strong></li>
+                            <li>Enter description: <code>Darbot Graph MCP Secret</code></li>
+                            <li>Select expiration: <code>24 months</code> (recommended)</li>
+                            <li>Click <strong>Add</strong></li>
+                            <li><strong>Copy the secret value immediately</strong> (you won't be able to see it again)</li>
+                        </ol>
+
+                        <div class="warning-box">
+                            <div class="warning-icon">⚠️</div>
+                            <div>
+                                <h4>Security Warning</h4>
+                                <p>Never commit client secrets to source control. Store them securely in environment variables or Azure Key Vault.</p>
+                            </div>
+                        </div>
+
+                        <h3>Secret Rotation</h3>
+                        <p>Regularly rotate client secrets for security:</p>
+                        <ul>
+                            <li>Set calendar reminder before expiration</li>
+                            <li>Create new secret before old one expires</li>
+                            <li>Update configuration with new secret</li>
+                            <li>Verify functionality</li>
+                            <li>Delete old secret</li>
+                        </ul>
+                    </article>
+
+                    <!-- VS Code Configuration -->
+                    <article id="vscode-config" class="docs-article">
+                        <h2>VS Code Configuration</h2>
+                        
+                        <h3>MCP Server Configuration</h3>
+                        <p>Add the following to your VS Code MCP configuration:</p>
+                        <div class="code-block">
+                            <code>{
+  "mcpServers": {
+    "darbot-graph": {
+      "command": "dotnet",
+      "args": [
+        "run",
+        "--project",
+        "/path/to/darbot-graph-mcp/src/DarbotGraphMcp.Server"
+      ],
+      "env": {
+        "AzureAd__TenantId": "your-tenant-id",
+        "AzureAd__ClientId": "your-client-id",
+        "AzureAd__ClientSecret": "your-client-secret"
+      }
+    }
+  }
+}</code>
+                            <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                        </div>
+
+                        <h3>Configuration Options</h3>
+                        <table class="docs-table">
+                            <thead>
+                                <tr>
+                                    <th>Option</th>
+                                    <th>Description</th>
+                                    <th>Required</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td><code>AzureAd__TenantId</code></td>
+                                    <td>Azure AD tenant ID</td>
+                                    <td>No (demo mode if empty)</td>
+                                </tr>
+                                <tr>
+                                    <td><code>AzureAd__ClientId</code></td>
+                                    <td>Application (client) ID</td>
+                                    <td>No (demo mode if empty)</td>
+                                </tr>
+                                <tr>
+                                    <td><code>AzureAd__ClientSecret</code></td>
+                                    <td>Client secret value</td>
+                                    <td>No (demo mode if empty)</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </article>
+
+                    <!-- Demo Mode -->
+                    <article id="demo-mode" class="docs-article">
+                        <h2>Demo Mode</h2>
+                        
+                        <h3>Overview</h3>
+                        <p>Demo mode allows you to test Darbot Graph MCP without Azure AD credentials. It provides simulated responses for all tools.</p>
+
+                        <h3>Enabling Demo Mode</h3>
+                        <p>Simply leave Azure AD credentials empty during installation or in configuration.</p>
+
+                        <h3>Simulated Responses</h3>
+                        <p>Demo mode returns realistic sample data for:</p>
+                        <ul>
+                            <li>User lists and details</li>
+                            <li>Group information</li>
+                            <li>Email operations</li>
+                            <li>Calendar events</li>
+                            <li>Teams and channels</li>
+                            <li>File operations</li>
+                            <li>Security reports</li>
+                        </ul>
+
+                        <div class="info-box">
+                            <div class="info-icon">💡</div>
+                            <div>
+                                <h4>Use Cases for Demo Mode</h4>
+                                <ul>
+                                    <li>Learning the tool structure</li>
+                                    <li>Testing AI assistant integrations</li>
+                                    <li>Development and debugging</li>
+                                    <li>Demonstrations and presentations</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </article>
+
+                    <!-- Security -->
+                    <article id="security" class="docs-article">
+                        <h2>Security Best Practices</h2>
+                        
+                        <h3>Authentication</h3>
+                        <ul>
+                            <li>Use app-only authentication for automation scenarios</li>
+                            <li>Implement delegated authentication for user-specific operations</li>
+                            <li>Enable multi-factor authentication (MFA) for admin accounts</li>
+                            <li>Use managed identities when running in Azure</li>
+                        </ul>
+
+                        <h3>Permissions</h3>
+                        <ul>
+                            <li>Follow principle of least privilege</li>
+                            <li>Request only required permissions</li>
+                            <li>Regularly audit granted permissions</li>
+                            <li>Use application permissions for background tasks</li>
+                        </ul>
+
+                        <h3>Secrets Management</h3>
+                        <ul>
+                            <li>Never commit secrets to source control</li>
+                            <li>Use Azure Key Vault for production</li>
+                            <li>Rotate secrets regularly (every 90 days recommended)</li>
+                            <li>Use environment variables for local development</li>
+                        </ul>
+
+                        <h3>Network Security</h3>
+                        <ul>
+                            <li>Use HTTPS for all communications</li>
+                            <li>Implement IP restrictions if possible</li>
+                            <li>Enable conditional access policies</li>
+                            <li>Monitor and log all API calls</li>
+                        </ul>
+
+                        <p>For complete security guidelines, see the <a href="https://github.com/dayour/Darbot-Graph-MCP/blob/main/SECURITY.md" target="_blank">Security Guide</a>.</p>
+                    </article>
+
+                    <!-- Troubleshooting -->
+                    <article id="troubleshooting" class="docs-article">
+                        <h2>Troubleshooting</h2>
+                        
+                        <h3>Common Issues</h3>
+
+                        <h4>Authentication Errors</h4>
+                        <div class="troubleshoot-box">
+                            <strong>Error:</strong> <code>AADSTS700016: Application not found</code>
+                            <br><strong>Solution:</strong> Verify Client ID is correct and app is registered in the correct tenant.
+                        </div>
+
+                        <div class="troubleshoot-box">
+                            <strong>Error:</strong> <code>AADSTS7000215: Invalid client secret</code>
+                            <br><strong>Solution:</strong> Client secret may have expired or is incorrect. Create a new secret.
+                        </div>
+
+                        <h4>Permission Errors</h4>
+                        <div class="troubleshoot-box">
+                            <strong>Error:</strong> <code>Insufficient privileges</code>
+                            <br><strong>Solution:</strong> Ensure required API permissions are granted and admin consent is provided.
+                        </div>
+
+                        <h4>Installation Issues</h4>
+                        <div class="troubleshoot-box">
+                            <strong>Issue:</strong> Tools not showing in VS Code
+                            <br><strong>Solution:</strong> Completely restart VS Code (close all windows) and reopen.
+                        </div>
+
+                        <div class="troubleshoot-box">
+                            <strong>Issue:</strong> Build errors during installation
+                            <br><strong>Solution:</strong> Verify .NET 8.0 SDK is installed: <code>dotnet --version</code>
+                        </div>
+
+                        <p>For more troubleshooting steps, see the <a href="https://github.com/dayour/Darbot-Graph-MCP/blob/main/TROUBLESHOOTING.md" target="_blank">Troubleshooting Guide</a>.</p>
+                    </article>
+
+                    <!-- Performance -->
+                    <article id="performance" class="docs-article">
+                        <h2>Performance Tips</h2>
+                        
+                        <h3>Batching Operations</h3>
+                        <p>Use batch operations when performing multiple similar tasks:</p>
+                        <div class="code-block">
+                            <code>// Instead of multiple individual calls
+// Use batch operations when available</code>
+                            <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                        </div>
+
+                        <h3>Caching</h3>
+                        <ul>
+                            <li>Cache frequently accessed data locally</li>
+                            <li>Respect Microsoft Graph rate limits</li>
+                            <li>Use delta queries for incremental updates</li>
+                        </ul>
+
+                        <h3>Rate Limiting</h3>
+                        <ul>
+                            <li>Implement exponential backoff for retries</li>
+                            <li>Respect 429 (Too Many Requests) responses</li>
+                            <li>Distribute load across time when possible</li>
+                        </ul>
+
+                        <h3>Monitoring</h3>
+                        <ul>
+                            <li>Enable logging for performance analysis</li>
+                            <li>Monitor API call latency</li>
+                            <li>Track error rates and patterns</li>
+                            <li>Use Application Insights for production</li>
+                        </ul>
+                    </article>
+                </main>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h4>Darbot Graph MCP</h4>
+                    <p>Ultimate extensible MCP server for Microsoft Graph API</p>
+                </div>
+                <div class="footer-section">
+                    <h4>Documentation</h4>
+                    <ul>
+                        <li><a href="docs.html">Getting Started</a></li>
+                        <li><a href="api.html">API Reference</a></li>
+                        <li><a href="examples.html">Examples</a></li>
+                        <li><a href="extensibility.html">Extensibility</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h4>Community</h4>
+                    <ul>
+                        <li><a href="https://github.com/dayour/Darbot-Graph-MCP" target="_blank">GitHub</a></li>
+                        <li><a href="https://github.com/dayour/Darbot-Graph-MCP/issues" target="_blank">Issues</a></li>
+                        <li><a href="https://github.com/dayour/Darbot-Graph-MCP/blob/main/CONTRIBUTING.md" target="_blank">Contributing</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h4>Resources</h4>
+                    <ul>
+                        <li><a href="https://docs.microsoft.com/en-us/graph/" target="_blank">Microsoft Graph</a></li>
+                        <li><a href="https://modelcontextprotocol.io/" target="_blank">MCP Protocol</a></li>
+                        <li><a href="https://developer.microsoft.com/en-us/graph/graph-explorer" target="_blank">Graph Explorer</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2024 Darbot Labs. Licensed under MIT License.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Clippy Assistant -->
+    <div id="clippy-assistant" class="clippy-container">
+        <div class="clippy-icon" onclick="toggleClippy()">
+            <svg viewBox="0 0 124 124" fill="none">
+                <path d="M62 10 L62 114 M10 62 L114 62" stroke="currentColor" stroke-width="8" stroke-linecap="round"/>
+                <circle cx="62" cy="62" r="50" stroke="currentColor" stroke-width="4" fill="none"/>
+            </svg>
+        </div>
+        <div class="clippy-chat" id="clippy-chat" style="display: none;">
+            <div class="clippy-header">
+                <div class="clippy-title">
+                    <span class="clippy-avatar">📎</span>
+                    <span>Darbot Assistant</span>
+                </div>
+                <button class="clippy-close" onclick="toggleClippy()">×</button>
+            </div>
+            <div class="clippy-messages" id="clippy-messages">
+                <div class="clippy-message assistant">
+                    <div class="message-avatar">📎</div>
+                    <div class="message-content">
+                        Hi! I can help you navigate the documentation. What are you looking for?
+                    </div>
+                </div>
+            </div>
+            <div class="clippy-input-container">
+                <input type="text" id="clippy-input" class="clippy-input" placeholder="Ask about setup, tools, or extensibility...">
+                <button class="clippy-send" onclick="sendClippyMessage()">
+                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"/>
+                    </svg>
+                </button>
+            </div>
+            <div class="clippy-powered">Powered by Spark LLM API</div>
+        </div>
+    </div>
+
+    <script src="assets/js/main.js"></script>
+    <script src="assets/js/clippy.js"></script>
+    <script src="assets/js/docs.js"></script>
+</body>
+</html>
