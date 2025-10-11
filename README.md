@@ -5,20 +5,19 @@ Easily install the Darbot Graph MCP Server for VS Code or VS Code Insiders:
 [![Install with NPX in VS Code](https://img.shields.io/badge/VS_Code-Install_Darbot_Graph_MCP-0098FF?style=flat-square&logo=visualstudiocode&logoColor=white)](https://insiders.vscode.dev/redirect/mcp/install?name=darbot-graph&config=%7B%22type%22%3A%22stdio%22%2C%22command%22%3A%22npx%22%2C%22args%22%3A%5B%22-y%22%2C%22%40darbotlabs%2Fdarbot-graph-mcp%22%2C%22%24%7Binput%3Aazure_tenant_id%7D%22%2C%22%24%7Binput%3Aazure_client_id%7D%22%2C%22%24%7Binput%3Aazure_client_secret%7D%22%5D%7D&inputs=%5B%7B%22id%22%3A%22azure_tenant_id%22%2C%22type%22%3A%22promptString%22%2C%22description%22%3A%22Azure%20AD%20Tenant%20ID%20(leave%20empty%20for%20demo%20mode)%22%7D%2C%7B%22id%22%3A%22azure_client_id%22%2C%22type%22%3A%22promptString%22%2C%22description%22%3A%22Azure%20AD%20Client%20ID%20(leave%20empty%20for%20demo%20mode)%22%7D%2C%7B%22id%22%3A%22azure_client_secret%22%2C%22type%22%3A%22promptString%22%2C%22description%22%3A%22Azure%20AD%20Client%20Secret%20(leave%20empty%20for%20demo%20mode)%22%7D%5D)
 [![Install with NPX in VS Code Insiders](https://img.shields.io/badge/VS_Code_Insiders-Install_Darbot_Graph_MCP-24bfa5?style=flat-square&logo=visualstudiocode&logoColor=white)](https://insiders.vscode.dev/redirect/mcp/install?name=darbot-graph&quality=insiders&config=%7B%22type%22%3A%22stdio%22%2C%22command%22%3A%22npx%22%2C%22args%22%3A%5B%22-y%22%2C%22%40darbotlabs%2Fdarbot-graph-mcp%22%2C%22%24%7Binput%3Aazure_tenant_id%7D%22%2C%22%24%7Binput%3Aazure_client_id%7D%22%2C%22%24%7Binput%3Aazure_client_secret%7D%22%5D%7D&inputs=%5B%7B%22id%22%3A%22azure_tenant_id%22%2C%22type%22%3A%22promptString%22%2C%22description%22%3A%22Azure%20AD%20Tenant%20ID%20(leave%20empty%20for%20demo%20mode)%22%7D%2C%7B%22id%22%3A%22azure_client_id%22%2C%22type%22%3A%22promptString%22%2C%22description%22%3A%22Azure%20AD%20Client%20ID%20(leave%20empty%20for%20demo%20mode)%22%7D%2C%7B%22id%22%3A%22azure_client_secret%22%2C%22type%22%3A%22promptString%22%2C%22description%22%3A%22Azure%20AD%20Client%20Secret%20(leave%20empty%20for%20demo%20mode)%22%7D%5D)
 
-The **ultimate extensible MCP server for any and all Microsoft Graph API needs**. A comprehensive, production-ready Model Context Protocol (MCP) server that provides extensive Microsoft Graph operations for Claude and other MCP-compatible AI assistants. Features hierarchical tool organization optimized for Visual Studio Code's tool limits.
+Darbot-graph-mcp is an **extensible MCP server for Microsoft Graph**. This is a Research and Development Prototype to show how MCP could be used with Graph for MCP-compatible AI assistants. Features hierarchical tool organization optimized for Visual Studio Code's tool limits.
 
 ## Overview
 
-The Darbot Graph MCP Server is an enterprise-grade solution that bridges AI assistants with Microsoft 365 services through the Microsoft Graph API. Built on the official Microsoft Graph SDKs (both v1.0 and Beta), it provides 64+ comprehensive tools organized into 10 logical categories, enabling seamless automation and management of your Microsoft 365 environment.
+The Darbot Graph MCP Server is built on enterprise-grade principals while bridging AI assistants with Microsoft 365 services through the Microsoft Graph API. Built on the official Microsoft Graph SDKs (both v1.0 and Beta), it provides 64+ comprehensive tools organized into 10 logical categories, enabling seamless automation and management of your Microsoft 365 environment.
 
-This server is designed to be the definitive Microsoft Graph integration for MCP, covering all major Graph API capabilities and designed for extensibility to support future Graph API enhancements.
+This server is designed to be a limited Microsoft Graph integration for MCP, covering some of the major Graph API capabilities and designed for extensibility. 
 
 ### Key Features
 
-- **64+ Comprehensive Tools**: Complete coverage of Microsoft Graph API operations across all major Microsoft 365 services
+- **64+ Comprehensive Tools**: Coverage of Microsoft Graph API operations across all major Microsoft 365 services
 - **Official SDK Foundation**: Built on [Microsoft.Graph SDK](https://github.com/microsoftgraph/msgraph-sdk-dotnet) and [Microsoft.Graph.Beta SDK](https://github.com/microsoftgraph/msgraph-beta-sdk-dotnet)
 - **Hierarchical Organization**: Optimized for Visual Studio Code's 128 tool limit with logical categorization
-- **Production Ready**: Enterprise-grade error handling, logging, and security
 - **Dual SDK Support**: Microsoft Graph v1.0 and Beta API support for maximum compatibility
 - **Demo Mode**: Safe testing without affecting production data
 - **Enhanced Authentication**: Support for app-only and delegated permissions with Azure.Identity
@@ -822,10 +821,7 @@ Recent validation audit confirms:
 
 ## Contributing
 
-1. Fork the repository
-2. Create a feature branch
-3. Make your changes with tests
-4. Submit a pull request
+This was created by DarbotLabs primarily by AI. This is a research prototype and not intended for production use without further development and security review. Contributions are welcome!
 
 ## License
 
