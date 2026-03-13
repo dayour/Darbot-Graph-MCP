@@ -16,31 +16,28 @@ public class GraphServiceEnhanced : IGraphServiceEnhanced
 {
     private readonly Microsoft.Graph.GraphServiceClient _graphClient;
     private readonly Microsoft.Graph.Beta.GraphServiceClient _betaGraphClient;
-
     private readonly IAuthenticationService _authService;
-
     private readonly ILogger<GraphServiceEnhanced> _logger;
     private readonly ICredentialValidationService _credentialValidator;
     private readonly IConfiguration _configuration;
+    private readonly ITenantValidationService _tenantValidationService;
 
     public GraphServiceEnhanced(
-        Microsoft.Graph.GraphServiceClient graphClient, 
-
-        Microsoft.Graph.Beta.GraphServiceClient betaGraphClient, 
+        Microsoft.Graph.GraphServiceClient graphClient,
+        Microsoft.Graph.Beta.GraphServiceClient betaGraphClient,
+        IAuthenticationService authService,
         ILogger<GraphServiceEnhanced> logger,
         ICredentialValidationService credentialValidator,
-        IConfiguration configuration)
-
-
-    public GraphServiceEnhanced(Microsoft.Graph.GraphServiceClient graphClient, Microsoft.Graph.Beta.GraphServiceClient betaGraphClient, IAuthenticationService authService, ILogger<GraphServiceEnhanced> logger)
+        IConfiguration configuration,
+        ITenantValidationService tenantValidationService)
     {
         _graphClient = graphClient;
         _betaGraphClient = betaGraphClient;
         _authService = authService;
-
         _logger = logger;
         _credentialValidator = credentialValidator;
         _configuration = configuration;
+        _tenantValidationService = tenantValidationService;
     }
 
     public List<object> GetAvailableTools()

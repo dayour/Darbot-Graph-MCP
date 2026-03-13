@@ -1,4 +1,3 @@
-using System;
 using System.Threading.Tasks;
 
 namespace DarbotGraphMcp.Server.Services;
@@ -9,83 +8,55 @@ namespace DarbotGraphMcp.Server.Services;
 public interface ICredentialValidationService
 {
     /// <summary>
-    /// Validates all Azure AD configuration and credentials
+    /// Validates Azure AD credentials using the provided tenant, client, and secret values.
     /// </summary>
-    /// <returns>Validation result with success status and detailed messages</returns>
-    Task<CredentialValidationResult> ValidateCredentialsAsync();
-    
+    Task<CredentialValidationResult> ValidateCredentialsAsync(string? tenantId, string? clientId, string? clientSecret);
+
     /// <summary>
-    /// Validates the format of a GUID string
+    /// Returns true if the value is a valid GUID.
     /// </summary>
-    /// <param name="value">The value to validate</param>
-    /// <param name="fieldName">The name of the field being validated</param>
-    /// <returns>Validation result for the GUID format</returns>
-    ValidationItem ValidateGuidFormat(string? value, string fieldName);
-    
+    bool IsValidGuid(string? value);
+
     /// <summary>
-    /// Tests authentication with the configured credentials
+    /// Returns true if all three credential values are non-empty and non-placeholder.
     /// </summary>
-    /// <returns>Authentication test result</returns>
-    Task<ValidationItem> TestAuthenticationAsync();
+    bool AreCredentialsConfigured(string? tenantId, string? clientId, string? clientSecret);
+
+    /// <summary>
+    /// Returns true if any credential value contains a VS Code input prompt variable.
+    /// </summary>
+    bool IsVSCodeInputPromptConfiguration(string? tenantId, string? clientId, string? clientSecret);
 }
 
 /// <summary>
-/// Result of credential validation containing all validation checks
+/// Result of credential validation
 /// </summary>
 public class CredentialValidationResult
 {
     public bool IsValid { get; set; }
-    public List<ValidationItem> ValidationItems { get; set; } = new();
+    public ValidationMode Mode { get; set; }
+    public string Message { get; set; } = string.Empty;
+    public List<string> Details { get; set; } = new();
     public List<string> Suggestions { get; set; } = new();
-    
-    /// <summary>
-    /// Gets all successful validation items
-    /// </summary>
-    public IEnumerable<ValidationItem> SuccessItems => ValidationItems.Where(v => v.IsValid);
-    
-    /// <summary>
-    /// Gets all failed validation items
-    /// </summary>
-    public IEnumerable<ValidationItem> FailedItems => ValidationItems.Where(v => !v.IsValid);
-    
-    /// <summary>
-    /// Gets a formatted summary of the validation results
-    /// </summary>
-    public string GetFormattedSummary()
-    {
-        var summary = new List<string>();
-        
-        foreach (var item in SuccessItems)
-        {
-            summary.Add($"✓ {item.Message}");
-        }
-        
-        foreach (var item in FailedItems)
-        {
-            summary.Add($"✗ {item.Message}");
-        }
-        
-        if (Suggestions.Any())
-        {
-            summary.Add("");
-            summary.Add("Suggestions:");
-            foreach (var suggestion in Suggestions)
-            {
-                summary.Add($"  • {suggestion}");
-            }
-        }
-        
-        return string.Join(Environment.NewLine, summary);
-    }
 }
 
 /// <summary>
-/// Individual validation item result
+/// Describes the outcome mode of a credential validation
 /// </summary>
-public class ValidationItem
+public enum ValidationMode
 {
-    public bool IsValid { get; set; }
-    public string Message { get; set; } = string.Empty;
-    public string? Details { get; set; }
-    public Exception? Exception { get; set; }
+    /// <summary>No credentials configured; server runs in demo/read-only mode.</summary>
+    Demo,
+    /// <summary>Credentials validated successfully; server is ready for production use.</summary>
+    Production,
+    /// <summary>Credential values are present but invalid (e.g., malformed GUID).</summary>
+    Invalid,
+    /// <summary>Credentials are well-formed but authentication with Azure AD failed.</summary>
+    AuthenticationFailed,
+    /// <summary>Authentication succeeded but the app lacks required Graph API permissions.</summary>
+    InsufficientPermissions,
+    /// <summary>An unexpected error occurred during validation.</summary>
+    UnknownError,
+    /// <summary>Credentials contain VS Code input prompt variables (${input:...}) instead of real values.</summary>
+    VSCodeInputPrompt
 }
