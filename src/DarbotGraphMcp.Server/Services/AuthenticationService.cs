@@ -280,10 +280,10 @@ public class AuthenticationService : IAuthenticationService
         
         if (!string.IsNullOrEmpty(clientId))
         {
-            return new ManagedIdentityCredential(clientId);
+            return new ManagedIdentityCredential(ManagedIdentityId.FromUserAssignedClientId(clientId));
         }
 
-        return new ManagedIdentityCredential();
+        return new ManagedIdentityCredential(ManagedIdentityId.SystemAssigned);
     }
 
     private VisualStudioCodeCredential CreateVSCodeCredential()
@@ -304,7 +304,6 @@ public class AuthenticationService : IAuthenticationService
         var options = new DefaultAzureCredentialOptions
         {
             ExcludeInteractiveBrowserCredential = true,
-            ExcludeSharedTokenCacheCredential = false,
             ExcludeVisualStudioCredential = false,
             ExcludeVisualStudioCodeCredential = false,
             ExcludeAzureCliCredential = false,

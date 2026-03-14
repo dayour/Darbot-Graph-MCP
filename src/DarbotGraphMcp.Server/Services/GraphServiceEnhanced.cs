@@ -16,31 +16,28 @@ public class GraphServiceEnhanced : IGraphServiceEnhanced
 {
     private readonly Microsoft.Graph.GraphServiceClient _graphClient;
     private readonly Microsoft.Graph.Beta.GraphServiceClient _betaGraphClient;
-
     private readonly IAuthenticationService _authService;
-
     private readonly ILogger<GraphServiceEnhanced> _logger;
     private readonly ICredentialValidationService _credentialValidator;
     private readonly IConfiguration _configuration;
+    private readonly ITenantValidationService _tenantValidationService;
 
     public GraphServiceEnhanced(
-        Microsoft.Graph.GraphServiceClient graphClient, 
-
-        Microsoft.Graph.Beta.GraphServiceClient betaGraphClient, 
+        Microsoft.Graph.GraphServiceClient graphClient,
+        Microsoft.Graph.Beta.GraphServiceClient betaGraphClient,
+        IAuthenticationService authService,
         ILogger<GraphServiceEnhanced> logger,
         ICredentialValidationService credentialValidator,
-        IConfiguration configuration)
-
-
-    public GraphServiceEnhanced(Microsoft.Graph.GraphServiceClient graphClient, Microsoft.Graph.Beta.GraphServiceClient betaGraphClient, IAuthenticationService authService, ILogger<GraphServiceEnhanced> logger)
+        IConfiguration configuration,
+        ITenantValidationService tenantValidationService)
     {
         _graphClient = graphClient;
         _betaGraphClient = betaGraphClient;
         _authService = authService;
-
         _logger = logger;
         _credentialValidator = credentialValidator;
         _configuration = configuration;
+        _tenantValidationService = tenantValidationService;
     }
 
     public List<object> GetAvailableTools()
@@ -58,6 +55,7 @@ public class GraphServiceEnhanced : IGraphServiceEnhanced
         tools.AddRange(ToolCategories.GetSecurityTools());
         tools.AddRange(ToolCategories.GetReportsTools());
         tools.AddRange(ToolCategories.GetApplicationsTools());
+        tools.AddRange(ToolCategories.GetPlannerTools());
 
         return tools;
     }
@@ -151,6 +149,19 @@ public class GraphServiceEnhanced : IGraphServiceEnhanced
                 "darbot-graph-apps-permissions-list" => await GetApplicationPermissionsAsync(arguments),
                 "darbot-graph-apps-permissions-grant" => await GrantApplicationPermissionsAsync(arguments),
                 "darbot-graph-apps-secrets-create" => await CreateApplicationSecretAsync(arguments),
+                
+                // Planner Tools
+                "darbot-graph-planner-plans-list" => await GetPlannerPlansAsync(arguments),
+                "darbot-graph-planner-plans-get" => await GetPlannerPlanAsync(arguments),
+                "darbot-graph-planner-plans-create" => await CreatePlannerPlanAsync(arguments),
+                "darbot-graph-planner-tasks-list" => await GetPlannerTasksAsync(arguments),
+                "darbot-graph-planner-tasks-get" => await GetPlannerTaskAsync(arguments),
+                "darbot-graph-planner-tasks-create" => await CreatePlannerTaskAsync(arguments),
+                "darbot-graph-planner-tasks-update" => await UpdatePlannerTaskAsync(arguments),
+                "darbot-graph-planner-tasks-delete" => await DeletePlannerTaskAsync(arguments),
+                "darbot-graph-planner-buckets-list" => await GetPlannerBucketsAsync(arguments),
+                "darbot-graph-planner-buckets-create" => await CreatePlannerBucketAsync(arguments),
+                "darbot-graph-planner-mytasks-list" => await GetMyPlannerTasksAsync(arguments),
                 
                 _ => new { error = $"Unknown tool: {toolName}" }
             };
@@ -1374,6 +1385,451 @@ public class GraphServiceEnhanced : IGraphServiceEnhanced
         await Task.Delay(1);
         return new { message = "Create application secret functionality implemented", status = "success" };
     }
+
+    // Planner (WorkIQ) Tool Implementations
+    private async Task<object> GetPlannerPlansAsync(JsonElement? arguments)
+    {
+        try
+        {
+            var tenantId = _configuration["AzureAd:TenantId"];
+            var clientId = _configuration["AzureAd:ClientId"];
+            var clientSecret = _configuration["AzureAd:ClientSecret"];
+
+            if (!_credentialValidator.AreCredentialsConfigured(tenantId, clientId, clientSecret))
+            {
+                return new
+                {
+                    success = true, demo = true, mode = "demo",
+                    message = "Demo mode - configure Azure AD credentials to access real Planner data.",
+                    plans = new[] {
+                        new { Id = "demo-plan-1", Title = "Demo Project Plan", Owner = "demo-group-1", CreatedDateTime = DateTimeOffset.UtcNow.AddDays(-10) }
+                    }
+                };
+            }
+
+            var args = arguments?.Deserialize<PlannerGroupArgs>();
+            if (string.IsNullOrEmpty(args?.GroupId))
+                return new { success = false, error = "groupId is required" };
+
+            var credential = new ClientSecretCredential(tenantId, clientId, clientSecret);
+            var graphClient = new Microsoft.Graph.GraphServiceClient(credential);
+
+            var plans = await graphClient.Groups[args.GroupId].Planner.Plans.GetAsync();
+            var planList = plans?.Value?.Select(p => new
+            {
+                p.Id,
+                p.Title,
+                p.Owner,
+                p.CreatedDateTime
+            }).ToList();
+
+            return new { success = true, mode = "production", count = planList?.Count ?? 0, plans = planList };
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error getting planner plans");
+            return new { success = false, error = ex.Message };
+        }
+    }
+
+    private async Task<object> GetPlannerPlanAsync(JsonElement? arguments)
+    {
+        try
+        {
+            var tenantId = _configuration["AzureAd:TenantId"];
+            var clientId = _configuration["AzureAd:ClientId"];
+            var clientSecret = _configuration["AzureAd:ClientSecret"];
+
+            if (!_credentialValidator.AreCredentialsConfigured(tenantId, clientId, clientSecret))
+                return new { success = true, demo = true, mode = "demo", message = "Demo mode - configure Azure AD credentials to access real Planner data." };
+
+            var args = arguments?.Deserialize<PlannerPlanArgs>();
+            if (string.IsNullOrEmpty(args?.PlanId))
+                return new { success = false, error = "planId is required" };
+
+            var credential = new ClientSecretCredential(tenantId, clientId, clientSecret);
+            var graphClient = new Microsoft.Graph.GraphServiceClient(credential);
+
+            var plan = await graphClient.Planner.Plans[args.PlanId].GetAsync();
+            return new { success = true, mode = "production", plan = new { plan?.Id, plan?.Title, plan?.Owner, plan?.CreatedDateTime } };
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error getting planner plan");
+            return new { success = false, error = ex.Message };
+        }
+    }
+
+    private async Task<object> CreatePlannerPlanAsync(JsonElement? arguments)
+    {
+        try
+        {
+            var tenantId = _configuration["AzureAd:TenantId"];
+            var clientId = _configuration["AzureAd:ClientId"];
+            var clientSecret = _configuration["AzureAd:ClientSecret"];
+
+            if (!_credentialValidator.AreCredentialsConfigured(tenantId, clientId, clientSecret))
+                return new { success = false, error = "Azure AD credentials required to create planner plans", mode = "demo" };
+
+            var args = arguments?.Deserialize<CreatePlannerPlanArgs>();
+            if (string.IsNullOrEmpty(args?.GroupId) || string.IsNullOrEmpty(args?.Title))
+                return new { success = false, error = "groupId and title are required" };
+
+            var credential = new ClientSecretCredential(tenantId, clientId, clientSecret);
+            var graphClient = new Microsoft.Graph.GraphServiceClient(credential);
+
+            var plan = await graphClient.Planner.Plans.PostAsync(new Microsoft.Graph.Models.PlannerPlan
+            {
+                Title = args.Title,
+                Owner = args.GroupId
+            });
+
+            return new { success = true, mode = "production", plan = new { plan?.Id, plan?.Title, plan?.Owner } };
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error creating planner plan");
+            return new { success = false, error = ex.Message };
+        }
+    }
+
+    private async Task<object> GetPlannerTasksAsync(JsonElement? arguments)
+    {
+        try
+        {
+            var tenantId = _configuration["AzureAd:TenantId"];
+            var clientId = _configuration["AzureAd:ClientId"];
+            var clientSecret = _configuration["AzureAd:ClientSecret"];
+
+            if (!_credentialValidator.AreCredentialsConfigured(tenantId, clientId, clientSecret))
+            {
+                return new
+                {
+                    success = true, demo = true, mode = "demo",
+                    message = "Demo mode - configure Azure AD credentials to access real Planner data.",
+                    tasks = new[] {
+                        new { Id = "demo-task-1", Title = "Demo Task 1", PercentComplete = 0, PlanId = "demo-plan-1" },
+                        new { Id = "demo-task-2", Title = "Demo Task 2", PercentComplete = 50, PlanId = "demo-plan-1" }
+                    }
+                };
+            }
+
+            var args = arguments?.Deserialize<PlannerPlanArgs>();
+            if (string.IsNullOrEmpty(args?.PlanId))
+                return new { success = false, error = "planId is required" };
+
+            var credential = new ClientSecretCredential(tenantId, clientId, clientSecret);
+            var graphClient = new Microsoft.Graph.GraphServiceClient(credential);
+
+            var tasks = await graphClient.Planner.Plans[args.PlanId].Tasks.GetAsync();
+            var taskList = tasks?.Value?.Select(t => new
+            {
+                t.Id,
+                t.Title,
+                t.PercentComplete,
+                t.DueDateTime,
+                t.BucketId,
+                t.PlanId,
+                t.CreatedDateTime
+            }).ToList();
+
+            return new { success = true, mode = "production", count = taskList?.Count ?? 0, tasks = taskList };
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error getting planner tasks");
+            return new { success = false, error = ex.Message };
+        }
+    }
+
+    private async Task<object> GetPlannerTaskAsync(JsonElement? arguments)
+    {
+        try
+        {
+            var tenantId = _configuration["AzureAd:TenantId"];
+            var clientId = _configuration["AzureAd:ClientId"];
+            var clientSecret = _configuration["AzureAd:ClientSecret"];
+
+            if (!_credentialValidator.AreCredentialsConfigured(tenantId, clientId, clientSecret))
+                return new { success = true, demo = true, mode = "demo", message = "Demo mode - configure Azure AD credentials to access real Planner data." };
+
+            var args = arguments?.Deserialize<PlannerTaskArgs>();
+            if (string.IsNullOrEmpty(args?.TaskId))
+                return new { success = false, error = "taskId is required" };
+
+            var credential = new ClientSecretCredential(tenantId, clientId, clientSecret);
+            var graphClient = new Microsoft.Graph.GraphServiceClient(credential);
+
+            var task = await graphClient.Planner.Tasks[args.TaskId].GetAsync();
+            return new
+            {
+                success = true,
+                mode = "production",
+                task = new { task?.Id, task?.Title, task?.PercentComplete, task?.DueDateTime, task?.BucketId, task?.PlanId, task?.CreatedDateTime }
+            };
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error getting planner task");
+            return new { success = false, error = ex.Message };
+        }
+    }
+
+    private async Task<object> CreatePlannerTaskAsync(JsonElement? arguments)
+    {
+        try
+        {
+            var tenantId = _configuration["AzureAd:TenantId"];
+            var clientId = _configuration["AzureAd:ClientId"];
+            var clientSecret = _configuration["AzureAd:ClientSecret"];
+
+            if (!_credentialValidator.AreCredentialsConfigured(tenantId, clientId, clientSecret))
+                return new { success = false, error = "Azure AD credentials required to create planner tasks", mode = "demo" };
+
+            var args = arguments?.Deserialize<CreatePlannerTaskArgs>();
+            if (string.IsNullOrEmpty(args?.PlanId) || string.IsNullOrEmpty(args?.Title))
+                return new { success = false, error = "planId and title are required" };
+
+            var credential = new ClientSecretCredential(tenantId, clientId, clientSecret);
+            var graphClient = new Microsoft.Graph.GraphServiceClient(credential);
+
+            var newTask = new Microsoft.Graph.Models.PlannerTask
+            {
+                PlanId = args.PlanId,
+                Title = args.Title,
+                BucketId = args.BucketId,
+                PercentComplete = args.PercentComplete
+            };
+
+            if (!string.IsNullOrEmpty(args.DueDateTime) && DateTimeOffset.TryParse(args.DueDateTime, out var dueDate))
+                newTask.DueDateTime = dueDate;
+
+            if (!string.IsNullOrEmpty(args.AssignedUserId))
+            {
+                newTask.Assignments = new Microsoft.Graph.Models.PlannerAssignments();
+                newTask.Assignments.AdditionalData[args.AssignedUserId] = new Microsoft.Graph.Models.PlannerAssignment
+                {
+                    OdataType = "#microsoft.graph.plannerAssignment",
+                    OrderHint = " !"
+                };
+            }
+
+            var task = await graphClient.Planner.Tasks.PostAsync(newTask);
+            return new { success = true, mode = "production", task = new { task?.Id, task?.Title, task?.PlanId, task?.BucketId } };
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error creating planner task");
+            return new { success = false, error = ex.Message };
+        }
+    }
+
+    private async Task<object> UpdatePlannerTaskAsync(JsonElement? arguments)
+    {
+        try
+        {
+            var tenantId = _configuration["AzureAd:TenantId"];
+            var clientId = _configuration["AzureAd:ClientId"];
+            var clientSecret = _configuration["AzureAd:ClientSecret"];
+
+            if (!_credentialValidator.AreCredentialsConfigured(tenantId, clientId, clientSecret))
+                return new { success = false, error = "Azure AD credentials required to update planner tasks", mode = "demo" };
+
+            var args = arguments?.Deserialize<UpdatePlannerTaskArgs>();
+            if (string.IsNullOrEmpty(args?.TaskId))
+                return new { success = false, error = "taskId is required" };
+
+            var credential = new ClientSecretCredential(tenantId, clientId, clientSecret);
+            var graphClient = new Microsoft.Graph.GraphServiceClient(credential);
+
+            // Get current task to obtain the etag for update
+            var currentTask = await graphClient.Planner.Tasks[args.TaskId].GetAsync();
+            var etag = currentTask?.AdditionalData.TryGetValue("@odata.etag", out var etagObj) == true
+                ? etagObj?.ToString()
+                : null;
+
+            var updatedTask = new Microsoft.Graph.Models.PlannerTask();
+            if (!string.IsNullOrEmpty(args.Title)) updatedTask.Title = args.Title;
+            if (args.PercentComplete.HasValue) updatedTask.PercentComplete = args.PercentComplete;
+            if (!string.IsNullOrEmpty(args.BucketId)) updatedTask.BucketId = args.BucketId;
+            if (!string.IsNullOrEmpty(args.DueDateTime) && DateTimeOffset.TryParse(args.DueDateTime, out var dueDate))
+                updatedTask.DueDateTime = dueDate;
+
+            await graphClient.Planner.Tasks[args.TaskId].PatchAsync(updatedTask, requestConfig =>
+            {
+                if (!string.IsNullOrEmpty(etag))
+                    requestConfig.Headers.Add("If-Match", etag);
+            });
+
+            return new { success = true, mode = "production", message = $"Task {args.TaskId} updated successfully" };
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error updating planner task");
+            return new { success = false, error = ex.Message };
+        }
+    }
+
+    private async Task<object> DeletePlannerTaskAsync(JsonElement? arguments)
+    {
+        try
+        {
+            var tenantId = _configuration["AzureAd:TenantId"];
+            var clientId = _configuration["AzureAd:ClientId"];
+            var clientSecret = _configuration["AzureAd:ClientSecret"];
+
+            if (!_credentialValidator.AreCredentialsConfigured(tenantId, clientId, clientSecret))
+                return new { success = false, error = "Azure AD credentials required to delete planner tasks", mode = "demo" };
+
+            var args = arguments?.Deserialize<PlannerTaskArgs>();
+            if (string.IsNullOrEmpty(args?.TaskId))
+                return new { success = false, error = "taskId is required" };
+
+            var credential = new ClientSecretCredential(tenantId, clientId, clientSecret);
+            var graphClient = new Microsoft.Graph.GraphServiceClient(credential);
+
+            // Get etag before delete
+            var currentTask = await graphClient.Planner.Tasks[args.TaskId].GetAsync();
+            var etag = currentTask?.AdditionalData.TryGetValue("@odata.etag", out var etagObj) == true
+                ? etagObj?.ToString()
+                : null;
+
+            await graphClient.Planner.Tasks[args.TaskId].DeleteAsync(requestConfig =>
+            {
+                if (!string.IsNullOrEmpty(etag))
+                    requestConfig.Headers.Add("If-Match", etag);
+            });
+
+            return new { success = true, mode = "production", message = $"Task {args.TaskId} deleted successfully" };
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error deleting planner task");
+            return new { success = false, error = ex.Message };
+        }
+    }
+
+    private async Task<object> GetPlannerBucketsAsync(JsonElement? arguments)
+    {
+        try
+        {
+            var tenantId = _configuration["AzureAd:TenantId"];
+            var clientId = _configuration["AzureAd:ClientId"];
+            var clientSecret = _configuration["AzureAd:ClientSecret"];
+
+            if (!_credentialValidator.AreCredentialsConfigured(tenantId, clientId, clientSecret))
+            {
+                return new
+                {
+                    success = true, demo = true, mode = "demo",
+                    message = "Demo mode - configure Azure AD credentials to access real Planner data.",
+                    buckets = new[] {
+                        new { Id = "demo-bucket-1", Name = "To Do", PlanId = "demo-plan-1" },
+                        new { Id = "demo-bucket-2", Name = "In Progress", PlanId = "demo-plan-1" }
+                    }
+                };
+            }
+
+            var args = arguments?.Deserialize<PlannerPlanArgs>();
+            if (string.IsNullOrEmpty(args?.PlanId))
+                return new { success = false, error = "planId is required" };
+
+            var credential = new ClientSecretCredential(tenantId, clientId, clientSecret);
+            var graphClient = new Microsoft.Graph.GraphServiceClient(credential);
+
+            var buckets = await graphClient.Planner.Plans[args.PlanId].Buckets.GetAsync();
+            var bucketList = buckets?.Value?.Select(b => new { b.Id, b.Name, b.PlanId, b.OrderHint }).ToList();
+
+            return new { success = true, mode = "production", count = bucketList?.Count ?? 0, buckets = bucketList };
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error getting planner buckets");
+            return new { success = false, error = ex.Message };
+        }
+    }
+
+    private async Task<object> CreatePlannerBucketAsync(JsonElement? arguments)
+    {
+        try
+        {
+            var tenantId = _configuration["AzureAd:TenantId"];
+            var clientId = _configuration["AzureAd:ClientId"];
+            var clientSecret = _configuration["AzureAd:ClientSecret"];
+
+            if (!_credentialValidator.AreCredentialsConfigured(tenantId, clientId, clientSecret))
+                return new { success = false, error = "Azure AD credentials required to create planner buckets", mode = "demo" };
+
+            var args = arguments?.Deserialize<CreatePlannerBucketArgs>();
+            if (string.IsNullOrEmpty(args?.PlanId) || string.IsNullOrEmpty(args?.Name))
+                return new { success = false, error = "planId and name are required" };
+
+            var credential = new ClientSecretCredential(tenantId, clientId, clientSecret);
+            var graphClient = new Microsoft.Graph.GraphServiceClient(credential);
+
+            var bucket = await graphClient.Planner.Buckets.PostAsync(new Microsoft.Graph.Models.PlannerBucket
+            {
+                PlanId = args.PlanId,
+                Name = args.Name,
+                OrderHint = " !"
+            });
+
+            return new { success = true, mode = "production", bucket = new { bucket?.Id, bucket?.Name, bucket?.PlanId } };
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error creating planner bucket");
+            return new { success = false, error = ex.Message };
+        }
+    }
+
+    private async Task<object> GetMyPlannerTasksAsync(JsonElement? arguments)
+    {
+        try
+        {
+            var tenantId = _configuration["AzureAd:TenantId"];
+            var clientId = _configuration["AzureAd:ClientId"];
+            var clientSecret = _configuration["AzureAd:ClientSecret"];
+
+            if (!_credentialValidator.AreCredentialsConfigured(tenantId, clientId, clientSecret))
+            {
+                return new
+                {
+                    success = true, demo = true, mode = "demo",
+                    message = "Demo mode - configure Azure AD credentials to access real Planner data.",
+                    tasks = new[] {
+                        new { Id = "demo-task-1", Title = "My Demo Task", PercentComplete = 0, PlanId = "demo-plan-1" }
+                    }
+                };
+            }
+
+            var args = arguments?.Deserialize<GetUserArgs>();
+            if (string.IsNullOrEmpty(args?.UserId))
+                return new { success = false, error = "userId is required" };
+
+            var credential = new ClientSecretCredential(tenantId, clientId, clientSecret);
+            var graphClient = new Microsoft.Graph.GraphServiceClient(credential);
+
+            var tasks = await graphClient.Users[args.UserId].Planner.Tasks.GetAsync();
+            var taskList = tasks?.Value?.Select(t => new
+            {
+                t.Id,
+                t.Title,
+                t.PercentComplete,
+                t.DueDateTime,
+                t.PlanId,
+                t.BucketId,
+                t.CreatedDateTime
+            }).ToList();
+
+            return new { success = true, mode = "production", count = taskList?.Count ?? 0, tasks = taskList };
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error getting user planner tasks");
+            return new { success = false, error = ex.Message };
+        }
+    }
 }
 
 // Request/Response models
@@ -1393,5 +1849,12 @@ public record GroupMemberArgs(string? GroupId, string? UserId);
 public record SendMailArgs(List<string>? To, List<string>? Cc, List<string>? Bcc, string? Subject, string? Body, string? BodyType, string? Importance);
 public record GetApplicationsArgs(int? Top, string? Filter);
 public record CreateApplicationArgs(string? DisplayName, string? Description, List<string>? RedirectUris, bool? PublicClient);
+public record PlannerGroupArgs(string? GroupId);
+public record PlannerPlanArgs(string? PlanId);
+public record PlannerTaskArgs(string? TaskId);
+public record CreatePlannerPlanArgs(string? GroupId, string? Title);
+public record CreatePlannerTaskArgs(string? PlanId, string? Title, string? BucketId, string? AssignedUserId, string? DueDateTime, int? PercentComplete);
+public record UpdatePlannerTaskArgs(string? TaskId, string? Title, int? PercentComplete, string? DueDateTime, string? BucketId);
+public record CreatePlannerBucketArgs(string? PlanId, string? Name);
 
 // Reference update classes - removed as using Microsoft.Graph.Models versions
