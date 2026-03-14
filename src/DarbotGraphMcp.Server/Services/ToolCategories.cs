@@ -1060,4 +1060,176 @@ public static class ToolCategories
             }
         };
     }
+
+    public static List<object> GetPlannerTools()
+    {
+        return new List<object>
+        {
+            new
+            {
+                name = "darbot-graph-planner-plans-list",
+                description = "List Microsoft Planner plans for a group",
+                inputSchema = new
+                {
+                    type = "object",
+                    properties = new
+                    {
+                        groupId = new { type = "string", description = "Microsoft 365 Group or Team ID" }
+                    },
+                    required = new[] { "groupId" }
+                }
+            },
+            new
+            {
+                name = "darbot-graph-planner-plans-get",
+                description = "Get details of a specific Planner plan",
+                inputSchema = new
+                {
+                    type = "object",
+                    properties = new
+                    {
+                        planId = new { type = "string", description = "Planner plan ID" }
+                    },
+                    required = new[] { "planId" }
+                }
+            },
+            new
+            {
+                name = "darbot-graph-planner-plans-create",
+                description = "Create a new Planner plan in a group",
+                inputSchema = new
+                {
+                    type = "object",
+                    properties = new
+                    {
+                        groupId = new { type = "string", description = "Microsoft 365 Group or Team ID" },
+                        title = new { type = "string", description = "Plan title" }
+                    },
+                    required = new[] { "groupId", "title" }
+                }
+            },
+            new
+            {
+                name = "darbot-graph-planner-tasks-list",
+                description = "List tasks in a Planner plan",
+                inputSchema = new
+                {
+                    type = "object",
+                    properties = new
+                    {
+                        planId = new { type = "string", description = "Planner plan ID" }
+                    },
+                    required = new[] { "planId" }
+                }
+            },
+            new
+            {
+                name = "darbot-graph-planner-tasks-get",
+                description = "Get details of a specific Planner task",
+                inputSchema = new
+                {
+                    type = "object",
+                    properties = new
+                    {
+                        taskId = new { type = "string", description = "Planner task ID" }
+                    },
+                    required = new[] { "taskId" }
+                }
+            },
+            new
+            {
+                name = "darbot-graph-planner-tasks-create",
+                description = "Create a new task in a Planner plan",
+                inputSchema = new
+                {
+                    type = "object",
+                    properties = new
+                    {
+                        planId = new { type = "string", description = "Planner plan ID" },
+                        title = new { type = "string", description = "Task title" },
+                        bucketId = new { type = "string", description = "Bucket ID to assign the task to" },
+                        assignedUserId = new { type = "string", description = "User ID to assign the task to" },
+                        dueDateTime = new { type = "string", description = "Due date (ISO 8601)" },
+                        percentComplete = new { type = "integer", description = "Completion percentage (0-100)" }
+                    },
+                    required = new[] { "planId", "title" }
+                }
+            },
+            new
+            {
+                name = "darbot-graph-planner-tasks-update",
+                description = "Update an existing Planner task",
+                inputSchema = new
+                {
+                    type = "object",
+                    properties = new
+                    {
+                        taskId = new { type = "string", description = "Planner task ID" },
+                        title = new { type = "string", description = "New task title" },
+                        percentComplete = new { type = "integer", description = "Completion percentage (0-100)" },
+                        dueDateTime = new { type = "string", description = "Due date (ISO 8601)" },
+                        bucketId = new { type = "string", description = "Bucket ID to move the task to" }
+                    },
+                    required = new[] { "taskId" }
+                }
+            },
+            new
+            {
+                name = "darbot-graph-planner-tasks-delete",
+                description = "Delete a Planner task",
+                inputSchema = new
+                {
+                    type = "object",
+                    properties = new
+                    {
+                        taskId = new { type = "string", description = "Planner task ID" }
+                    },
+                    required = new[] { "taskId" }
+                }
+            },
+            new
+            {
+                name = "darbot-graph-planner-buckets-list",
+                description = "List buckets in a Planner plan",
+                inputSchema = new
+                {
+                    type = "object",
+                    properties = new
+                    {
+                        planId = new { type = "string", description = "Planner plan ID" }
+                    },
+                    required = new[] { "planId" }
+                }
+            },
+            new
+            {
+                name = "darbot-graph-planner-buckets-create",
+                description = "Create a new bucket in a Planner plan",
+                inputSchema = new
+                {
+                    type = "object",
+                    properties = new
+                    {
+                        planId = new { type = "string", description = "Planner plan ID" },
+                        name = new { type = "string", description = "Bucket name" }
+                    },
+                    required = new[] { "planId", "name" }
+                }
+            },
+            new
+            {
+                name = "darbot-graph-planner-mytasks-list",
+                description = "List all Planner tasks assigned to a user",
+                inputSchema = new
+                {
+                    type = "object",
+                    properties = new
+                    {
+                        userId = new { type = "string", description = "User ID or User Principal Name" }
+                    },
+                    required = new[] { "userId" }
+                }
+            }
+        };
+    }
 }
